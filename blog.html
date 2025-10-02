@@ -515,42 +515,57 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// Password verification function for pin/delete actions
+function verifyPasswordForAction(action, callback) {
+  const enteredPassword = prompt(`Enter password to ${action}:`);
+  
+  if (enteredPassword === BLOG_PASSWORD) {
+    callback();
+  } else if (enteredPassword !== null) { // User didn't cancel
+    showMessage('Incorrect password. Action denied.', 'danger');
+  }
+}
+
 // Toggle pin function (global scope)
 function togglePin(postId) {
-  let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-  const postIndex = posts.findIndex(post => post.id === postId);
-  
-  if (postIndex !== -1) {
-    posts[postIndex].pinned = !posts[postIndex].pinned;
-    localStorage.setItem('blogPosts', JSON.stringify(posts));
+  verifyPasswordForAction('pin/unpin this post', function() {
+    let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+    const postIndex = posts.findIndex(post => post.id === postId);
     
-    // Refresh the display
-    document.getElementById('blogPosts').innerHTML = '';
-    loadPosts();
-    
-    const action = posts[postIndex].pinned ? 'pinned' : 'unpinned';
-    showMessage(`Post ${action} successfully!`, 'success');
-  }
+    if (postIndex !== -1) {
+      posts[postIndex].pinned = !posts[postIndex].pinned;
+      localStorage.setItem('blogPosts', JSON.stringify(posts));
+      
+      // Refresh the display
+      document.getElementById('blogPosts').innerHTML = '';
+      loadPosts();
+      
+      const action = posts[postIndex].pinned ? 'pinned' : 'unpinned';
+      showMessage(`Post ${action} successfully!`, 'success');
+    }
+  });
 }
 
 // Delete post function (global scope)
 function deletePost(postId) {
-  if (confirm('Are you sure you want to delete this post?')) {
-    // Remove from localStorage
-    let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-    posts = posts.filter(post => post.id !== postId);
-    localStorage.setItem('blogPosts', JSON.stringify(posts));
-    
-    // Remove from display
-    const postElements = document.querySelectorAll('.card');
-    postElements.forEach(element => {
-      if (element.innerHTML.includes(`deletePost(${postId})`)) {
-        element.remove();
-      }
-    });
-    
-    showMessage('Post deleted successfully!', 'success');
-  }
+  verifyPasswordForAction('delete this post', function() {
+    if (confirm('Are you sure you want to delete this post?')) {
+      // Remove from localStorage
+      let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+      posts = posts.filter(post => post.id !== postId);
+      localStorage.setItem('blogPosts', JSON.stringify(posts));
+      
+      // Remove from display
+      const postElements = document.querySelectorAll('.card');
+      postElements.forEach(element => {
+        if (element.innerHTML.includes(`deletePost(${postId})`)) {
+          element.remove();
+        }
+      });
+      
+      showMessage('Post deleted successfully!', 'success');
+    }
+  });
 }
 
 function showMessage(message, type) {
