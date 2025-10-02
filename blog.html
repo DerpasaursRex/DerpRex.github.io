@@ -240,7 +240,6 @@
           <button type="button" class="btn" style="background-color: #b82b2f; color: white;" onclick="checkPassword()">Access Posting</button>
           <button type="button" class="btn btn-secondary ml-2" onclick="testDelete()">Test Delete</button>
           <button type="button" class="btn btn-info ml-2" onclick="testModal()">Test Modal</button>
-          <button type="button" class="btn btn-warning ml-2" onclick="simplePasswordCheck('test simple', function(){alert('Simple test works!');})">Test Simple</button>
         </div>
       </div>
       
@@ -289,7 +288,7 @@
 </div>
 
 <!-- Data Management Section -->
-<div class="container mt-4">
+<div id="dataManagementSection" class="container mt-4" style="display: none;">
   <div class="row">
     <div class="col-md-12">
       <div class="card" style="background-image: url('whitepaper.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
@@ -362,14 +361,15 @@ function checkPassword() {
   const enteredPassword = document.getElementById('accessPassword').value;
   
   if (enteredPassword === BLOG_PASSWORD) {
-    // Correct password - show posting form
+    // Correct password - show posting form and data management
     document.getElementById('passwordSection').style.display = 'none';
     document.getElementById('blogFormSection').style.display = 'block';
+    document.getElementById('dataManagementSection').style.display = 'block';
     
     // Store session in localStorage
     localStorage.setItem('blogAccess', 'true');
     
-    window.showMessage('Access granted! You can now post to the blog.', 'success');
+    window.showMessage('Access granted! You can now post to the blog and access data management.', 'success');
   } else {
     // Wrong password
     window.showMessage('Incorrect password. Access denied.', 'danger');
@@ -378,8 +378,9 @@ function checkPassword() {
 }
 
 function logout() {
-  // Hide posting form and show password section
+  // Hide posting form and data management, show password section
   document.getElementById('blogFormSection').style.display = 'none';
+  document.getElementById('dataManagementSection').style.display = 'none';
   document.getElementById('passwordSection').style.display = 'block';
   
   // Clear session
@@ -399,9 +400,11 @@ function checkSession() {
   if (hasAccess) {
     document.getElementById('passwordSection').style.display = 'none';
     document.getElementById('blogFormSection').style.display = 'block';
+    document.getElementById('dataManagementSection').style.display = 'block';
   } else {
     document.getElementById('passwordSection').style.display = 'block';
     document.getElementById('blogFormSection').style.display = 'none';
+    document.getElementById('dataManagementSection').style.display = 'none';
   }
 }
 
@@ -601,59 +604,21 @@ window.verifyPasswordForAction = function(action, callback) {
   }
 };
 
-// Bulletproof password verification system
+// Simple and reliable password verification
 window.verifyPasswordForAction = function(action, callback) {
   console.log(`Password verification requested for: ${action}`);
   
-  // Method 1: Try browser prompt first
-  try {
-    const password = prompt(`Enter password to ${action}:`);
-    console.log('Prompt result:', password);
-    
-    if (password === BLOG_PASSWORD) {
-      console.log('Password verified via prompt');
-      callback();
-      return;
-    } else if (password !== null) {
-      console.log('Incorrect password via prompt');
-      window.showMessage('Incorrect password. Action denied.', 'danger');
-      return;
-    } else {
-      console.log('Prompt cancelled');
-      return;
-    }
-  } catch (error) {
-    console.log('Prompt failed, trying alternative method:', error);
-  }
-  
-  // Method 2: Fallback to simple confirmation with password check
-  const password = prompt(`Password required for ${action}:\n\nEnter password:`);
-  if (password === BLOG_PASSWORD) {
-    console.log('Password verified via fallback prompt');
-    callback();
-  } else if (password !== null) {
-    console.log('Incorrect password via fallback');
-    window.showMessage('Incorrect password. Action denied.', 'danger');
-  } else {
-    console.log('Fallback prompt cancelled');
-  }
-};
-
-// Alternative simple password verification (backup method)
-window.simplePasswordCheck = function(action, callback) {
-  console.log(`Simple password check for: ${action}`);
-  
-  // Create a simple input dialog
+  // Simple prompt - this should work on all browsers
   const password = prompt(`Password required for ${action}:\n\nEnter password:`);
   
   if (password === BLOG_PASSWORD) {
-    console.log('Password verified via simple check');
+    console.log('Password verified successfully');
     callback();
   } else if (password !== null) {
-    console.log('Incorrect password via simple check');
+    console.log('Incorrect password entered');
     alert('Incorrect password. Action denied.');
   } else {
-    console.log('Simple password check cancelled');
+    console.log('Password prompt cancelled');
   }
 };
 
