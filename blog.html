@@ -323,6 +323,15 @@ console.log('Blog script loaded successfully - Version 2.0');
 console.log('Password protection initialized');
 console.log('Global functions: loadPosts, addPostToDisplay, showMessage, verifyPasswordForAction');
 
+// Test function to verify password protection is working
+window.testPasswordProtection = function() {
+  console.log('Testing password protection...');
+  window.verifyPasswordForAction('test action', function() {
+    console.log('Password protection test successful!');
+    alert('Password protection is working correctly!');
+  });
+};
+
 function checkPassword() {
   const enteredPassword = document.getElementById('accessPassword').value;
   
@@ -536,9 +545,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Password verification function for pin/delete actions
-function verifyPasswordForAction(action, callback) {
+window.verifyPasswordForAction = function(action, callback) {
   console.log(`Password verification requested for: ${action}`);
+  console.log('About to show password prompt');
+  
   const enteredPassword = prompt(`Enter password to ${action}:`);
+  console.log('Password prompt result:', enteredPassword);
   
   if (enteredPassword === BLOG_PASSWORD) {
     console.log('Password verified successfully');
@@ -553,7 +565,7 @@ function verifyPasswordForAction(action, callback) {
 
 // Toggle pin function (global scope)
 function togglePin(postId) {
-  verifyPasswordForAction('pin/unpin this post', function() {
+  window.verifyPasswordForAction('pin/unpin this post', function() {
     let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
     const postIndex = posts.findIndex(post => post.id === postId);
     
@@ -573,8 +585,13 @@ function togglePin(postId) {
 
 // Delete post function (global scope)
 function deletePost(postId) {
-  verifyPasswordForAction('delete this post', function() {
+  console.log('deletePost function called with postId:', postId);
+  console.log('About to call verifyPasswordForAction');
+  
+  window.verifyPasswordForAction('delete this post', function() {
+    console.log('Password verified, proceeding with delete confirmation');
     if (confirm('Are you sure you want to delete this post?')) {
+      console.log('User confirmed deletion');
       // Remove from localStorage
       let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
       posts = posts.filter(post => post.id !== postId);
@@ -589,6 +606,8 @@ function deletePost(postId) {
       });
       
       window.showMessage('Post deleted successfully!', 'success');
+    } else {
+      console.log('User cancelled deletion');
     }
   });
 }
