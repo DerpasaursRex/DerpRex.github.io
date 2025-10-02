@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Catherine Ann MacDonald</title>
+  
+
+  <!--This commented out code below is for using the bootstrap CSS via a link -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <!-- Cursor follower script with multiple trailing images -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const numFollowers = 5; // Number of trailing images
+      const followers = [];
+      const positions = [];
+      let isMouseOnPage = false;
+      let targetX = 0;
+      let targetY = 0;
+      
+      // Create multiple cursor followers
+      for (let i = 0; i < numFollowers; i++) {
+        const follower = document.createElement('img');
+        follower.src = 'Bugtie.png';
+        follower.style.position = 'fixed';
+        follower.style.width = '30px';
+        follower.style.height = '30px';
+        follower.style.pointerEvents = 'none';
+        follower.style.zIndex = '9999';
+        follower.style.display = 'none';
+        follower.style.transition = 'left 0.1s ease-out, top 0.1s ease-out';
+        document.body.appendChild(follower);
+        
+        followers.push(follower);
+        positions.push({ x: 0, y: 0 });
+      }
+      
+      // Animation function
+      function animate() {
+        if (isMouseOnPage && followers[0].style.display !== 'none') {
+          // Update each follower to follow the previous one
+          for (let i = 0; i < numFollowers; i++) {
+            const follower = followers[i];
+            const pos = positions[i];
+            
+            let targetX, targetY;
+            if (i === 0) {
+              // First follower follows the mouse
+              targetX = window.mouseX;
+              targetY = window.mouseY;
+            } else {
+              // Other followers follow the previous follower
+              const prevPos = positions[i - 1];
+              targetX = prevPos.x;
+              targetY = prevPos.y;
+            }
+            
+            // Calculate distance for speed variation
+            const dx = targetX - pos.x;
+            const dy = targetY - pos.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Different speeds for each follower (first is fastest)
+            const speed = 0.3 - (i * 0.05); // Speed decreases for each follower
+            
+            if (distance > 1) {
+              pos.x += dx * speed;
+              pos.y += dy * speed;
+              
+              // Only rotate if there's significant movement to prevent jitter
+              if (distance > 3) {
+                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                // Normalize angle to 0-360 range
+                let normalizedAngle = angle;
+                if (normalizedAngle < 0) {
+                  normalizedAngle += 360;
+                }
+                
+                // Allow natural rotation but prevent upside-down orientations
+                // Keep rotation between -90 and 90 degrees (right-side up range)
+                if (normalizedAngle > 90 && normalizedAngle <= 270) {
+                  // If upside down, flip to right-side up equivalent
+                  normalizedAngle = normalizedAngle - 180;
+                }
+                
+                follower.style.transform = `rotate(${normalizedAngle}deg)`;
+              }
+              
+              follower.style.left = (pos.x - 15) + 'px';
+              follower.style.top = (pos.y - 15) + 'px';
+            }
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+      
+      // Mouse tracking
+      document.addEventListener('mousemove', function(e) {
+        window.mouseX = e.clientX;
+        window.mouseY = e.clientY;
+        
+        if (!isMouseOnPage) {
+          isMouseOnPage = true;
+          // Show all followers
+          followers.forEach(follower => {
+            follower.style.display = 'block';
+          });
+        }
+      });
+      
+      document.addEventListener('mouseleave', function() {
+        isMouseOnPage = false;
+        // Hide all followers
+        followers.forEach(follower => {
+          follower.style.display = 'none';
+        });
+      });
+      
+      // Start animation
+      animate();
+    });
+
+    // Walking character animation
+    document.addEventListener('DOMContentLoaded', function() {
+      const walkingChar = document.getElementById('walkingCharacter');
+      let position = 0;
+      let direction = 1; // 1 for right, -1 for left
+      const speed = 2; // pixels per frame
+      const maxWidth = window.innerWidth - 50; // account for character width
+      
+      function walk() {
+        position += speed * direction;
+        
+        // Reverse direction when hitting edges
+        if (position >= maxWidth) {
+          direction = -1;
+          walkingChar.style.transform = 'scaleX(-1)'; // flip horizontally
+        } else if (position <= 0) {
+          direction = 1;
+          walkingChar.style.transform = 'scaleX(1)'; // normal orientation
+        }
+        
+        walkingChar.style.left = position + 'px';
+        requestAnimationFrame(walk);
+      }
+      
+      // Start walking animation
+      walk();
+    });
+  </script>
+
+  <!-- This code below is for linking Bootstrap via a local file!-->
+  
+<style>
+  .fakeimg {
+    height: 200px;
+    background: #aaa;
+  }
+
+  .jumbotron {
+    background-image: url("rexbanner.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+ 
+  }
+
+  .jumbotronfooter {
+    background-image: url("elizabanner.png");
+
+    background-size: cover;
+
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+    padding: 50px;
+
+  }
+
+  </style>
+</head>
+<body>
+
+<div class="jumbotron jumbotron-fluid text-center" style="margin-bottom:0">
+  <h1>Catherine Ann MacDonald</h1>
+ <p style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;"> Writer-Artist</p> 
+</div>
+
+<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #b82b2f;">
+  <a class="navbar-brand" href="#">Menu</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="index.html">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="currentportfolio.html">Current Portfolio</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="blog.html">Blog</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="archiveDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Archive
+        </a>
+        <div class="dropdown-menu" aria-labelledby="archiveDropdown">
+          <a class="dropdown-item" href="spectrum.html">Spectrum</a>
+          <a class="dropdown-item" href="party.html">Party</a>
+          <a class="dropdown-item" href="earlywork.html">Early Work</a>
+        </div>
+      </li>
+    </ul>
+  </div>  
+</nav>
+
+<div class="container" style="margin-top:30px">
+  <div class="row">
+    <div class="col-12">
+      <h2 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Early Work Archive</h2>
+      <h5 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Foundation of Creativity</h5>
+      
+      <!-- Magazine-Style Gallery -->
+      <div class="row">
+        <!-- Featured Early Work -->
+        <div class="col-12 mb-4">
+          <div class="card magazine-featured" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+            <div class="row no-gutters">
+              <div class="col-md-6">
+            <img src="EarlyWork/371.png" class="card-img" alt="Early Work 371" style="height: 400px; object-fit: cover; object-position: center 30%; cursor: pointer;" onclick="openModal(this, 'Work #371', '')">
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <div class="card-body text-center">
+                  <h4 class="card-title" style="color: #b82b2f; font-weight: bold;">Featured Early Work</h4>
+                  <h5 class="card-title">Work #371</h5>
+                  <p class="card-text">WIP</p>
+                  <small class="text-muted">Early Digital Art • Foundation Work</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Early Work Gallery Grid -->
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="EarlyWork/382.png" class="card-img-top" alt="Early Work 382" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Work #382', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Work #382</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="EarlyWork/385.png" class="card-img-top" alt="Early Work 385" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Work #385', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Work #385</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="EarlyWork/397.png" class="card-img-top" alt="Early Work 397" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Work #397', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Work #397</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="EarlyWork/399.png" class="card-img-top" alt="Early Work 399" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Work #399', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Work #399</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="EarlyWork/411.png" class="card-img-top" alt="Early Work 411" style="height: 250px; object-fit: cover; object-position: center 25%; cursor: pointer;" onclick="openModal(this, 'Work #411', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Work #411</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="EarlyWork/c79cdb4a-252f-45a8-86e6-d1ab27f06d44.png" class="card-img-top" alt="Fat Creature" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Fat Creature', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Fat Creature</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="EarlyWork/cryingman.png" class="card-img-top" alt="Crying Man" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Crying Man', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Crying Man</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="EarlyWork/Ichors.png" class="card-img-top" alt="Ichors" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Ichors', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Ichors</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="EarlyWork/Rat Kingdom.png" class="card-img-top" alt="Rat Kingdom" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Rat Kingdom', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;"><a href="https://derpasaursrex.github.io/RatKingdomAcademy.github.io/" target="_blank" style="color: #b82b2f; text-decoration: none;">Rat Kingdom</a></h6>
+              <p class="card-text small">WIP <a href="https://derpasaursrex.github.io/RatKingdomAcademy.github.io/" target="_blank" style="color: #b82b2f;">View Interactive Version →</a></p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+      
+      
+    </div>
+  </div>
+</div>
+
+<!-- Walking Character -->
+<img id="walkingCharacter" class="walking-character" src="Shadite.png" alt="Walking Character">
+
+<!-- Footer -->
+<div style="background-image: url('elizabanner.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 20px; text-align: center; margin-top: 30px; border-radius: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1);">
+  <p style="color: white; margin: 0; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Catherine Ann MacDonald</p>
+  <p style="color: white; margin: 5px 0 0 0; font-size: 14px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">&copy; 2025</p>
+</div>
+
+<style>
+body {
+  background-image: url("spectrumbackground.png");
+  background-size: 200% 100%;
+  background-repeat: repeat-x;
+  background-attachment: fixed;
+  background-position: 0% 50%;
+  font-family: Arial, sans-serif;
+  animation: spectrumScroll 40s linear infinite;
+}
+
+@keyframes spectrumScroll {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.walking-character {
+  position: fixed;
+  bottom: 20px;
+  width: 50px;
+  height: 50px;
+  z-index: 1000;
+  transition: transform 0.1s ease-in-out;
+}
+</style>
+
+<style >
+  body {
+  color: black;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #b82b2f;
+  font-family: Arial, sans-serif;
+  text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
+}
+
+.magazine-card:hover {
+  transform: translateY(-5px);
+}
+
+.magazine-featured {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.magazine-card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+</style>
+
+
+  <!-- Image Modal -->
+  <div id="imageModal" class="modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-image: url('galaxy.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <span class="close" style="position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer;">&times;</span>
+    <img class="modal-content" id="modalImage" style="margin: auto; display: block; width: 90%; max-width: 1200px; max-height: 90%; object-fit: contain;">
+    <div id="caption" style="margin: auto; display: block; width: 80%; max-width: 700px; text-align: center; color: #ccc; padding: 10px 0; height: 150px;"></div>
+  </div>
+
+  <script>
+    // Get the modal
+    var modal = document.getElementById('imageModal');
+    var modalImg = document.getElementById("modalImage");
+    var captionText = document.getElementById("caption");
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on an image, open the modal
+    function openModal(img, title, description) {
+      modal.style.display = "block";
+      modalImg.src = img.src;
+      captionText.innerHTML = '<h3 style="color: #b82b2f; margin-bottom: 10px;">' + title + '</h3><p style="font-size: 16px; line-height: 1.5;">' + description + '</p>';
+    }
+
+    // When the user clicks on (x), close the modal
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        modal.style.display = "none";
+      }
+    });
+  </script>
