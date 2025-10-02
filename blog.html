@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Catherine Ann MacDonald</title>
+  
+
+  <!--This commented out code below is for using the bootstrap CSS via a link -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <!-- Cursor follower script with multiple trailing images -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const numFollowers = 5; // Number of trailing images
+      const followers = [];
+      const positions = [];
+      let isMouseOnPage = false;
+      let targetX = 0;
+      let targetY = 0;
+      
+      // Create multiple cursor followers
+      for (let i = 0; i < numFollowers; i++) {
+        const follower = document.createElement('img');
+        follower.src = 'Bugtie.png';
+        follower.style.position = 'fixed';
+        follower.style.width = '30px';
+        follower.style.height = '30px';
+        follower.style.pointerEvents = 'none';
+        follower.style.zIndex = '9999';
+        follower.style.display = 'none';
+        follower.style.transition = 'left 0.1s ease-out, top 0.1s ease-out';
+        document.body.appendChild(follower);
+        
+        followers.push(follower);
+        positions.push({ x: 0, y: 0 });
+      }
+      
+      // Animation function
+      function animate() {
+        if (isMouseOnPage && followers[0].style.display !== 'none') {
+          // Update each follower to follow the previous one
+          for (let i = 0; i < numFollowers; i++) {
+            const follower = followers[i];
+            const pos = positions[i];
+            
+            let targetX, targetY;
+            if (i === 0) {
+              // First follower follows the mouse
+              targetX = window.mouseX;
+              targetY = window.mouseY;
+            } else {
+              // Other followers follow the previous follower
+              const prevPos = positions[i - 1];
+              targetX = prevPos.x;
+              targetY = prevPos.y;
+            }
+            
+            // Calculate distance for speed variation
+            const dx = targetX - pos.x;
+            const dy = targetY - pos.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Different speeds for each follower (first is fastest)
+            const speed = 0.3 - (i * 0.05); // Speed decreases for each follower
+            
+            if (distance > 1) {
+              pos.x += dx * speed;
+              pos.y += dy * speed;
+              
+              // Only rotate if there's significant movement to prevent jitter
+              if (distance > 3) {
+                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                // Normalize angle to 0-360 range
+                let normalizedAngle = angle;
+                if (normalizedAngle < 0) {
+                  normalizedAngle += 360;
+                }
+                
+                // Allow natural rotation but prevent upside-down orientations
+                // Keep rotation between -90 and 90 degrees (right-side up range)
+                if (normalizedAngle > 90 && normalizedAngle <= 270) {
+                  // If upside down, flip to right-side up equivalent
+                  normalizedAngle = normalizedAngle - 180;
+                }
+                
+                follower.style.transform = `rotate(${normalizedAngle}deg)`;
+              }
+              
+              follower.style.left = (pos.x - 15) + 'px';
+              follower.style.top = (pos.y - 15) + 'px';
+            }
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+      
+      // Mouse tracking
+      document.addEventListener('mousemove', function(e) {
+        window.mouseX = e.clientX;
+        window.mouseY = e.clientY;
+        
+        if (!isMouseOnPage) {
+          isMouseOnPage = true;
+          // Show all followers
+          followers.forEach(follower => {
+            follower.style.display = 'block';
+          });
+        }
+      });
+      
+      document.addEventListener('mouseleave', function() {
+        isMouseOnPage = false;
+        // Hide all followers
+        followers.forEach(follower => {
+          follower.style.display = 'none';
+        });
+      });
+      
+      // Start animation
+      animate();
+    });
+
+    // Walking character animation
+    document.addEventListener('DOMContentLoaded', function() {
+      const walkingChar = document.getElementById('walkingCharacter');
+      let position = 0;
+      let direction = 1; // 1 for right, -1 for left
+      const speed = 2; // pixels per frame
+      const maxWidth = window.innerWidth - 50; // account for character width
+      
+      function walk() {
+        position += speed * direction;
+        
+        // Reverse direction when hitting edges
+        if (position >= maxWidth) {
+          direction = -1;
+          walkingChar.style.transform = 'scaleX(-1)'; // flip horizontally
+        } else if (position <= 0) {
+          direction = 1;
+          walkingChar.style.transform = 'scaleX(1)'; // normal orientation
+        }
+        
+        walkingChar.style.left = position + 'px';
+        requestAnimationFrame(walk);
+      }
+      
+      // Start walking animation
+      walk();
+    });
+  </script>
+
+  <!-- This code below is for linking Bootstrap via a local file!-->
+  
+<style>
+  .fakeimg {
+    height: 200px;
+    background: #aaa;
+  }
+
+  .jumbotron {
+    background-image: url("rexbanner.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+ 
+  }
+
+  .jumbotronfooter {
+    background-image: url("elizabanner.png");
+
+    background-size: cover;
+
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+    padding: 50px;
+
+  }
+
+  </style>
+</head>
+<body>
+
+<div class="jumbotron jumbotron-fluid text-center" style="margin-bottom:0">
+  <h1>Catherine Ann MacDonald</h1>
+ <p style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;"> Writer-Artist</p> 
+</div>
+
+<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #b82b2f;">
+  <a class="navbar-brand" href="#">Menu</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="index.html">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="currentportfolio.html">Current Portfolio</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="blog.html">Blog</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="archiveDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Archive
+        </a>
+        <div class="dropdown-menu" aria-labelledby="archiveDropdown">
+          <a class="dropdown-item" href="spectrum.html">Spectrum</a>
+          <a class="dropdown-item" href="party.html">Party</a>
+          <a class="dropdown-item" href="earlywork.html">Early Work</a>
+        </div>
+      </li>
+    </ul>
+  </div>  
+</nav>
+
+<div class="container" style="margin-top:30px">
+  <div class="row">
+    <div class="col-12">
+      <h2 style="text-shadow: 2px 2px 4px rgba(255,255,255,0.8), -2px -2px 4px rgba(255,255,255,0.8), 2px -2px 4px rgba(255,255,255,0.8), -2px 2px 4px rgba(255,255,255,0.8);">Narrator's Log</h2>
+      
+      <!-- Password Protection -->
+      <div id="passwordSection" class="card mb-4" style="background-image: url('whitepaper.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <div class="card-body">
+          <h5 class="card-title">Author Access</h5>
+          <p class="card-text">Enter password to access posting features:</p>
+          <div class="form-group">
+            <input type="password" class="form-control" id="accessPassword" placeholder="Enter password">
+          </div>
+          <button type="button" class="btn" style="background-color: #b82b2f; color: white;" onclick="checkPassword()">Access Posting</button>
+        </div>
+      </div>
+      
+      <!-- Blog Post Form (Hidden by default) -->
+      <div id="blogFormSection" class="card mb-4" style="background-image: url('whitepaper.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; display: none;">
+        <div class="card-body">
+          <h5 class="card-title">Write New Post</h5>
+          <button type="button" class="btn btn-sm btn-outline-secondary mb-3" onclick="logout()">Lock Posting</button>
+          <form id="blogForm">
+            <div class="form-group">
+              <label for="postTitle">Post Title:</label>
+              <input type="text" class="form-control" id="postTitle" required>
+            </div>
+            <div class="form-group">
+              <label for="postContent">Post Content:</label>
+              <textarea class="form-control" id="postContent" rows="5" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="postImage">Upload Image (optional):</label>
+              <input type="file" class="form-control-file" id="postImage" accept="image/*">
+              <small class="form-text text-muted">Supported formats: JPG, PNG, GIF, WebP</small>
+            </div>
+            <div class="form-group">
+              <label for="postAuthor">Author:</label>
+              <input type="text" class="form-control" id="postAuthor" value="Catherine Ann MacDonald" required>
+            </div>
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="pinPost">
+                <label class="form-check-label" for="pinPost">
+                  Pin this post to the top
+                </label>
+              </div>
+            </div>
+            <button type="submit" class="btn" style="background-color: #b82b2f; color: white;">Publish Post</button>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Blog Posts Display -->
+      <div id="blogPosts">
+        <!-- Your blog posts will appear here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Data Management Section -->
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card" style="background-image: url('whitepaper.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <div class="card-body">
+          <h4 class="card-title">📁 Data Management</h4>
+          <p class="card-text">Export your blog data to keep it safe, or import previously saved data.</p>
+          <div class="btn-group" role="group">
+            <button class="btn btn-outline-primary" onclick="exportBlogData()">📤 Export Blog Data</button>
+            <button class="btn btn-outline-success" onclick="document.getElementById('importFile').click()">📥 Import Blog Data</button>
+            <button class="btn btn-outline-warning" onclick="backupToFile()">💾 Create Backup</button>
+            <button class="btn btn-outline-info" onclick="loadFromBackup()">🔄 Restore Backup</button>
+          </div>
+          <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importBlogData(event)">
+          <div class="mt-3">
+            <small class="text-muted">
+              <strong>Export:</strong> Downloads all blog posts as a JSON file<br>
+              <strong>Import:</strong> Upload a previously exported JSON file<br>
+              <strong>Backup:</strong> Creates a timestamped backup file<br>
+              <strong>Restore:</strong> Loads the most recent backup
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Password protection
+const BLOG_PASSWORD = 'BrownWolfZack'; // Change this to your desired password
+
+function checkPassword() {
+  const enteredPassword = document.getElementById('accessPassword').value;
+  
+  if (enteredPassword === BLOG_PASSWORD) {
+    // Correct password - show posting form
+    document.getElementById('passwordSection').style.display = 'none';
+    document.getElementById('blogFormSection').style.display = 'block';
+    
+    // Store session in localStorage
+    localStorage.setItem('blogAccess', 'true');
+    
+    showMessage('Access granted! You can now post to the blog.', 'success');
+  } else {
+    // Wrong password
+    showMessage('Incorrect password. Access denied.', 'danger');
+    document.getElementById('accessPassword').value = '';
+  }
+}
+
+function logout() {
+  // Hide posting form and show password section
+  document.getElementById('blogFormSection').style.display = 'none';
+  document.getElementById('passwordSection').style.display = 'block';
+  
+  // Clear session
+  localStorage.removeItem('blogAccess');
+  
+  // Clear form
+  document.getElementById('blogForm').reset();
+  document.getElementById('postAuthor').value = 'Catherine Ann MacDonald';
+  
+  showMessage('Posting locked. Password required to access.', 'info');
+}
+
+// Check if user is already logged in
+function checkSession() {
+  const hasAccess = localStorage.getItem('blogAccess') === 'true';
+  
+  if (hasAccess) {
+    document.getElementById('passwordSection').style.display = 'none';
+    document.getElementById('blogFormSection').style.display = 'block';
+  } else {
+    document.getElementById('passwordSection').style.display = 'block';
+    document.getElementById('blogFormSection').style.display = 'none';
+  }
+}
+
+// Blog functionality
+document.addEventListener('DOMContentLoaded', function() {
+  // Check session first
+  checkSession();
+  
+  const blogForm = document.getElementById('blogForm');
+  const blogPosts = document.getElementById('blogPosts');
+  
+  // Load posts from localStorage
+  loadPosts();
+  
+  blogForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const title = document.getElementById('postTitle').value;
+    const content = document.getElementById('postContent').value;
+    const author = document.getElementById('postAuthor').value;
+    const isPinned = document.getElementById('pinPost').checked;
+    const imageFile = document.getElementById('postImage').files[0];
+    const date = new Date().toLocaleDateString();
+    
+    // Handle image upload
+    if (imageFile) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const imageData = e.target.result;
+        
+        // Create new post object with image
+        const newPost = {
+          title: title,
+          content: content,
+          author: author,
+          date: date,
+          id: Date.now(),
+          pinned: isPinned,
+          image: imageData,
+          imageName: imageFile.name
+        };
+        
+        // Save to localStorage
+        savePost(newPost);
+        
+        // Add to display
+        addPostToDisplay(newPost);
+        
+        // Clear form
+        blogForm.reset();
+        document.getElementById('postAuthor').value = 'Catherine Ann MacDonald';
+        
+        // Show success message
+        showMessage('Post with image published successfully!', 'success');
+      };
+      reader.readAsDataURL(imageFile);
+    } else {
+      // Create new post object without image
+      const newPost = {
+        title: title,
+        content: content,
+        author: author,
+        date: date,
+        id: Date.now(),
+        pinned: isPinned
+      };
+      
+      // Save to localStorage
+      savePost(newPost);
+      
+      // Add to display
+      addPostToDisplay(newPost);
+      
+      // Clear form
+      blogForm.reset();
+      document.getElementById('postAuthor').value = 'Catherine Ann MacDonald';
+      
+      // Show success message
+      showMessage('Post published successfully!', 'success');
+    }
+  });
+  
+  function savePost(post) {
+    let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+    posts.unshift(post); // Add to beginning
+    localStorage.setItem('blogPosts', JSON.stringify(posts));
+  }
+  
+  function loadPosts() {
+    const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+    // Sort posts: pinned first, then by date (newest first)
+    const sortedPosts = posts.sort((a, b) => {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return new Date(b.date) - new Date(a.date);
+    });
+    sortedPosts.forEach(post => addPostToDisplay(post));
+  }
+  
+  function addPostToDisplay(post) {
+    const postElement = document.createElement('div');
+    postElement.className = 'card mb-4';
+    postElement.style.backgroundImage = "url('whitepaper.jpg')";
+    postElement.style.backgroundSize = 'cover';
+    postElement.style.backgroundPosition = 'center';
+    postElement.style.backgroundRepeat = 'no-repeat';
+    
+    const pinIcon = post.pinned ? '📌' : '';
+    const pinButton = post.pinned ? 
+      `<button class="btn btn-sm btn-outline-warning" onclick="togglePin(${post.id})" title="Unpin post">📌 Unpin</button>` :
+      `<button class="btn btn-sm btn-outline-secondary" onclick="togglePin(${post.id})" title="Pin post">📌 Pin</button>`;
+    
+    const imageHtml = post.image ? 
+      `<div class="mb-3">
+        <img src="${post.image}" alt="${post.imageName || 'Blog image'}" class="img-fluid rounded" style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain;">
+      </div>` : '';
+    
+    postElement.innerHTML = `
+      <div class="card-body">
+        <h4 class="card-title">${pinIcon} ${post.title}</h4>
+        <p class="card-text"><small class="text-muted">Posted by ${post.author} on <span class="post-date">${post.date}</span></small></p>
+        ${imageHtml}
+        <p class="card-text">${post.content.replace(/\n/g, '<br>')}</p>
+        <div class="btn-group" role="group">
+          ${pinButton}
+          <button class="btn btn-sm btn-outline-danger" onclick="deletePost(${post.id})">Delete Post</button>
+        </div>
+      </div>
+    `;
+    
+    // Insert at the beginning (after the form)
+    blogPosts.insertBefore(postElement, blogPosts.children[0]);
+  }
+  
+  function showMessage(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+      ${message}
+      <button type="button" class="close" data-dismiss="alert">
+        <span>&times;</span>
+      </button>
+    `;
+    
+    const container = document.querySelector('.container');
+    container.insertBefore(alertDiv, container.firstChild);
+    
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+      if (alertDiv.parentNode) {
+        alertDiv.remove();
+      }
+    }, 3000);
+  }
+});
+
+// Toggle pin function (global scope)
+function togglePin(postId) {
+  let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+  const postIndex = posts.findIndex(post => post.id === postId);
+  
+  if (postIndex !== -1) {
+    posts[postIndex].pinned = !posts[postIndex].pinned;
+    localStorage.setItem('blogPosts', JSON.stringify(posts));
+    
+    // Refresh the display
+    document.getElementById('blogPosts').innerHTML = '';
+    loadPosts();
+    
+    const action = posts[postIndex].pinned ? 'pinned' : 'unpinned';
+    showMessage(`Post ${action} successfully!`, 'success');
+  }
+}
+
+// Delete post function (global scope)
+function deletePost(postId) {
+  if (confirm('Are you sure you want to delete this post?')) {
+    // Remove from localStorage
+    let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+    posts = posts.filter(post => post.id !== postId);
+    localStorage.setItem('blogPosts', JSON.stringify(posts));
+    
+    // Remove from display
+    const postElements = document.querySelectorAll('.card');
+    postElements.forEach(element => {
+      if (element.innerHTML.includes(`deletePost(${postId})`)) {
+        element.remove();
+      }
+    });
+    
+    showMessage('Post deleted successfully!', 'success');
+  }
+}
+
+function showMessage(message, type) {
+  const alertDiv = document.createElement('div');
+  alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+  alertDiv.innerHTML = `
+    ${message}
+    <button type="button" class="close" data-dismiss="alert">
+      <span>&times;</span>
+    </button>
+  `;
+  
+  const container = document.querySelector('.container');
+  container.insertBefore(alertDiv, container.firstChild);
+  
+  setTimeout(() => {
+    if (alertDiv.parentNode) {
+      alertDiv.remove();
+    }
+  }, 3000);
+}
+
+// Data Management Functions
+function exportBlogData() {
+  const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+  const dataStr = JSON.stringify(posts, null, 2);
+  const dataBlob = new Blob([dataStr], {type: 'application/json'});
+  
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(dataBlob);
+  link.download = `blog-export-${new Date().toISOString().split('T')[0]}.json`;
+  link.click();
+  
+  showMessage('Blog data exported successfully!', 'success');
+}
+
+function importBlogData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const importedPosts = JSON.parse(e.target.result);
+      
+      if (Array.isArray(importedPosts)) {
+        // Merge with existing posts (avoid duplicates by ID)
+        const existingPosts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+        const existingIds = new Set(existingPosts.map(p => p.id));
+        
+        const newPosts = importedPosts.filter(post => !existingIds.has(post.id));
+        const allPosts = [...newPosts, ...existingPosts];
+        
+        localStorage.setItem('blogPosts', JSON.stringify(allPosts));
+        
+        // Refresh display
+        document.getElementById('blogPosts').innerHTML = '';
+        loadPosts();
+        
+        showMessage(`Imported ${newPosts.length} new posts successfully!`, 'success');
+      } else {
+        showMessage('Invalid file format. Please select a valid blog export file.', 'danger');
+      }
+    } catch (error) {
+      showMessage('Error reading file. Please check the file format.', 'danger');
+    }
+  };
+  reader.readAsText(file);
+  
+  // Reset file input
+  event.target.value = '';
+}
+
+function backupToFile() {
+  const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+  const backupData = {
+    timestamp: new Date().toISOString(),
+    version: '1.0',
+    posts: posts
+  };
+  
+  const dataStr = JSON.stringify(backupData, null, 2);
+  const dataBlob = new Blob([dataStr], {type: 'application/json'});
+  
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(dataBlob);
+  link.download = `blog-backup-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+  link.click();
+  
+  // Store backup info in localStorage
+  localStorage.setItem('lastBackup', JSON.stringify({
+    timestamp: backupData.timestamp,
+    postCount: posts.length
+  }));
+  
+  showMessage('Backup created successfully!', 'success');
+}
+
+function loadFromBackup() {
+  const backupInfo = localStorage.getItem('lastBackup');
+  if (!backupInfo) {
+    showMessage('No backup found. Please create a backup first.', 'warning');
+    return;
+  }
+  
+  const backup = JSON.parse(backupInfo);
+  const confirmRestore = confirm(
+    `Restore backup from ${new Date(backup.timestamp).toLocaleString()}?\n` +
+    `This will replace all current blog posts with ${backup.postCount} posts from the backup.`
+  );
+  
+  if (confirmRestore) {
+    // Trigger file input for backup file
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json';
+    fileInput.onchange = function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const backupData = JSON.parse(e.target.result);
+          
+          if (backupData.posts && Array.isArray(backupData.posts)) {
+            localStorage.setItem('blogPosts', JSON.stringify(backupData.posts));
+            
+            // Refresh display
+            document.getElementById('blogPosts').innerHTML = '';
+            loadPosts();
+            
+            showMessage(`Restored ${backupData.posts.length} posts from backup!`, 'success');
+          } else {
+            showMessage('Invalid backup file format.', 'danger');
+          }
+        } catch (error) {
+          showMessage('Error reading backup file.', 'danger');
+        }
+      };
+      reader.readAsText(file);
+    };
+    fileInput.click();
+  }
+}
+
+// Auto-save functionality (saves every 30 seconds)
+setInterval(function() {
+  const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+  if (posts.length > 0) {
+    localStorage.setItem('autoSave', JSON.stringify({
+      timestamp: new Date().toISOString(),
+      postCount: posts.length
+    }));
+  }
+}, 30000); // 30 seconds
+
+// Show last backup info on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const backupInfo = localStorage.getItem('lastBackup');
+  if (backupInfo) {
+    const backup = JSON.parse(backupInfo);
+    console.log(`Last backup: ${new Date(backup.timestamp).toLocaleString()} (${backup.postCount} posts)`);
+  }
+});
+</script>
+
+<!-- Walking Character -->
+<img id="walkingCharacter" class="walking-character" src="Shadite.png" alt="Walking Character">
+
+<!-- Footer -->
+<div style="background-image: url('elizabanner.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 20px; text-align: center; margin-top: 30px; border-radius: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1);">
+  <p style="color: white; margin: 0; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Catherine Ann MacDonald</p>
+  <p style="color: white; margin: 5px 0 0 0; font-size: 14px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">&copy; 2025</p>
+</div>
+
+<style>
+body {
+  background-image: url("spectrumbackground.png");
+  background-size: 200% 100%;
+  background-repeat: repeat-x;
+  background-attachment: fixed;
+  background-position: 0% 50%;
+  font-family: Arial, sans-serif;
+  animation: spectrumScroll 40s linear infinite;
+}
+
+@keyframes spectrumScroll {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.walking-character {
+  position: fixed;
+  bottom: 20px;
+  width: 50px;
+  height: 50px;
+  z-index: 1000;
+  transition: transform 0.1s ease-in-out;
+}
+</style>
+
+<style >
+  body {
+  color: black;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #b82b2f;
+  font-family: Arial, sans-serif;
+  text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
+}
+</style>
+
+
+</body>
+</html>
