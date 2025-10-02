@@ -319,8 +319,9 @@
 const BLOG_PASSWORD = 'BrownWolfZack'; // Change this to your desired password
 
 // Debug logging
-console.log('Blog script loaded successfully');
+console.log('Blog script loaded successfully - Version 2.0');
 console.log('Password protection initialized');
+console.log('Global functions: loadPosts, addPostToDisplay, showMessage, verifyPasswordForAction');
 
 function checkPassword() {
   const enteredPassword = document.getElementById('accessPassword').value;
@@ -333,10 +334,10 @@ function checkPassword() {
     // Store session in localStorage
     localStorage.setItem('blogAccess', 'true');
     
-    showMessage('Access granted! You can now post to the blog.', 'success');
+    window.showMessage('Access granted! You can now post to the blog.', 'success');
   } else {
     // Wrong password
-    showMessage('Incorrect password. Access denied.', 'danger');
+    window.showMessage('Incorrect password. Access denied.', 'danger');
     document.getElementById('accessPassword').value = '';
   }
 }
@@ -353,7 +354,7 @@ function logout() {
   document.getElementById('blogForm').reset();
   document.getElementById('postAuthor').value = 'Catherine Ann MacDonald';
   
-  showMessage('Posting locked. Password required to access.', 'info');
+  window.showMessage('Posting locked. Password required to access.', 'info');
 }
 
 // Check if user is already logged in
@@ -380,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const blogPosts = document.getElementById('blogPosts');
   
   // Load posts from localStorage
-  loadPosts();
+  window.loadPosts();
   
   blogForm.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -421,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('postAuthor').value = 'Catherine Ann MacDonald';
         
         // Show success message
-        showMessage('Post with image published successfully!', 'success');
+        window.showMessage('Post with image published successfully!', 'success');
       };
       reader.readAsDataURL(imageFile);
     } else {
@@ -446,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('postAuthor').value = 'Catherine Ann MacDonald';
       
       // Show success message
-      showMessage('Post published successfully!', 'success');
+      window.showMessage('Post published successfully!', 'success');
     }
   });
   
@@ -458,11 +459,12 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log('Post saved successfully');
     } catch (error) {
       console.error('Error saving post:', error);
-      showMessage('Error saving post. Please try again.', 'danger');
+      window.showMessage('Error saving post. Please try again.', 'danger');
     }
   }
   
-  function loadPosts() {
+  // Move loadPosts to global scope
+  window.loadPosts = function() {
     const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
     // Sort posts: pinned first, then by date (newest first)
     const sortedPosts = posts.sort((a, b) => {
@@ -471,9 +473,11 @@ document.addEventListener('DOMContentLoaded', function() {
       return new Date(b.date) - new Date(a.date);
     });
     sortedPosts.forEach(post => addPostToDisplay(post));
-  }
+  };
   
-  function addPostToDisplay(post) {
+  // Move addPostToDisplay to global scope
+  window.addPostToDisplay = function(post) {
+    const blogPosts = document.getElementById('blogPosts');
     const postElement = document.createElement('div');
     postElement.className = 'card mb-4';
     postElement.style.backgroundImage = "url('whitepaper.jpg')";
@@ -506,9 +510,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Insert at the beginning (after the form)
     blogPosts.insertBefore(postElement, blogPosts.children[0]);
-  }
+  };
   
-  function showMessage(message, type) {
+  // Move showMessage to global scope
+  window.showMessage = function(message, type) {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
     alertDiv.innerHTML = `
@@ -527,7 +532,7 @@ document.addEventListener('DOMContentLoaded', function() {
         alertDiv.remove();
       }
     }, 3000);
-  }
+  };
 });
 
 // Password verification function for pin/delete actions
@@ -540,7 +545,7 @@ function verifyPasswordForAction(action, callback) {
     callback();
   } else if (enteredPassword !== null) { // User didn't cancel
     console.log('Incorrect password entered');
-    showMessage('Incorrect password. Action denied.', 'danger');
+    window.showMessage('Incorrect password. Action denied.', 'danger');
   } else {
     console.log('Password prompt cancelled');
   }
@@ -558,10 +563,10 @@ function togglePin(postId) {
       
       // Refresh the display
       document.getElementById('blogPosts').innerHTML = '';
-      loadPosts();
+      window.loadPosts();
       
       const action = posts[postIndex].pinned ? 'pinned' : 'unpinned';
-      showMessage(`Post ${action} successfully!`, 'success');
+      window.showMessage(`Post ${action} successfully!`, 'success');
     }
   });
 }
@@ -583,30 +588,12 @@ function deletePost(postId) {
         }
       });
       
-      showMessage('Post deleted successfully!', 'success');
+      window.showMessage('Post deleted successfully!', 'success');
     }
   });
 }
 
-function showMessage(message, type) {
-  const alertDiv = document.createElement('div');
-  alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
-  alertDiv.innerHTML = `
-    ${message}
-    <button type="button" class="close" data-dismiss="alert">
-      <span>&times;</span>
-    </button>
-  `;
-  
-  const container = document.querySelector('.container');
-  container.insertBefore(alertDiv, container.firstChild);
-  
-  setTimeout(() => {
-    if (alertDiv.parentNode) {
-      alertDiv.remove();
-    }
-  }, 3000);
-}
+// Duplicate showMessage function removed - using global version
 
 // Data Management Functions
 function exportBlogData() {
@@ -619,7 +606,7 @@ function exportBlogData() {
   link.download = `blog-export-${new Date().toISOString().split('T')[0]}.json`;
   link.click();
   
-  showMessage('Blog data exported successfully!', 'success');
+  window.showMessage('Blog data exported successfully!', 'success');
 }
 
 function importBlogData(event) {
@@ -643,14 +630,14 @@ function importBlogData(event) {
         
         // Refresh display
         document.getElementById('blogPosts').innerHTML = '';
-        loadPosts();
+        window.loadPosts();
         
-        showMessage(`Imported ${newPosts.length} new posts successfully!`, 'success');
+        window.showMessage(`Imported ${newPosts.length} new posts successfully!`, 'success');
       } else {
-        showMessage('Invalid file format. Please select a valid blog export file.', 'danger');
+        window.showMessage('Invalid file format. Please select a valid blog export file.', 'danger');
       }
     } catch (error) {
-      showMessage('Error reading file. Please check the file format.', 'danger');
+      window.showMessage('Error reading file. Please check the file format.', 'danger');
     }
   };
   reader.readAsText(file);
@@ -681,13 +668,13 @@ function backupToFile() {
     postCount: posts.length
   }));
   
-  showMessage('Backup created successfully!', 'success');
+  window.showMessage('Backup created successfully!', 'success');
 }
 
 function loadFromBackup() {
   const backupInfo = localStorage.getItem('lastBackup');
   if (!backupInfo) {
-    showMessage('No backup found. Please create a backup first.', 'warning');
+    window.showMessage('No backup found. Please create a backup first.', 'warning');
     return;
   }
   
@@ -716,14 +703,14 @@ function loadFromBackup() {
             
             // Refresh display
             document.getElementById('blogPosts').innerHTML = '';
-            loadPosts();
+            window.loadPosts();
             
-            showMessage(`Restored ${backupData.posts.length} posts from backup!`, 'success');
+            window.showMessage(`Restored ${backupData.posts.length} posts from backup!`, 'success');
           } else {
-            showMessage('Invalid backup file format.', 'danger');
+            window.showMessage('Invalid backup file format.', 'danger');
           }
         } catch (error) {
-          showMessage('Error reading backup file.', 'danger');
+          window.showMessage('Error reading backup file.', 'danger');
         }
       };
       reader.readAsText(file);
