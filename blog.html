@@ -240,6 +240,7 @@
           </div>
           <button type="button" class="btn" style="background-color: #b82b2f; color: white;" onclick="checkPassword()">Access Posting</button>
           <button type="button" class="btn btn-info ml-2" onclick="debugPosts()">Debug Posts</button>
+          <button type="button" class="btn btn-success ml-2" onclick="createSamplePost()">Create Sample Post</button>
         </div>
       </div>
       
@@ -335,6 +336,36 @@ window.debugPosts = function() {
   return posts;
 };
 
+// Function to create a sample post for testing
+window.createSamplePost = function() {
+  const samplePost = {
+    title: 'Sample Post - ' + new Date().toLocaleTimeString(),
+    content: 'This is a sample post created for testing purposes. It should appear in the blog posts section.',
+    author: 'Catherine Ann MacDonald',
+    date: new Date().toLocaleDateString(),
+    id: Date.now(),
+    pinned: false
+  };
+  
+  console.log('Creating sample post:', samplePost);
+  
+  try {
+    let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+    posts.unshift(samplePost);
+    localStorage.setItem('blogPosts', JSON.stringify(posts));
+    console.log('Sample post saved. Total posts:', posts.length);
+    
+    // Refresh display
+    document.getElementById('blogPosts').innerHTML = '';
+    window.loadPosts();
+    
+    window.showMessage('Sample post created successfully!', 'success');
+  } catch (error) {
+    console.error('Error creating sample post:', error);
+    window.showMessage('Error creating sample post.', 'danger');
+  }
+};
+
 function checkPassword() {
   const enteredPassword = document.getElementById('accessPassword').value;
   
@@ -400,12 +431,20 @@ document.addEventListener('DOMContentLoaded', function() {
   blogForm.addEventListener('submit', function(e) {
     e.preventDefault();
     
-    const title = document.getElementById('postTitle').value;
-    const content = document.getElementById('postContent').value;
-    const author = document.getElementById('postAuthor').value;
+    const title = document.getElementById('postTitle').value.trim();
+    const content = document.getElementById('postContent').value.trim();
+    const author = document.getElementById('postAuthor').value.trim();
     const isPinned = document.getElementById('pinPost').checked;
     const imageFile = document.getElementById('postImage').files[0];
     const date = new Date().toLocaleDateString();
+    
+    // Validate required fields
+    if (!title || !content || !author) {
+      window.showMessage('Please fill in all required fields (Title, Content, Author).', 'danger');
+      return;
+    }
+    
+    console.log('Creating new post:', { title, content, author, isPinned });
     
     // Handle image upload
     if (imageFile) {
@@ -428,8 +467,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Save to localStorage
         savePost(newPost);
         
-        // Add to display
-        addPostToDisplay(newPost);
+        // Refresh the display to show all posts in correct order
+        document.getElementById('blogPosts').innerHTML = '';
+        window.loadPosts();
         
         // Clear form
         blogForm.reset();
@@ -453,8 +493,9 @@ document.addEventListener('DOMContentLoaded', function() {
       // Save to localStorage
       savePost(newPost);
       
-      // Add to display
-      addPostToDisplay(newPost);
+      // Refresh the display to show all posts in correct order
+      document.getElementById('blogPosts').innerHTML = '';
+      window.loadPosts();
       
       // Clear form
       blogForm.reset();
@@ -467,9 +508,11 @@ document.addEventListener('DOMContentLoaded', function() {
   
   function savePost(post) {
     try {
+      console.log('Saving post to localStorage:', post.title);
       let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
       posts.unshift(post); // Add to beginning
       localStorage.setItem('blogPosts', JSON.stringify(posts));
+      console.log('Post saved successfully. Total posts:', posts.length);
     } catch (error) {
       console.error('Error saving post:', error);
       window.showMessage('Error saving post. Please try again.', 'danger');
