@@ -239,6 +239,7 @@
             <input type="password" class="form-control" id="accessPassword" placeholder="Enter password">
           </div>
           <button type="button" class="btn" style="background-color: #b82b2f; color: white;" onclick="checkPassword()">Access Posting</button>
+          <button type="button" class="btn btn-info ml-2" onclick="debugPosts()">Debug Posts</button>
         </div>
       </div>
       
@@ -322,6 +323,17 @@ const BLOG_PASSWORD = 'BrownWolfZack'; // Change this to your desired password
 // Debug logging
 console.log('Blog script loaded successfully');
 console.log('Password protection initialized');
+
+// Debug function to check posts
+window.debugPosts = function() {
+  const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+  console.log('=== POST DEBUG INFO ===');
+  console.log('Total posts in localStorage:', posts.length);
+  console.log('Posts data:', posts);
+  console.log('blogPosts element:', document.getElementById('blogPosts'));
+  console.log('========================');
+  return posts;
+};
 
 function checkPassword() {
   const enteredPassword = document.getElementById('accessPassword').value;
@@ -466,10 +478,16 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Move loadPosts to global scope
   window.loadPosts = function() {
+    console.log('Loading posts...');
     const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+    console.log('Found posts:', posts.length);
     
     // Clear existing posts first
     const blogPosts = document.getElementById('blogPosts');
+    if (!blogPosts) {
+      console.error('blogPosts element not found!');
+      return;
+    }
     blogPosts.innerHTML = '';
     
     // Sort posts: pinned first, then by date (newest first)
@@ -479,12 +497,22 @@ document.addEventListener('DOMContentLoaded', function() {
       return new Date(b.date) - new Date(a.date);
     });
     
-    sortedPosts.forEach(post => addPostToDisplay(post));
+    console.log('Sorted posts:', sortedPosts.length);
+    sortedPosts.forEach((post, index) => {
+      console.log(`Adding post ${index + 1}:`, post.title);
+      addPostToDisplay(post);
+    });
   };
   
   // Move addPostToDisplay to global scope
   window.addPostToDisplay = function(post) {
+    console.log('Adding post to display:', post.title);
     const blogPosts = document.getElementById('blogPosts');
+    if (!blogPosts) {
+      console.error('blogPosts element not found in addPostToDisplay!');
+      return;
+    }
+    
     const postElement = document.createElement('div');
     postElement.className = 'card mb-4';
     postElement.style.backgroundImage = "url('whitepaper.jpg')";
@@ -516,7 +544,12 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     
     // Insert at the beginning (after the form)
-    blogPosts.insertBefore(postElement, blogPosts.children[0]);
+    if (blogPosts.children.length > 0) {
+      blogPosts.insertBefore(postElement, blogPosts.children[0]);
+    } else {
+      blogPosts.appendChild(postElement);
+    }
+    console.log('Post added to DOM:', post.title);
   };
   
   // Move showMessage to global scope
