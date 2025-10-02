@@ -238,6 +238,9 @@
             <input type="password" class="form-control" id="accessPassword" placeholder="Enter password">
           </div>
           <button type="button" class="btn" style="background-color: #b82b2f; color: white;" onclick="checkPassword()">Access Posting</button>
+          <button type="button" class="btn btn-secondary ml-2" onclick="testDelete()">Test Delete</button>
+          <button type="button" class="btn btn-info ml-2" onclick="testModal()">Test Modal</button>
+          <button type="button" class="btn btn-warning ml-2" onclick="simplePasswordCheck('test simple', function(){alert('Simple test works!');})">Test Simple</button>
         </div>
       </div>
       
@@ -326,9 +329,32 @@ console.log('Global functions: loadPosts, addPostToDisplay, showMessage, verifyP
 // Test function to verify password protection is working
 window.testPasswordProtection = function() {
   console.log('Testing password protection...');
-  window.verifyPasswordWithModal('test action', function() {
+  window.verifyPasswordForAction('test action', function() {
     console.log('Password protection test successful!');
     alert('Password protection is working correctly!');
+  });
+};
+
+// Simple test function to check if modal can be created
+window.testModal = function() {
+  console.log('Testing modal creation...');
+  const testModal = `
+    <div id="testModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 2px solid black; z-index: 10000;">
+      <h3>Test Modal</h3>
+      <p>If you can see this, modals work!</p>
+      <button onclick="document.getElementById('testModal').remove()">Close</button>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', testModal);
+  console.log('Test modal added');
+};
+
+// Simple test function for delete
+window.testDelete = function() {
+  console.log('Testing delete function...');
+  window.verifyPasswordForAction('test delete', function() {
+    console.log('Delete test successful!');
+    alert('Delete test successful!');
   });
 };
 
@@ -575,72 +601,67 @@ window.verifyPasswordForAction = function(action, callback) {
   }
 };
 
-// Alternative password verification using a modal (backup method)
-window.verifyPasswordWithModal = function(action, callback) {
-  console.log(`Modal password verification requested for: ${action}`);
+// Bulletproof password verification system
+window.verifyPasswordForAction = function(action, callback) {
+  console.log(`Password verification requested for: ${action}`);
   
-  // Create modal HTML
-  const modalHtml = `
-    <div id="passwordModal" class="modal" style="display: block; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
-      <div class="modal-dialog" style="position: relative; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 300px; background-color: white; border-radius: 5px;">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Password Required</h4>
-          </div>
-          <div class="modal-body">
-            <p>Enter password to ${action}:</p>
-            <input type="password" id="modalPassword" class="form-control" placeholder="Enter password">
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" onclick="cancelPasswordModal()">Cancel</button>
-            <button type="button" class="btn btn-primary" onclick="submitPasswordModal('${action}')">Submit</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-  
-  // Add modal to page
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-  
-  // Focus on password input
-  setTimeout(() => {
-    const passwordInput = document.getElementById('modalPassword');
-    if (passwordInput) passwordInput.focus();
-  }, 100);
-  
-  // Store callback for later use
-  window.passwordCallback = callback;
-};
-
-// Modal password functions
-window.submitPasswordModal = function(action) {
-  const password = document.getElementById('modalPassword').value;
-  const modal = document.getElementById('passwordModal');
-  
-  if (password === BLOG_PASSWORD) {
-    console.log('Modal password verified successfully');
-    modal.remove();
-    if (window.passwordCallback) {
-      window.passwordCallback();
-      window.passwordCallback = null;
+  // Method 1: Try browser prompt first
+  try {
+    const password = prompt(`Enter password to ${action}:`);
+    console.log('Prompt result:', password);
+    
+    if (password === BLOG_PASSWORD) {
+      console.log('Password verified via prompt');
+      callback();
+      return;
+    } else if (password !== null) {
+      console.log('Incorrect password via prompt');
+      window.showMessage('Incorrect password. Action denied.', 'danger');
+      return;
+    } else {
+      console.log('Prompt cancelled');
+      return;
     }
-  } else {
-    console.log('Incorrect password entered in modal');
+  } catch (error) {
+    console.log('Prompt failed, trying alternative method:', error);
+  }
+  
+  // Method 2: Fallback to simple confirmation with password check
+  const password = prompt(`Password required for ${action}:\n\nEnter password:`);
+  if (password === BLOG_PASSWORD) {
+    console.log('Password verified via fallback prompt');
+    callback();
+  } else if (password !== null) {
+    console.log('Incorrect password via fallback');
     window.showMessage('Incorrect password. Action denied.', 'danger');
+  } else {
+    console.log('Fallback prompt cancelled');
   }
 };
 
-window.cancelPasswordModal = function() {
-  const modal = document.getElementById('passwordModal');
-  modal.remove();
-  window.passwordCallback = null;
-  console.log('Password modal cancelled');
+// Alternative simple password verification (backup method)
+window.simplePasswordCheck = function(action, callback) {
+  console.log(`Simple password check for: ${action}`);
+  
+  // Create a simple input dialog
+  const password = prompt(`Password required for ${action}:\n\nEnter password:`);
+  
+  if (password === BLOG_PASSWORD) {
+    console.log('Password verified via simple check');
+    callback();
+  } else if (password !== null) {
+    console.log('Incorrect password via simple check');
+    alert('Incorrect password. Action denied.');
+  } else {
+    console.log('Simple password check cancelled');
+  }
 };
 
 // Toggle pin function (global scope)
 function togglePin(postId) {
-  window.verifyPasswordWithModal('pin/unpin this post', function() {
+  console.log('togglePin function called with postId:', postId);
+  window.verifyPasswordForAction('pin/unpin this post', function() {
+    console.log('Pin password verified, proceeding with pin toggle');
     let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
     const postIndex = posts.findIndex(post => post.id === postId);
     
@@ -661,10 +682,8 @@ function togglePin(postId) {
 // Delete post function (global scope)
 function deletePost(postId) {
   console.log('deletePost function called with postId:', postId);
-  console.log('About to call verifyPasswordWithModal');
-  
-  window.verifyPasswordWithModal('delete this post', function() {
-    console.log('Password verified, proceeding with delete confirmation');
+  window.verifyPasswordForAction('delete this post', function() {
+    console.log('Delete password verified, proceeding with delete confirmation');
     if (confirm('Are you sure you want to delete this post?')) {
       console.log('User confirmed deletion');
       // Remove from localStorage
