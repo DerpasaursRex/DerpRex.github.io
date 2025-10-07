@@ -10,7 +10,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <!-- Cache busting version: 2025-01-27 -->
+  <!-- Cache busting version: 2025-10-07 -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -341,12 +341,6 @@
 // ========================================
 
 const BLOG_PASSWORD = 'BrownWolfZack';
-console.log('===================');
-console.log('BLOG SYSTEM v3.0');
-console.log('===================');
-console.log('Password:', BLOG_PASSWORD);
-console.log('LocalStorage available:', typeof(Storage) !== "undefined");
-console.log('Current posts:', (JSON.parse(localStorage.getItem('blogPosts') || '[]')).length);
 
 // ========================================
 // HELPER FUNCTIONS
@@ -430,10 +424,8 @@ function checkSession() {
 // ========================================
 
 function displayPosts() {
-  console.log('displayPosts called');
   try {
     const posts = getPosts();
-    console.log('Posts loaded:', posts.length);
     
     const container = document.getElementById('blogPosts');
     if (!container) {
@@ -444,7 +436,6 @@ function displayPosts() {
     container.innerHTML = '';
     
     if (posts.length === 0) {
-      console.log('No posts to display');
       return;
     }
     
@@ -477,8 +468,6 @@ function displayPosts() {
       `;
       container.appendChild(postDiv);
     });
-    
-    console.log(`Successfully displayed ${posts.length} posts`);
     
     // Update status indicator
     const statusDiv = document.getElementById('blogStatus');
@@ -534,8 +523,6 @@ function deletePost(postId) {
 // ========================================
 
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM loaded - initializing blog system');
-  
   try {
     checkSession();
     displayPosts();
@@ -559,8 +546,6 @@ document.addEventListener('DOMContentLoaded', function() {
       showAlert('Please enter title and content!', 'danger');
       return;
     }
-    
-    console.log('Creating post:', title);
     
     const createPost = (imageData) => {
       const newPost = {
@@ -596,8 +581,6 @@ document.addEventListener('DOMContentLoaded', function() {
   } catch (error) {
     console.error('Error initializing blog:', error);
   }
-  
-  console.log('Blog initialization complete');
 });
 
 // ========================================
@@ -606,9 +589,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 window.debugPosts = function() {
   const posts = getPosts();
-  console.log('Total posts:', posts.length);
-  console.log(posts);
-  alert(`Total posts: ${posts.length}`);
+  alert(`Total posts: ${posts.length}\n\nCheck browser console for details.`);
+  console.log('Posts:', posts);
 };
 
 window.createSamplePost = function() {
