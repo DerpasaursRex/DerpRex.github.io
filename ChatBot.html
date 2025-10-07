@@ -35,8 +35,65 @@
   </div>
 </nav>
 
+<!-- Language Selection Screen -->
+<div id="languageScreen" class="container-fluid" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: flex; justify-content: center; align-items: center; background: #000;">
+  <div style="max-width: 700px; width: 90%; background: #000; border: 3px solid #00ff00; padding: 40px; box-shadow: 0 0 30px rgba(0,255,0,0.3);">
+    <div style="border-bottom: 2px solid #00ff00; padding-bottom: 15px; margin-bottom: 30px; text-align: center;">
+      <pre style="color: #00ff00; margin: 0; font-size: 12px;">
+╔═══════════════════════════════════════════╗
+║     LANGUAGE SELECTION SYSTEM             ║
+║     Select Your Preferred Language        ║
+╚═══════════════════════════════════════════╝
+      </pre>
+    </div>
+    
+    <div style="color: #00ff00; margin-bottom: 20px; text-align: center; font-family: 'Courier New', monospace; font-size: 16px;">
+      🌍 Choose Your Language / Choisissez votre langue / Wählen Sie Ihre Sprache
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+      <button onclick="selectLanguage('en')" class="lang-btn" style="background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='#000'; this.style.color='#00ff00'">
+        🇬🇧 English
+      </button>
+      <button onclick="selectLanguage('es')" class="lang-btn" style="background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='#000'; this.style.color='#00ff00'">
+        🇪🇸 Español
+      </button>
+      <button onclick="selectLanguage('fr')" class="lang-btn" style="background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='#000'; this.style.color='#00ff00'">
+        🇫🇷 Français
+      </button>
+      <button onclick="selectLanguage('de')" class="lang-btn" style="background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='#000'; this.style.color='#00ff00'">
+        🇩🇪 Deutsch
+      </button>
+      <button onclick="selectLanguage('it')" class="lang-btn" style="background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='#000'; this.style.color='#00ff00'">
+        🇮🇹 Italiano
+      </button>
+      <button onclick="selectLanguage('pt')" class="lang-btn" style="background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='#000'; this.style.color='#00ff00'">
+        🇵🇹 Português
+      </button>
+      <button onclick="selectLanguage('ru')" class="lang-btn" style="background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='#000'; this.style.color='#00ff00'">
+        🇷🇺 Русский
+      </button>
+      <button onclick="selectLanguage('ja')" class="lang-btn" style="background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='#000'; this.style.color='#00ff00'">
+        🇯🇵 日本語
+      </button>
+      <button onclick="selectLanguage('zh')" class="lang-btn" style="background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='#000'; this.style.color='#00ff00'">
+        🇨🇳 中文
+      </button>
+      <button onclick="selectLanguage('ko')" class="lang-btn" style="background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='#000'; this.style.color='#00ff00'">
+        🇰🇷 한국어
+      </button>
+      <button onclick="selectLanguage('ar')" class="lang-btn" style="background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='#000'; this.style.color='#00ff00'">
+        🇸🇦 العربية
+      </button>
+      <button onclick="selectLanguage('hi')" class="lang-btn" style="background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='#000'; this.style.color='#00ff00'">
+        🇮🇳 हिन्दी
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Password Screen -->
-<div id="passwordScreen" class="container-fluid" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: flex; justify-content: center; align-items: center; background: #000;">
+<div id="passwordScreen" class="container-fluid" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: none; justify-content: center; align-items: center; background: #000;">
   <div style="max-width: 600px; width: 90%; background: #000; border: 3px solid #00ff00; padding: 40px; box-shadow: 0 0 30px rgba(0,255,0,0.3);">
     <div style="border-bottom: 2px solid #00ff00; padding-bottom: 15px; margin-bottom: 30px; text-align: center;">
       <pre style="color: #00ff00; margin: 0; font-size: 12px;">
@@ -236,16 +293,57 @@ function checkChatPassword() {
   }
 }
 
-// Always show password screen on load (password required every time)
-window.addEventListener('DOMContentLoaded', function() {
-  // Always require password - don't check session
-  document.getElementById('passwordScreen').style.display = 'flex';
-  document.getElementById('chatContainer').style.display = 'none';
+// ========================================
+// LANGUAGE SYSTEM
+// ========================================
+
+let userLanguage = localStorage.getItem('userLanguage') || null;
+
+const translations = {
+  en: { greeting: "Hello", welcome: "Welcome back", help: "Type HELP for commands" },
+  es: { greeting: "Hola", welcome: "Bienvenido de nuevo", help: "Escribe HELP para comandos" },
+  fr: { greeting: "Bonjour", welcome: "Bienvenue", help: "Tapez HELP pour les commandes" },
+  de: { greeting: "Hallo", welcome: "Willkommen zurück", help: "Geben Sie HELP für Befehle ein" },
+  it: { greeting: "Ciao", welcome: "Bentornato", help: "Digita HELP per i comandi" },
+  pt: { greeting: "Olá", welcome: "Bem-vindo de volta", help: "Digite HELP para comandos" },
+  ru: { greeting: "Привет", welcome: "Добро пожаловать", help: "Введите HELP для команд" },
+  ja: { greeting: "こんにちは", welcome: "おかえりなさい", help: "HELPと入力してコマンドを表示" },
+  zh: { greeting: "你好", welcome: "欢迎回来", help: "输入HELP查看命令" },
+  ko: { greeting: "안녕하세요", welcome: "다시 오신 것을 환영합니다", help: "명령어를 보려면 HELP를 입력하세요" },
+  ar: { greeting: "مرحبا", welcome: "مرحبا بعودتك", help: "اكتب HELP للأوامر" },
+  hi: { greeting: "नमस्ते", welcome: "वापसी पर स्वागत है", help: "कमांड के लिए HELP टाइप करें" }
+};
+
+function selectLanguage(lang) {
+  userLanguage = lang;
+  localStorage.setItem('userLanguage', lang);
   
-  // Focus on password input
+  // Hide language screen, show password screen
+  document.getElementById('languageScreen').style.display = 'none';
+  document.getElementById('passwordScreen').style.display = 'flex';
+  
   setTimeout(() => {
     document.getElementById('chatPassword').focus();
   }, 100);
+}
+
+// Always show language or password screen on load
+window.addEventListener('DOMContentLoaded', function() {
+  if (!userLanguage) {
+    // Show language selection first
+    document.getElementById('languageScreen').style.display = 'flex';
+    document.getElementById('passwordScreen').style.display = 'none';
+    document.getElementById('chatContainer').style.display = 'none';
+  } else {
+    // Language already selected, go to password
+    document.getElementById('languageScreen').style.display = 'none';
+    document.getElementById('passwordScreen').style.display = 'flex';
+    document.getElementById('chatContainer').style.display = 'none';
+    
+    setTimeout(() => {
+      document.getElementById('chatPassword').focus();
+    }, 100);
+  }
 });
 
 // ========================================
@@ -583,11 +681,12 @@ MODE SFW     - Activate safe-for-work mode (default)
 MODE NSFW    - Activate mature content mode
 MODE STATUS  - Check current mode
 
-CLEAR        - Clear terminal screen
-CONTINUE     - Continue session (dismiss clear prompt)
-LOGOUT       - Return to password screen
-RESET NAME   - Reset AI name (for testing)
-EXIT         - Return to main site
+CLEAR          - Clear terminal screen
+CONTINUE       - Continue session (dismiss clear prompt)
+LOGOUT         - Return to password screen
+RESET NAME     - Reset AI name (for testing)
+CHANGE LANGUAGE- Change interface language
+EXIT           - Return to main site
 ------------------
 Type any command or ask a question naturally.
 I can search Wikipedia for you - just ask!
@@ -1242,6 +1341,15 @@ function executeCommand() {
     localStorage.removeItem('terminalAIName');
     localStorage.removeItem('terminalJournalPermission');
     addTerminalLine('AI name reset! Reloading...', '#ffff00');
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
+    return;
+  }
+  
+  if (commandUpper === 'CHANGE LANGUAGE' || commandUpper === 'LANGUAGE') {
+    localStorage.removeItem('userLanguage');
+    addTerminalLine('Reloading to change language...', '#ffff00');
     setTimeout(() => {
       location.reload();
     }, 1000);
