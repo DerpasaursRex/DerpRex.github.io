@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Catherine Ann MacDonald - ChatBot</title>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <!-- Cursor follower script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const numFollowers = 5;
+      const followers = [];
+      const positions = [];
+      let isMouseOnPage = false;
+      
+      for (let i = 0; i < numFollowers; i++) {
+        const follower = document.createElement('img');
+        follower.src = 'Bugtie.png';
+        follower.style.position = 'fixed';
+        follower.style.width = '30px';
+        follower.style.height = '30px';
+        follower.style.pointerEvents = 'none';
+        follower.style.zIndex = '9999';
+        follower.style.display = 'none';
+        follower.style.transition = 'left 0.1s ease-out, top 0.1s ease-out';
+        document.body.appendChild(follower);
+        
+        followers.push(follower);
+        positions.push({ x: 0, y: 0 });
+      }
+      
+      function animate() {
+        if (isMouseOnPage && followers[0].style.display !== 'none') {
+          for (let i = 0; i < numFollowers; i++) {
+            const follower = followers[i];
+            const pos = positions[i];
+            
+            let targetX, targetY;
+            if (i === 0) {
+              targetX = window.mouseX;
+              targetY = window.mouseY;
+            } else {
+              const prevPos = positions[i - 1];
+              targetX = prevPos.x;
+              targetY = prevPos.y;
+            }
+            
+            const dx = targetX - pos.x;
+            const dy = targetY - pos.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const speed = 0.3 - (i * 0.05);
+            
+            if (distance > 1) {
+              pos.x += dx * speed;
+              pos.y += dy * speed;
+              
+              if (distance > 3) {
+                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                let normalizedAngle = angle;
+                if (normalizedAngle < 0) normalizedAngle += 360;
+                if (normalizedAngle > 90 && normalizedAngle <= 270) {
+                  normalizedAngle = normalizedAngle - 180;
+                }
+                follower.style.transform = `rotate(${normalizedAngle}deg)`;
+              }
+              
+              follower.style.left = (pos.x - 15) + 'px';
+              follower.style.top = (pos.y - 15) + 'px';
+            }
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+      
+      document.addEventListener('mousemove', function(e) {
+        window.mouseX = e.clientX;
+        window.mouseY = e.clientY;
+        if (!isMouseOnPage) {
+          isMouseOnPage = true;
+          followers.forEach(follower => follower.style.display = 'block');
+        }
+      });
+      
+      document.addEventListener('mouseleave', function() {
+        isMouseOnPage = false;
+        followers.forEach(follower => follower.style.display = 'none');
+      });
+      
+      animate();
+    });
+
+    // Walking character
+    document.addEventListener('DOMContentLoaded', function() {
+      const walkingChar = document.getElementById('walkingCharacter');
+      let position = 0;
+      let direction = 1;
+      const speed = 2;
+      const maxWidth = window.innerWidth - 50;
+      
+      function walk() {
+        position += speed * direction;
+        if (position >= maxWidth) {
+          direction = -1;
+          walkingChar.style.transform = 'scaleX(-1)';
+        } else if (position <= 0) {
+          direction = 1;
+          walkingChar.style.transform = 'scaleX(1)';
+        }
+        walkingChar.style.left = position + 'px';
+        requestAnimationFrame(walk);
+      }
+      walk();
+    });
+  </script>
+
+<style>
+  .jumbotron {
+    background-image: url("rexbanner.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+<div class="jumbotron jumbotron-fluid text-center" style="margin-bottom:0">
+  <h1>Catherine Ann MacDonald</h1>
+  <p style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Writer-Artist</p>
+  <a href="ChatBot.html" style="font-size: 32px; text-decoration: none; transition: transform 0.2s ease; display: inline-block;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🖥️</a>
+</div>
+
+<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #b82b2f;">
+  <a class="navbar-brand" href="#">Menu</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="index.html">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="currentportfolio.html">Current Portfolio</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="blog.html">Blog</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Projects
+        </a>
+        <div class="dropdown-menu" aria-labelledby="projectsDropdown">
+          <a class="dropdown-item" href="spectrum.html">Spectrum</a>
+          <a class="dropdown-item" href="party.html">Party</a>
+          <a class="dropdown-item" href="Coding.html">Coding</a>
+          <a class="dropdown-item" href="Videos.html">Videos</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="archiveDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Archive
+        </a>
+        <div class="dropdown-menu" aria-labelledby="archiveDropdown">
+          <a class="dropdown-item" href="earlywork.html">Early Work</a>
+          <a class="dropdown-item" href="OutdatedDesigns.html">Outdated Designs</a>
+        </div>
+      </li>
+    </ul>
+  </div>  
+</nav>
+
+<div class="container" style="margin-top:30px">
+  <div class="row">
+    <div class="col-12">
+      <h2 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">AI Assistant</h2>
+      <p style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white;">Ask me about Catherine's work, projects, or navigate the site!</p>
+      
+      <!-- Chat Container -->
+      <div class="card" style="background-image: url('whitepaper.jpg'); background-size: cover; background-position: center; height: 600px; display: flex; flex-direction: column;">
+        <div class="card-body" style="display: flex; flex-direction: column; height: 100%;">
+          <!-- Chat Messages -->
+          <div id="chatMessages" style="flex: 1; overflow-y: auto; padding: 15px; margin-bottom: 15px; background: rgba(255,255,255,0.7); border-radius: 8px;">
+            <div class="bot-message" style="margin-bottom: 15px;">
+              <strong style="color: #b82b2f;">🤖 Assistant:</strong>
+              <p style="background: white; padding: 10px; border-radius: 8px; margin: 5px 0; display: inline-block; max-width: 80%;">
+                Hello! I'm Catherine's AI assistant. I can help you learn about her work and navigate the site. Try asking me about her projects, art style, or how to contact her!
+              </p>
+            </div>
+          </div>
+          
+          <!-- Input Area -->
+          <div style="display: flex; gap: 10px;">
+            <input type="text" id="userInput" class="form-control" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()" class="btn" style="background-color: #b82b2f; color: white;">Send</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Questions -->
+      <div class="mt-3">
+        <small style="color: #666;">Quick questions:</small>
+        <div class="mt-2">
+          <button onclick="askQuestion('What kind of art do you make?')" class="btn btn-sm btn-outline-secondary mr-2 mb-2">About the Art</button>
+          <button onclick="askQuestion('How can I contact you?')" class="btn btn-sm btn-outline-secondary mr-2 mb-2">Contact Info</button>
+          <button onclick="askQuestion('Tell me about your projects')" class="btn btn-sm btn-outline-secondary mr-2 mb-2">Projects</button>
+          <button onclick="askQuestion('What is Spectrum?')" class="btn btn-sm btn-outline-secondary mr-2 mb-2">About Spectrum</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Walking Character -->
+<img id="walkingCharacter" class="walking-character" src="Shadite.png" alt="Walking Character">
+
+<!-- Footer -->
+<div style="background-image: url('elizabanner.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 20px; text-align: center; margin-top: 30px; border-radius: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1);">
+  <p style="color: white; margin: 0; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Catherine Ann MacDonald</p>
+  <p style="color: white; margin: 5px 0 0 0; font-size: 14px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">&copy; 2025</p>
+</div>
+
+<style>
+body {
+  background-image: url("spectrumbackground.png");
+  background-size: 200% 100%;
+  background-repeat: repeat-x;
+  background-attachment: fixed;
+  background-position: 0% 50%;
+  font-family: Arial, sans-serif;
+  animation: spectrumScroll 40s linear infinite;
+}
+
+@keyframes spectrumScroll {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.walking-character {
+  position: fixed;
+  bottom: 20px;
+  width: 50px;
+  height: 50px;
+  z-index: 1000;
+  transition: transform 0.1s ease-in-out;
+}
+
+h1 {
+  color: #b82b2f;
+  font-family: Arial, sans-serif;
+  text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
+}
+
+body {
+  color: black;
+  font-family: Arial, sans-serif;
+}
+</style>
+
+<script>
+// ChatBot Knowledge Base
+const botResponses = {
+  'what kind of art': 'Catherine creates digital art, character designs, and interactive web experiences. You can see her current work in the Current Portfolio section, and explore her projects like Spectrum and Party!',
+  'art do you make': 'Catherine creates digital art, character designs, and interactive web experiences. You can see her current work in the Current Portfolio section, and explore her projects like Spectrum and Party!',
+  'about': 'Catherine Ann MacDonald is a writer-artist who loves creating story ideas and drawing characters. She\'s always learning and evolving, so her art style continues to develop over time.',
+  'contact': 'You can reach Catherine via email at catiemac2014@gmail.com or follow her on Instagram at @derpasaurs_16. There\'s also a contact form on the Home page!',
+  'email': 'Catherine\'s email is catiemac2014@gmail.com - feel free to reach out!',
+  'instagram': 'You can find Catherine on Instagram at @derpasaurs_16! Check out https://www.instagram.com/derpasaurs_16/',
+  'commission': 'Catherine is available for commissions! Contact her at catiemac2014@gmail.com to discuss your project.',
+  'projects': 'Catherine has several projects including Spectrum (character project), Party (character collection), Coding (interactive websites like Rat Kingdom Academy, Ein Story, and Portrait Site), and Videos (animations).',
+  'spectrum': 'Spectrum is a character project featuring unique character designs. You can view it in the Projects menu!',
+  'party': 'Party is a collection of character designs. Check it out in the Projects dropdown menu!',
+  'rat kingdom': 'Rat Kingdom Academy is an interactive web-based project. You can find it in the Coding section under Projects!',
+  'ein story': 'Ein Story is an interactive story website featuring character narratives. Find it in the Coding section!',
+  'videos': 'Catherine has a collection of animations and video content. Check out the Videos section in the Projects menu!',
+  'blog': 'The blog (Narrator\'s Log) features Catherine\'s latest updates and thoughts. Password-protected posting allows Catherine to share new content.',
+  'early work': 'The Early Work archive showcases Catherine\'s foundation pieces and earlier digital art. You can find it in the Archive menu.',
+  'navigate': 'Use the Menu at the top to navigate! You\'ll find Home, Current Portfolio, Blog, Projects (Spectrum, Party, Coding, Videos), and Archive (Early Work, Outdated Designs).',
+  'help': 'I can help you learn about Catherine\'s work, navigate the site, or answer questions about her projects. Just ask!',
+  'hi': 'Hello! How can I help you today?',
+  'hello': 'Hi there! What would you like to know about Catherine\'s work?',
+  'thank': 'You\'re welcome! Feel free to ask anything else!',
+  'thanks': 'You\'re welcome! Feel free to ask anything else!'
+};
+
+function addMessage(text, isUser) {
+  const chatMessages = document.getElementById('chatMessages');
+  const messageDiv = document.createElement('div');
+  messageDiv.style.marginBottom = '15px';
+  messageDiv.style.textAlign = isUser ? 'right' : 'left';
+  
+  const sender = isUser ? 'You:' : '🤖 Assistant:';
+  const bgColor = isUser ? '#b82b2f' : 'white';
+  const textColor = isUser ? 'white' : 'black';
+  
+  messageDiv.innerHTML = `
+    <strong style="color: ${isUser ? '#b82b2f' : '#b82b2f'};">${sender}</strong>
+    <p style="background: ${bgColor}; color: ${textColor}; padding: 10px; border-radius: 8px; margin: 5px 0; display: inline-block; max-width: 80%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      ${text}
+    </p>
+  `;
+  
+  chatMessages.appendChild(messageDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function getBotResponse(userMessage) {
+  const lowerMessage = userMessage.toLowerCase();
+  
+  // Check for keyword matches
+  for (const [keyword, response] of Object.entries(botResponses)) {
+    if (lowerMessage.includes(keyword)) {
+      return response;
+    }
+  }
+  
+  // Default response
+  return "I'm not sure about that, but you can try asking about Catherine's art, projects, contact information, or how to navigate the site. You can also contact Catherine directly at catiemac2014@gmail.com!";
+}
+
+function sendMessage() {
+  const input = document.getElementById('userInput');
+  const message = input.value.trim();
+  
+  if (!message) return;
+  
+  // Add user message
+  addMessage(message, true);
+  input.value = '';
+  
+  // Get and add bot response
+  setTimeout(() => {
+    const response = getBotResponse(message);
+    addMessage(response, false);
+  }, 500);
+}
+
+function askQuestion(question) {
+  document.getElementById('userInput').value = question;
+  sendMessage();
+}
+</script>
+
+</body>
+</html>
+
