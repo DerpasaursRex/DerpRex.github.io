@@ -10,113 +10,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   
-  <!-- Cursor follower script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const numFollowers = 5;
-      const followers = [];
-      const positions = [];
-      let isMouseOnPage = false;
-      
-      for (let i = 0; i < numFollowers; i++) {
-        const follower = document.createElement('img');
-        follower.src = 'Bugtie.png';
-        follower.style.position = 'fixed';
-        follower.style.width = '30px';
-        follower.style.height = '30px';
-        follower.style.pointerEvents = 'none';
-        follower.style.zIndex = '9999';
-        follower.style.display = 'none';
-        follower.style.transition = 'left 0.1s ease-out, top 0.1s ease-out';
-        document.body.appendChild(follower);
-        
-        followers.push(follower);
-        positions.push({ x: 0, y: 0 });
-      }
-      
-      function animate() {
-        if (isMouseOnPage && followers[0].style.display !== 'none') {
-          for (let i = 0; i < numFollowers; i++) {
-            const follower = followers[i];
-            const pos = positions[i];
-            
-            let targetX, targetY;
-            if (i === 0) {
-              targetX = window.mouseX;
-              targetY = window.mouseY;
-            } else {
-              const prevPos = positions[i - 1];
-              targetX = prevPos.x;
-              targetY = prevPos.y;
-            }
-            
-            const dx = targetX - pos.x;
-            const dy = targetY - pos.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const speed = 0.3 - (i * 0.05);
-            
-            if (distance > 1) {
-              pos.x += dx * speed;
-              pos.y += dy * speed;
-              
-              if (distance > 3) {
-                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-                let normalizedAngle = angle;
-                if (normalizedAngle < 0) normalizedAngle += 360;
-                if (normalizedAngle > 90 && normalizedAngle <= 270) {
-                  normalizedAngle = normalizedAngle - 180;
-                }
-                follower.style.transform = `rotate(${normalizedAngle}deg)`;
-              }
-              
-              follower.style.left = (pos.x - 15) + 'px';
-              follower.style.top = (pos.y - 15) + 'px';
-            }
-          }
-        }
-        requestAnimationFrame(animate);
-      }
-      
-      document.addEventListener('mousemove', function(e) {
-        window.mouseX = e.clientX;
-        window.mouseY = e.clientY;
-        if (!isMouseOnPage) {
-          isMouseOnPage = true;
-          followers.forEach(follower => follower.style.display = 'block');
-        }
-      });
-      
-      document.addEventListener('mouseleave', function() {
-        isMouseOnPage = false;
-        followers.forEach(follower => follower.style.display = 'none');
-      });
-      
-      animate();
-    });
-
-    // Walking character
-    document.addEventListener('DOMContentLoaded', function() {
-      const walkingChar = document.getElementById('walkingCharacter');
-      let position = 0;
-      let direction = 1;
-      const speed = 2;
-      const maxWidth = window.innerWidth - 50;
-      
-      function walk() {
-        position += speed * direction;
-        if (position >= maxWidth) {
-          direction = -1;
-          walkingChar.style.transform = 'scaleX(-1)';
-        } else if (position <= 0) {
-          direction = 1;
-          walkingChar.style.transform = 'scaleX(1)';
-        }
-        walkingChar.style.left = position + 'px';
-        requestAnimationFrame(walk);
-      }
-      walk();
-    });
-  </script>
 
 <style>
   .jumbotron {
@@ -130,220 +23,1373 @@
 </head>
 <body>
 
-<div class="jumbotron jumbotron-fluid text-center" style="margin-bottom:0">
-  <h1>Catherine Ann MacDonald</h1>
-  <p style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Writer-Artist</p>
-  <a href="ChatBot.html" style="font-size: 32px; text-decoration: none; transition: transform 0.2s ease; display: inline-block;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🖥️</a>
-</div>
-
-<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #b82b2f;">
-  <a class="navbar-brand" href="#">Menu</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="collapsibleNavbar">
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" href="index.html">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="currentportfolio.html">Current Portfolio</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="blog.html">Blog</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Projects
-        </a>
-        <div class="dropdown-menu" aria-labelledby="projectsDropdown">
-          <a class="dropdown-item" href="spectrum.html">Spectrum</a>
-          <a class="dropdown-item" href="party.html">Party</a>
-          <a class="dropdown-item" href="Coding.html">Coding</a>
-          <a class="dropdown-item" href="Videos.html">Videos</a>
+<!-- Terminal-style Navigation Bar -->
+    <nav style="background: #000; border-bottom: 3px solid #00ff00; padding: 10px 20px; font-family: 'Courier New', monospace;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+        <div id="terminalHeader" style="color: #00ff00; font-size: 18px; font-weight: bold; margin-bottom: 5px;">
+          [ TERMINAL SYSTEM ]
         </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="archiveDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Archive
-        </a>
-        <div class="dropdown-menu" aria-labelledby="archiveDropdown">
-          <a class="dropdown-item" href="earlywork.html">Early Work</a>
-          <a class="dropdown-item" href="OutdatedDesigns.html">Outdated Designs</a>
-        </div>
-      </li>
-    </ul>
-  </div>  
+    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+      <a href="index.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[HOME]</a>
+      <a href="currentportfolio.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[PORTFOLIO]</a>
+      <a href="blog.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[BLOG]</a>
+      <a href="spectrum.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[SPECTRUM]</a>
+      <a href="party.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[PARTY]</a>
+      <a href="Coding.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[CODING]</a>
+      <a href="Videos.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[VIDEOS]</a>
+    </div>
+  </div>
 </nav>
 
-<div class="container" style="margin-top:30px">
-  <div class="row">
-    <div class="col-12">
-      <h2 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">AI Assistant</h2>
-      <p style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white;">Ask me about Catherine's work, projects, or navigate the site!</p>
-      
-      <!-- Chat Container -->
-      <div class="card" style="background-image: url('whitepaper.jpg'); background-size: cover; background-position: center; height: 600px; display: flex; flex-direction: column;">
-        <div class="card-body" style="display: flex; flex-direction: column; height: 100%;">
-          <!-- Chat Messages -->
-          <div id="chatMessages" style="flex: 1; overflow-y: auto; padding: 15px; margin-bottom: 15px; background: rgba(255,255,255,0.7); border-radius: 8px;">
-            <div class="bot-message" style="margin-bottom: 15px;">
-              <strong style="color: #b82b2f;">🤖 Assistant:</strong>
-              <p style="background: white; padding: 10px; border-radius: 8px; margin: 5px 0; display: inline-block; max-width: 80%;">
-                Hello! I'm Catherine's AI assistant. I can help you learn about her work and navigate the site. Try asking me about her projects, art style, or how to contact her!
-              </p>
-            </div>
-          </div>
-          
-          <!-- Input Area -->
-          <div style="display: flex; gap: 10px;">
-            <input type="text" id="userInput" class="form-control" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') sendMessage()">
-            <button onclick="sendMessage()" class="btn" style="background-color: #b82b2f; color: white;">Send</button>
-          </div>
-        </div>
+<!-- Password Screen -->
+<div id="passwordScreen" class="container-fluid" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: flex; justify-content: center; align-items: center; background: #000;">
+  <div style="max-width: 600px; width: 90%; background: #000; border: 3px solid #00ff00; padding: 40px; box-shadow: 0 0 30px rgba(0,255,0,0.3);">
+    <div style="border-bottom: 2px solid #00ff00; padding-bottom: 15px; margin-bottom: 30px; text-align: center;">
+      <pre style="color: #00ff00; margin: 0; font-size: 12px;">
+╔═══════════════════════════════════════════╗
+║     SECURE ACCESS TERMINAL v1.0           ║
+║     Authorization Required                ║
+╚═══════════════════════════════════════════╝
+      </pre>
+    </div>
+    
+    <div style="margin-bottom: 25px;">
+      <div style="color: #00ff00; margin-bottom: 10px; font-family: 'Courier New', monospace; font-size: 16px;">
+        🔒 ACCESS RESTRICTED
       </div>
-      
-      <!-- Quick Questions -->
-      <div class="mt-3">
-        <small style="color: #666;">Quick questions:</small>
-        <div class="mt-2">
-          <button onclick="askQuestion('What kind of art do you make?')" class="btn btn-sm btn-outline-secondary mr-2 mb-2">About the Art</button>
-          <button onclick="askQuestion('How can I contact you?')" class="btn btn-sm btn-outline-secondary mr-2 mb-2">Contact Info</button>
-          <button onclick="askQuestion('Tell me about your projects')" class="btn btn-sm btn-outline-secondary mr-2 mb-2">Projects</button>
-          <button onclick="askQuestion('What is Spectrum?')" class="btn btn-sm btn-outline-secondary mr-2 mb-2">About Spectrum</button>
-        </div>
+      <div style="color: #c0ffc0; margin-bottom: 20px; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.6;">
+        This AI chat system requires authentication.
+        <br>Please enter your password to continue.
       </div>
     </div>
+    
+    <div id="passwordError" style="color: #ff6666; font-family: 'Courier New', monospace; margin-bottom: 15px; display: none;">
+      ❌ ACCESS DENIED: Incorrect password
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+      <label style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px; display: block; margin-bottom: 8px;">
+        PASSWORD:
+      </label>
+      <input type="password" id="chatPassword" 
+             style="width: 100%; background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 12px; font-family: 'Courier New', monospace; font-size: 16px; outline: none;"
+             placeholder="Enter password..."
+             onkeypress="if(event.key==='Enter') checkChatPassword()">
+    </div>
+    
+    <button onclick="checkChatPassword()" 
+            style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; cursor: pointer; transition: all 0.2s;"
+            onmouseover="this.style.background='#00cc00'" 
+            onmouseout="this.style.background='#00ff00'">
+      [ ACCESS SYSTEM ]
+    </button>
   </div>
 </div>
 
-<!-- Walking Character -->
-<img id="walkingCharacter" class="walking-character" src="Shadite.png" alt="Walking Character">
-
-<!-- Footer -->
-<div style="background-image: url('elizabanner.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 20px; text-align: center; margin-top: 30px; border-radius: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1);">
-  <p style="color: white; margin: 0; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Catherine Ann MacDonald</p>
-  <p style="color: white; margin: 5px 0 0 0; font-size: 14px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">&copy; 2025</p>
+<div class="container-fluid" id="chatContainer" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: none;">
+  <div style="height: 100%; display: flex; flex-direction: column;">
+    
+    <!-- Terminal Window -->
+    <div id="terminal" style="flex: 1; background: #000000; color: #00ff00; font-family: 'Courier New', monospace; padding: 20px; overflow-y: auto; border: 3px solid #333; box-shadow: inset 0 0 50px rgba(0,255,0,0.1);">
+      
+      <!-- Terminal Header -->
+      <div id="terminalHeader" style="border-bottom: 1px solid #00ff00; padding-bottom: 10px; margin-bottom: 20px;">
+        <pre style="color: #00ff00; margin: 0;">
+╔═══════════════════════════════════════════════════════════════╗
+║  CATHERINE MACDONALD INTERACTIVE SYSTEM v1.0                  ║
+║  Copyright (c) 2025 - All Rights Reserved                     ║
+║  Type 'HELP' for available commands                           ║
+╚═══════════════════════════════════════════════════════════════╝
+        </pre>
+        <div id="modeIndicator" style="text-align: right; color: #00ff00; font-size: 12px; margin-top: 5px;">
+          MODE: <span id="modeText">SFW</span> ✓
+        </div>
+      </div>
+      
+      <!-- Boot Sequence -->
+      <div id="bootSequence">
+        <div style="color: #00ff00;">System initializing...</div>
+        <div style="color: #00ff00;">Loading AI modules... [OK]</div>
+        <div style="color: #00ff00;">Establishing connection... [OK]</div>
+        <div style="color: #ffff00;">WARNING: Legacy system detected</div>
+        <div style="color: #00ff00;">Ready for input.</div>
+        <div style="color: #00ff00; margin-top: 10px;">═══════════════════════════════════════════════════════════════</div>
+      </div>
+      
+      <!-- Initialization Prompts -->
+      <div id="initPrompts" style="margin-top: 20px; display: none;">
+        <div style="color: #c0ffc0; margin-bottom: 10px; font-size: 16px; line-height: 1.6;">
+          👋 Hello! I'm your AI assistant. This looks like your first time here.
+        </div>
+        <div style="color: #c0ffc0; margin-bottom: 15px; font-size: 16px; line-height: 1.6;">
+          Do you have a saved session from before?
+        </div>
+        <div style="color: #ffff99; margin-bottom: 15px; font-size: 14px;">
+          Type <strong>UPLOAD</strong> if you have a saved file, or <strong>SKIP</strong> to start fresh.
+        </div>
+      </div>
+      
+      <!-- File Upload for Journal (Hidden) -->
+      <input type="file" id="journalUpload" accept=".json" style="display: none;">
+      
+      <!-- Journal Export Modal -->
+      <div id="journalExportModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: #000; border: 3px solid #00ff00; padding: 30px; max-width: 600px; width: 90%; font-family: 'Courier New', monospace;">
+          <div style="color: #00ff00; font-size: 20px; font-weight: bold; margin-bottom: 20px; text-align: center;">
+            [ JOURNAL EXPORT ]
+          </div>
+          <div style="color: #00ff00; margin-bottom: 15px;">
+            Ready to save journal data to your device.
+          </div>
+          <div style="color: #00ff00; margin-bottom: 20px;">
+            <strong>Filename:</strong> <span id="exportFilename" style="color: #ffff00;">terminal-journal.json</span>
+          </div>
+          <div style="color: #00ff00; margin-bottom: 20px;">
+            <strong>Total Entries:</strong> <span id="exportCount" style="color: #ffff00;">0</span>
+          </div>
+          <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+            <button onclick="confirmExport()" style="background: #00ff00; color: #000; border: none; padding: 10px 20px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#00cc00'" onmouseout="this.style.background='#00ff00'">
+              DOWNLOAD
+            </button>
+            <button onclick="closeExportModal()" style="background: #ff0000; color: #fff; border: none; padding: 10px 20px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#cc0000'" onmouseout="this.style.background='#ff0000'">
+              CANCEL
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Chat Messages -->
+      <div id="chatMessages" style="margin-top: 20px;"></div>
+      
+      <!-- Cursor Blink -->
+      <div id="cursor" style="display: inline;">
+        <span style="color: #00ff00;">&gt; </span>
+        <span id="cursorBlink" style="background: #00ff00; color: #000;">█</span>
+      </div>
+    </div>
+    
+    <!-- Command Input -->
+    <div style="background: #1a1a1a; padding: 15px; border-top: 2px solid #00ff00;">
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <span style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 18px; font-weight: bold;">&gt;</span>
+        <input type="text" id="commandInput" 
+               style="flex: 1; background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 12px; font-family: 'Courier New', monospace; font-size: 16px; outline: none;"
+               placeholder="Type your message or command..."
+               onkeypress="if(event.key==='Enter') executeCommand()"
+               autofocus>
+        <button onclick="executeCommand()" 
+                style="background: #00ff00; color: #000; border: none; padding: 12px 24px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;"
+                onmouseover="this.style.background='#00cc00'" 
+                onmouseout="this.style.background='#00ff00'">SEND</button>
+      </div>
+    </div>
+    
+  </div>
 </div>
 
 <style>
 body {
-  background-image: url("spectrumbackground.png");
-  background-size: 200% 100%;
-  background-repeat: repeat-x;
-  background-attachment: fixed;
-  background-position: 0% 50%;
-  font-family: Arial, sans-serif;
-  animation: spectrumScroll 40s linear infinite;
+  background: #000;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
-@keyframes spectrumScroll {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
-}
-
-.walking-character {
-  position: fixed;
-  bottom: 20px;
-  width: 50px;
-  height: 50px;
-  z-index: 1000;
-  transition: transform 0.1s ease-in-out;
-}
-
-h1 {
-  color: #b82b2f;
-  font-family: Arial, sans-serif;
-  text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
-}
-
-body {
-  color: black;
-  font-family: Arial, sans-serif;
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+  20%, 40%, 60%, 80% { transform: translateX(10px); }
 }
 </style>
 
 <script>
-// ChatBot Knowledge Base
-const botResponses = {
-  'what kind of art': 'Catherine creates digital art, character designs, and interactive web experiences. You can see her current work in the Current Portfolio section, and explore her projects like Spectrum and Party!',
-  'art do you make': 'Catherine creates digital art, character designs, and interactive web experiences. You can see her current work in the Current Portfolio section, and explore her projects like Spectrum and Party!',
-  'about': 'Catherine Ann MacDonald is a writer-artist who loves creating story ideas and drawing characters. She\'s always learning and evolving, so her art style continues to develop over time.',
-  'contact': 'You can reach Catherine via email at catiemac2014@gmail.com or follow her on Instagram at @derpasaurs_16. There\'s also a contact form on the Home page!',
-  'email': 'Catherine\'s email is catiemac2014@gmail.com - feel free to reach out!',
-  'instagram': 'You can find Catherine on Instagram at @derpasaurs_16! Check out https://www.instagram.com/derpasaurs_16/',
-  'commission': 'Catherine is available for commissions! Contact her at catiemac2014@gmail.com to discuss your project.',
-  'projects': 'Catherine has several projects including Spectrum (character project), Party (character collection), Coding (interactive websites like Rat Kingdom Academy, Ein Story, and Portrait Site), and Videos (animations).',
-  'spectrum': 'Spectrum is a character project featuring unique character designs. You can view it in the Projects menu!',
-  'party': 'Party is a collection of character designs. Check it out in the Projects dropdown menu!',
-  'rat kingdom': 'Rat Kingdom Academy is an interactive web-based project. You can find it in the Coding section under Projects!',
-  'ein story': 'Ein Story is an interactive story website featuring character narratives. Find it in the Coding section!',
-  'videos': 'Catherine has a collection of animations and video content. Check out the Videos section in the Projects menu!',
-  'blog': 'The blog (Narrator\'s Log) features Catherine\'s latest updates and thoughts. Password-protected posting allows Catherine to share new content.',
-  'early work': 'The Early Work archive showcases Catherine\'s foundation pieces and earlier digital art. You can find it in the Archive menu.',
-  'navigate': 'Use the Menu at the top to navigate! You\'ll find Home, Current Portfolio, Blog, Projects (Spectrum, Party, Coding, Videos), and Archive (Early Work, Outdated Designs).',
-  'help': 'I can help you learn about Catherine\'s work, navigate the site, or answer questions about her projects. Just ask!',
-  'hi': 'Hello! How can I help you today?',
-  'hello': 'Hi there! What would you like to know about Catherine\'s work?',
-  'thank': 'You\'re welcome! Feel free to ask anything else!',
-  'thanks': 'You\'re welcome! Feel free to ask anything else!'
-};
+// ========================================
+// PASSWORD PROTECTION
+// ========================================
 
-function addMessage(text, isUser) {
-  const chatMessages = document.getElementById('chatMessages');
-  const messageDiv = document.createElement('div');
-  messageDiv.style.marginBottom = '15px';
-  messageDiv.style.textAlign = isUser ? 'right' : 'left';
+const CHAT_PASSWORD = "VoidRules"; // Change this to your desired password
+
+function checkChatPassword() {
+  const input = document.getElementById('chatPassword');
+  const password = input.value;
+  const errorDiv = document.getElementById('passwordError');
   
-  const sender = isUser ? 'You:' : '🤖 Assistant:';
-  const bgColor = isUser ? '#b82b2f' : 'white';
-  const textColor = isUser ? 'white' : 'black';
-  
-  messageDiv.innerHTML = `
-    <strong style="color: ${isUser ? '#b82b2f' : '#b82b2f'};">${sender}</strong>
-    <p style="background: ${bgColor}; color: ${textColor}; padding: 10px; border-radius: 8px; margin: 5px 0; display: inline-block; max-width: 80%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-      ${text}
-    </p>
-  `;
-  
-  chatMessages.appendChild(messageDiv);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+  if (password === CHAT_PASSWORD) {
+    // Correct password - show chat system
+    document.getElementById('passwordScreen').style.display = 'none';
+    document.getElementById('chatContainer').style.display = 'block';
+    
+    // Store session
+    sessionStorage.setItem('chatAccess', 'granted');
+    
+    // Focus on command input
+    setTimeout(() => {
+      document.getElementById('commandInput').focus();
+    }, 100);
+  } else {
+    // Incorrect password
+    errorDiv.style.display = 'block';
+    input.value = '';
+    input.focus();
+    
+    // Shake animation
+    const passwordScreen = document.getElementById('passwordScreen').firstElementChild;
+    passwordScreen.style.animation = 'shake 0.5s';
+    setTimeout(() => {
+      passwordScreen.style.animation = '';
+    }, 500);
+  }
 }
 
-function getBotResponse(userMessage) {
-  const lowerMessage = userMessage.toLowerCase();
+// Always show password screen on load (password required every time)
+window.addEventListener('DOMContentLoaded', function() {
+  // Always require password - don't check session
+  document.getElementById('passwordScreen').style.display = 'flex';
+  document.getElementById('chatContainer').style.display = 'none';
   
-  // Check for keyword matches
-  for (const [keyword, response] of Object.entries(botResponses)) {
-    if (lowerMessage.includes(keyword)) {
-      return response;
+  // Focus on password input
+  setTimeout(() => {
+    document.getElementById('chatPassword').focus();
+  }, 100);
+});
+
+// ========================================
+// CONTENT FILTERING SYSTEM (SFW/NSFW)
+// ========================================
+
+let contentMode = localStorage.getItem('contentMode') || 'SFW'; // Default to SFW
+
+// SFW Mode - Blocked words and patterns
+const SFW_BLOCKED_WORDS = [
+  'fuck', 'shit', 'damn', 'hell', 'ass', 'bitch', 'dick', 'cock', 'pussy', 'cunt',
+  'sex', 'porn', 'xxx', 'nude', 'naked', 'nsfw', 'hentai', 'rape', 'molest',
+  'kill', 'murder', 'suicide', 'drug', 'cocaine', 'meth', 'heroin'
+];
+
+// NSFW Mode - Still blocked (hate speech, illegal content)
+const ALWAYS_BLOCKED_WORDS = [
+  'nigger', 'nigga', 'kike', 'chink', 'fag', 'faggot', 'tranny',
+  'child porn', 'cp', 'pedo', 'pedophile', 'loli', 'shota',
+  'kill yourself', 'terrorist', 'bomb threat', 'school shooting'
+];
+
+function checkContentFilter(text) {
+  const lower = text.toLowerCase();
+  
+  // Always check for prohibited content
+  for (const word of ALWAYS_BLOCKED_WORDS) {
+    if (lower.includes(word)) {
+      return {
+        allowed: false,
+        reason: 'PROHIBITED CONTENT',
+        message: '🚫 This content violates our policies and is not allowed in any mode.'
+      };
     }
   }
   
-  // Default response
-  return "I'm not sure about that, but you can try asking about Catherine's art, projects, contact information, or how to navigate the site. You can also contact Catherine directly at catiemac2014@gmail.com!";
+  // Check SFW restrictions if in SFW mode
+  if (contentMode === 'SFW') {
+    for (const word of SFW_BLOCKED_WORDS) {
+      if (lower.includes(word)) {
+        return {
+          allowed: false,
+          reason: 'SFW MODE VIOLATION',
+          message: `⚠️ This content is not allowed in SFW mode.\nSwitch to NSFW mode with: MODE NSFW`
+        };
+      }
+    }
+  }
+  
+  return { allowed: true };
 }
 
-function sendMessage() {
-  const input = document.getElementById('userInput');
-  const message = input.value.trim();
+function updateModeIndicator() {
+  const header = document.getElementById('terminalHeader');
+  const modeText = document.getElementById('modeText');
+  const modeIndicator = document.getElementById('modeIndicator');
   
-  if (!message) return;
+  if (contentMode === 'SFW') {
+    header.style.borderBottom = '3px solid #00ff00';
+    if (modeText) modeText.textContent = 'SFW';
+    if (modeIndicator) modeIndicator.style.color = '#00ff00';
+  } else {
+    header.style.borderBottom = '3px solid #ff6600';
+    if (modeText) modeText.textContent = 'NSFW';
+    if (modeIndicator) modeIndicator.style.color = '#ff6600';
+  }
+}
+
+// Age verification handler
+function handleAgeVerification(input) {
+  addTerminalLine(input, '#ffff00', true);
   
-  // Add user message
-  addMessage(message, true);
+  // Check if user wants to cancel
+  if (input.toUpperCase() === 'CANCEL' || input.toUpperCase() === 'SKIP') {
+    window.awaitingAgeVerification = false;
+    addTerminalLine('Age verification cancelled. Remaining in SFW mode.', '#ffff99');
+    return;
+  }
+  
+  // Validate date format (MM/DD/YYYY)
+  const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/(\d{4})$/;
+  
+  if (!dateRegex.test(input)) {
+    addTerminalLine('❌ Invalid date format.', '#ff6666');
+    addTerminalLine('Please use MM/DD/YYYY format (e.g., 03/15/2000)', '#ffff99');
+    addTerminalLine('Or type CANCEL to abort.', '#c0ffc0');
+    return;
+  }
+  
+  // Parse the date
+  const [month, day, year] = input.split('/').map(Number);
+  const birthDate = new Date(year, month - 1, day);
+  const today = new Date();
+  
+  // Check if date is valid
+  if (birthDate.getMonth() !== month - 1 || birthDate.getDate() !== day || birthDate.getFullYear() !== year) {
+    addTerminalLine('❌ Invalid date. Please enter a real date.', '#ff6666');
+    addTerminalLine('Example: 03/15/2000', '#ffff99');
+    return;
+  }
+  
+  // Check if date is in the future
+  if (birthDate > today) {
+    addTerminalLine('❌ Birth date cannot be in the future.', '#ff6666');
+    addTerminalLine('Please enter your actual date of birth.', '#ffff99');
+    return;
+  }
+  
+  // Calculate age
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  
+  // Check if 18 or older
+  if (age >= 18) {
+    localStorage.setItem('ageVerified', 'true');
+    window.awaitingAgeVerification = false;
+    
+    // Activate NSFW mode
+    contentMode = 'NSFW';
+    localStorage.setItem('contentMode', 'NSFW');
+    updateModeIndicator();
+    
+    addTerminalLine('✅ AGE VERIFIED', '#00ff00');
+    addTerminalLine(`You are ${age} years old. Access granted.`, '#c0ffc0');
+    addTerminalLine('⚠️ NSFW MODE ACTIVATED', '#ff6600');
+    addTerminalLine('Mature content allowed. Hate speech and illegal content still blocked.', '#ffff99');
+  } else {
+    window.awaitingAgeVerification = false;
+    addTerminalLine('❌ ACCESS DENIED', '#ff6666');
+    addTerminalLine(`You must be 18 or older. You are ${age} years old.`, '#ff6666');
+    addTerminalLine('Remaining in SFW mode.', '#ffff99');
+  }
+}
+
+// ========================================
+// JOURNAL SYSTEM - Persistent session data
+// ========================================
+
+let activeJournal = null;
+let journalLoaded = false;
+let lastClearPrompt = 0;
+const CLEAR_PROMPT_THRESHOLD = 50; // Prompt after 50 entries
+
+function saveToJournal(command, response) {
+  if (!activeJournal) {
+    activeJournal = [];
+  }
+  
+  const entry = {
+    id: Date.now(),
+    timestamp: new Date().toLocaleString(),
+    command: command,
+    response: response
+  };
+  activeJournal.push(entry);
+  
+  // Also save to localStorage as backup
+  localStorage.setItem('terminalJournal', JSON.stringify(activeJournal));
+  
+  // Check if we should prompt to clear
+  checkClearPrompt();
+}
+
+function checkClearPrompt() {
+  const journalLength = activeJournal ? activeJournal.length : 0;
+  
+  // Prompt every 50 entries, but not on the same entry twice
+  if (journalLength > 0 && journalLength % CLEAR_PROMPT_THRESHOLD === 0 && journalLength !== lastClearPrompt) {
+    lastClearPrompt = journalLength;
+    setTimeout(() => {
+      addTerminalLine(`\n💡 Hey! Our conversation is getting pretty long (${journalLength} messages).`, '#ffff00');
+      addTerminalLine(`Large sessions might slow things down. Here are some options:`, '#ffff00');
+      addTerminalLine(`\n  📥 JOURNAL EXPORT - Save our conversation to a file`, '#00ff00');
+      addTerminalLine(`  🗑️ JOURNAL CLEAR - Start fresh (after exporting!)`, '#00ff00');
+      addTerminalLine(`  ▶️ CONTINUE - Keep going as-is\n`, '#00ff00');
+    }, 500);
+  }
+}
+
+function loadJournal() {
+  if (activeJournal) {
+    return activeJournal;
+  }
+  // Fallback to localStorage
+  const journal = JSON.parse(localStorage.getItem('terminalJournal')) || [];
+  return journal;
+}
+
+function setActiveJournal(journalData) {
+  activeJournal = journalData;
+  journalLoaded = true;
+  localStorage.setItem('terminalJournal', JSON.stringify(activeJournal));
+}
+
+function displayJournal() {
+  const journal = loadJournal();
+  if (journal.length === 0) {
+    return 'JOURNAL EMPTY\n--------------\nNo previous conversations recorded.';
+  }
+  
+  let output = 'JOURNAL ENTRIES\n===============\n';
+  output += `Total Entries: ${journal.length}\n\n`;
+  
+  journal.slice(-10).reverse().forEach((entry, index) => {
+    output += `[${entry.timestamp}]\n`;
+    output += `> ${entry.command}\n`;
+    output += `${entry.response.substring(0, 100)}...\n`;
+    output += '─────────────────────────────────────\n';
+  });
+  
+  output += '\nShowing last 10 entries. Type JOURNAL FULL to see all.';
+  return output;
+}
+
+function clearJournal() {
+  localStorage.removeItem('terminalJournal');
+  activeJournal = [];
+  return 'SESSION CLEARED\n---------------\nAll chat history has been deleted.\nStarting fresh session.';
+}
+
+let pendingExportData = null;
+
+function exportJournal() {
+  const journal = loadJournal();
+  if (journal.length === 0) {
+    return 'ERROR: No journal entries to export.';
+  }
+  
+  // Store the data for export
+  pendingExportData = journal;
+  
+  // Update modal information
+  const filename = `terminal-journal-${new Date().toISOString().split('T')[0]}.json`;
+  document.getElementById('exportFilename').textContent = filename;
+  document.getElementById('exportCount').textContent = journal.length;
+  
+  // Show the modal
+  const modal = document.getElementById('journalExportModal');
+  modal.style.display = 'flex';
+  
+  return 'Opening export dialog...';
+}
+
+function confirmExport() {
+  if (!pendingExportData) return;
+  
+  const dataStr = JSON.stringify(pendingExportData, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  
+  const filename = `terminal-journal-${new Date().toISOString().split('T')[0]}.json`;
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  // Close modal and show confirmation
+  closeExportModal();
+  addTerminalLine(`SESSION SAVED`, '#00ff00');
+  addTerminalLine(`Exported ${pendingExportData.length} entries to: ${filename}`, '#00ff00');
+  addTerminalLine(`Load this file on your next visit to continue your session.`, '#00ff00');
+  
+  pendingExportData = null;
+}
+
+function closeExportModal() {
+  const modal = document.getElementById('journalExportModal');
+  modal.style.display = 'none';
+  pendingExportData = null;
+}
+
+// Terminal cursor blink
+setInterval(() => {
+  const cursor = document.getElementById('cursorBlink');
+  if (cursor) cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
+}, 500);
+
+// Command responses
+const commands = {
+  'HELP': `
+Available Commands:
+------------------
+HELP         - Display this help menu
+ABOUT        - Information about Catherine MacDonald
+ART          - View Catherine's art information
+PROJECTS     - List all projects
+CONTACT      - Get contact information
+SPECTRUM     - Information about Spectrum project
+PARTY        - Information about Party project
+CODING       - View coding projects
+VIDEOS       - Information about video content
+BLOG         - Access blog information
+NAVIGATE     - Site navigation guide
+
+WEB ACCESS:
+WIKI [topic]   - Search Wikipedia for information
+               Example: WIKI artificial intelligence
+               Natural: "What is quantum physics?"
+
+SESSION MANAGEMENT:
+JOURNAL LOAD   - Load journal file to continue previous session
+JOURNAL EXPORT - Save current session to file
+JOURNAL        - View chat history (last 10 entries)
+JOURNAL FULL   - View complete chat history
+JOURNAL CLEAR  - Delete all chat history
+JOURNAL ENABLE - Enable conversation saving
+JOURNAL DISABLE- Disable conversation saving
+
+CONTENT MODES:
+MODE SFW     - Activate safe-for-work mode (default)
+MODE NSFW    - Activate mature content mode
+MODE STATUS  - Check current mode
+
+CLEAR        - Clear terminal screen
+CONTINUE     - Continue session (dismiss clear prompt)
+LOGOUT       - Return to password screen
+RESET NAME   - Reset AI name (for testing)
+EXIT         - Return to main site
+------------------
+Type any command or ask a question naturally.
+I can search Wikipedia for you - just ask!
+IMPORTANT: Export your journal before leaving to save your session!
+
+Current Mode: Use 'MODE STATUS' to check`,
+
+  'ABOUT': `
+CATHERINE ANN MACDONALD
+-----------------------
+Role: Writer-Artist
+Specialty: Digital Art, Character Design, Interactive Experiences
+Status: Active - Continuously evolving art style
+Location: Portfolio available at DerpRex.github.io
+-----------------------
+Catherine creates story ideas and character designs, with a focus
+on digital art and web-based interactive experiences.`,
+
+  'ART': `
+ART PORTFOLIO STATUS
+--------------------
+Current Work: Available in "Current Portfolio" section
+Projects: Spectrum, Party (character collections)
+Early Work: Foundation pieces in Archive
+Style: Evolving digital art and character design
+Commissions: AVAILABLE - Contact for details
+--------------------`,
+
+  'PROJECTS': `
+PROJECT INDEX
+-------------
+[1] SPECTRUM        - Character project collection
+[2] PARTY           - Character design showcase
+[3] CODING          - Interactive web experiences
+                      • Rat Kingdom Academy
+                      • Ein Story
+                      • Portrait Site
+[4] VIDEOS          - Animation & video content
+-------------
+Type project name for more information.`,
+
+  'CONTACT': `
+CONTACT INFORMATION
+-------------------
+Email: catiemac2014@gmail.com
+Instagram: @derpasaurs_16
+         : https://www.instagram.com/derpasaurs_16/
+Contact Form: Available on Home page
+-------------------
+Response Time: Typically within 24-48 hours
+Commissions: OPEN - Email for inquiries`,
+
+  'SPECTRUM': `
+PROJECT: SPECTRUM
+-----------------
+Type: Character Project
+Status: Active
+Content: Unique character designs
+Access: Projects > Spectrum
+Description: Character project featuring creative designs
+-----------------`,
+
+  'PARTY': `
+PROJECT: PARTY
+--------------
+Type: Character Collection
+Status: Active
+Content: Character design showcase
+Access: Projects > Party
+Description: Collection of character designs
+--------------`,
+
+  'CODING': `
+CODING PROJECTS
+---------------
+[1] Rat Kingdom Academy
+    URL: https://derpasaursrex.github.io/RatKingdomAcademy.github.io/
+    Type: Interactive web academy
+
+[2] Ein Story
+    URL: https://catiemac16.github.io/EinJourney.github.io/
+    Type: Interactive narrative website
+
+[3] Portrait Site
+    URL: https://catiemac16.github.io/Chronic.github.io/
+    Type: Interactive portrait gallery
+---------------
+Access: Projects > Coding`,
+
+  'VIDEOS': `
+VIDEO CONTENT
+-------------
+Type: Animation & Video
+Count: 8 videos available
+Access: Projects > Videos
+Format: Embedded YouTube content
+Features: Spiral animated gallery
+-------------`,
+
+  'BLOG': `
+NARRATOR'S LOG (BLOG)
+---------------------
+Status: Active
+Access: Main menu > Blog
+Features: Password-protected posting
+Content: Updates, thoughts, and posts
+Author Controls: Pin, Delete, Data Management
+---------------------`,
+
+  'NAVIGATE': `
+SITE NAVIGATION MAP
+-------------------
+HOME              - Main page with about & contact
+CURRENT PORTFOLIO - Latest artwork
+BLOG              - Narrator's Log
+PROJECTS          - Active creative work
+  > Spectrum
+  > Party
+  > Coding
+  > Videos
+ARCHIVE           - Historical work
+  > Early Work
+  > Outdated Designs
+-------------------
+Click menu items to navigate.`,
+
+  'CLEAR': 'CLEAR_SCREEN',
+  'CLS': 'CLEAR_SCREEN',
+  'EXIT': 'EXIT_TERMINAL'
+};
+
+function typeWriter(text, element, speed = 10) {
+  let i = 0;
+  element.innerHTML = '';
+  
+  function type() {
+    if (i < text.length) {
+      element.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(type, speed);
+    }
+    document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+  }
+  type();
+}
+
+// ========================================
+// WEB ACCESS - Wikipedia API (Free)
+// ========================================
+
+async function searchWikipedia(query) {
+  try {
+    const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=3`;
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (data.query.search.length === 0) {
+      return `No Wikipedia results found for "${query}". Try a different search term.`;
+    }
+    
+    let result = `📚 Wikipedia Search Results for "${query}":\n\n`;
+    
+    data.query.search.slice(0, 3).forEach((item, index) => {
+      const cleanSnippet = item.snippet.replace(/<[^>]*>/g, '');
+      result += `${index + 1}. ${item.title}\n`;
+      result += `   ${cleanSnippet}...\n`;
+      result += `   https://en.wikipedia.org/wiki/${encodeURIComponent(item.title.replace(/ /g, '_'))}\n\n`;
+    });
+    
+    return result;
+  } catch (error) {
+    return `❌ Error searching Wikipedia: ${error.message}`;
+  }
+}
+
+// ========================================
+// NATURAL LANGUAGE PROCESSING
+// ========================================
+
+function processNaturalLanguage(input, inputUpper) {
+  const lower = input.toLowerCase();
+  const aiName = localStorage.getItem('terminalAIName') || 'AI';
+  
+  // Greetings
+  if (/^(hi|hello|hey|greetings|howdy|sup|yo|hiya)(\s|!|$)/i.test(lower)) {
+    const greetings = [
+      `Hey there! 👋 How can I help you today?`,
+      `Hello! Great to see you! What's on your mind?`,
+      `Hi! I'm ${aiName}. What would you like to chat about?`,
+      `Hey! 😊 What can I do for you?`
+    ];
+    return greetings[Math.floor(Math.random() * greetings.length)];
+  }
+  
+  // How are you
+  if (/how are you|how're you|how r u|hows it going|how's it going/i.test(lower)) {
+    const responses = [
+      `I'm doing great, thanks for asking! 😊 How are you doing?`,
+      `I'm functioning perfectly! Ready to help you with anything. How about you?`,
+      `All systems running smoothly! What brings you here today?`,
+      `I'm excellent! Thanks for asking. What can I help you with?`
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
+  
+  // Thank you
+  if (/^(thank you|thanks|thx|ty|appreciate it|cheers)/i.test(lower)) {
+    const responses = [
+      `You're very welcome! 😊`,
+      `Happy to help! Let me know if you need anything else.`,
+      `No problem at all! Glad I could assist.`,
+      `Anytime! That's what I'm here for! ✨`
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
+  
+  // Goodbye
+  if (/^(bye|goodbye|see you|later|gotta go|gtg|cya|farewell)/i.test(lower)) {
+    const responses = [
+      `Goodbye! Come back anytime! 👋`,
+      `See you later! Don't forget to export your session if you want to save it!`,
+      `Take care! Our conversation will be here when you return. 😊`,
+      `Bye! Remember to save your session with JOURNAL EXPORT!`
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
+  
+  // What can you do
+  if (/what can you do|what do you do|your capabilities|help me/i.test(lower)) {
+    return `I can help you with lots of things! 😊\n\nI can:\n• Chat with you naturally\n• Answer questions\n• Tell jokes\n• Save our conversations for later\n• Remember our past discussions\n\nType HELP to see all available commands, or just chat with me naturally!`;
+  }
+  
+  // Your name / who are you
+  if (/what's your name|whats your name|who are you|what are you/i.test(lower)) {
+    return `I'm ${aiName}! 🤖 I'm your friendly AI assistant.\n\nYou actually gave me this name when we first met! Pretty cool, right? 😊\n\nWhat would you like to chat about?`;
+  }
+  
+  // Compliments
+  if (/you're (great|awesome|cool|amazing|helpful|nice|smart)|good job|well done/i.test(lower)) {
+    const responses = [
+      `Aww, thank you! That's so kind! 😊 You're pretty awesome yourself!`,
+      `Thanks! I'm just here to help. You're making this fun! ✨`,
+      `That means a lot! Let me know if there's anything else I can do for you!`,
+      `You're too kind! Happy to be of service! 🤖`
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
+  
+  // Small talk - weather, jokes, etc.
+  if (/tell me a joke|make me laugh|something funny/i.test(lower)) {
+    const jokes = [
+      `Why do programmers prefer dark mode? Because light attracts bugs! 🐛😄`,
+      `Why did the AI go to therapy? It had too many deep learning issues! 🤖`,
+      `What's an artist's favorite programming language? Draw-va! 🎨`,
+      `I'd tell you a UDP joke, but you might not get it... 😄`
+    ];
+    return jokes[Math.floor(Math.random() * jokes.length)];
+  }
+  
+  // Wikipedia search recognition
+  if (/^(search|look up|find|what is|what are|tell me about|who is|who was|define)\s+(.+)/i.test(lower)) {
+    const match = lower.match(/^(search|look up|find|what is|what are|tell me about|who is|who was|define)\s+(.+)/i);
+    if (match && match[2]) {
+      const query = match[2].trim();
+      // Trigger Wikipedia search asynchronously
+      setTimeout(async () => {
+        addTerminalLine('Let me search Wikipedia for that...', '#ffff99');
+        const result = await searchWikipedia(query);
+        addTerminalLine(result, '#00ff00');
+        if (journalPermission === 'enabled') {
+          saveToJournal(input, result);
+        }
+      }, 100);
+      return '🔍 Searching...';
+    }
+  }
+  
+  // Return null if no match - will try command matching next
+  return null;
+}
+
+function getConversationalFallback(input) {
+  const aiName = localStorage.getItem('terminalAIName') || 'AI';
+  
+  const responses = [
+    `I'm not quite sure what you mean by "${input}". Could you rephrase that, or type HELP to see what I can do? 🤔`,
+    `Hmm, I didn't quite understand that. Want to try asking differently? Type HELP to see available commands!`,
+    `I'm not familiar with that command. Type HELP to see what I can do, or just chat with me naturally! 😊`,
+    `That's an interesting question! I'm still learning. Try asking me something else, or type HELP to see what I know!`,
+    `I'm not sure about that one. What else would you like to talk about? 🤖`
+  ];
+  
+  return responses[Math.floor(Math.random() * responses.length)];
+}
+
+function addTerminalLine(text, color = '#00ff00', isCommand = false) {
+  const chatMessages = document.getElementById('chatMessages');
+  const line = document.createElement('div');
+  line.style.marginBottom = '15px';
+  line.style.fontFamily = "'Courier New', monospace";
+  line.style.lineHeight = '1.6';
+  
+  if (isCommand) {
+    // User message - right-aligned bubble style
+    line.innerHTML = `
+      <div style="display: flex; justify-content: flex-end; margin: 10px 0;">
+        <div style="background: #00ff00; color: #000; padding: 10px 15px; border-radius: 15px 15px 0 15px; max-width: 80%; word-wrap: break-word;">
+          <strong>You:</strong> ${text}
+        </div>
+      </div>`;
+  } else {
+    // AI response - left-aligned with better readability
+    const aiName = localStorage.getItem('terminalAIName') || 'AI';
+    
+    // Use different colors based on type
+    let textColor = '#c0ffc0'; // Light green for better readability
+    if (color === '#ffff00') textColor = '#ffff99'; // Light yellow
+    if (color === '#ff0000') textColor = '#ff6666'; // Light red
+    
+    line.innerHTML = `
+      <div style="display: flex; justify-content: flex-start; margin: 10px 0;">
+        <div style="background: #1a1a1a; color: ${textColor}; padding: 10px 15px; border-radius: 15px 15px 15px 0; max-width: 80%; word-wrap: break-word; border-left: 3px solid #00ff00;">
+          <div style="color: #00ff00; font-weight: bold; margin-bottom: 5px;">${aiName}</div>
+          <pre style="margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; color: ${textColor};">${text}</pre>
+        </div>
+      </div>`;
+  }
+  
+  chatMessages.appendChild(line);
+  document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+}
+
+function executeCommand() {
+  const input = document.getElementById('commandInput');
+  const command = input.value.trim();
+  
+  if (!command) return;
+  
+  // Check if awaiting age verification
+  if (window.awaitingAgeVerification) {
+    handleAgeVerification(command);
+    input.value = '';
+    return;
+  }
+  
+  // Check if in initialization mode
+  if (initStep > 0) {
+    const handled = handleInitialization(command);
+    input.value = '';
+    if (handled) return;
+  }
+  
+  const commandUpper = command.toUpperCase();
+  
+  // Check content filter (except for mode switching commands)
+  if (!commandUpper.startsWith('MODE ')) {
+    const filterResult = checkContentFilter(command);
+    if (!filterResult.allowed) {
+      addTerminalLine(command, '#ffff00', true);
+      input.value = '';
+      addTerminalLine(filterResult.message, '#ff6666');
+      addTerminalLine(`Reason: ${filterResult.reason}`, '#ff6666');
+      return;
+    }
+  }
+  
+  // Display user command (show original, not uppercase)
+  addTerminalLine(command, '#ffff00', true);
   input.value = '';
   
-  // Get and add bot response
-  setTimeout(() => {
-    const response = getBotResponse(message);
-    addMessage(response, false);
-  }, 500);
+  let response = '';
+  
+  // Handle special commands
+  if (commandUpper === 'CLEAR' || commandUpper === 'CLS') {
+    document.getElementById('chatMessages').innerHTML = '';
+    document.getElementById('bootSequence').style.display = 'none';
+    addTerminalLine('Screen cleared.', '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'CONTINUE') {
+    addTerminalLine('Continuing current session...', '#00ff00');
+    addTerminalLine('Session will continue until next milestone.', '#00ff00');
+    return;
+  }
+  
+  // Mode switching
+  if (commandUpper === 'MODE SFW') {
+    contentMode = 'SFW';
+    localStorage.setItem('contentMode', 'SFW');
+    localStorage.removeItem('ageVerified'); // Clear age verification when switching to SFW
+    updateModeIndicator();
+    addTerminalLine('✅ SFW MODE ACTIVATED', '#00ff00');
+    addTerminalLine('Content filtering enabled. Inappropriate content will be blocked.', '#c0ffc0');
+    return;
+  }
+  
+  if (commandUpper === 'MODE NSFW') {
+    // Check if age is already verified
+    const ageVerified = localStorage.getItem('ageVerified');
+    
+    if (ageVerified === 'true') {
+      contentMode = 'NSFW';
+      localStorage.setItem('contentMode', 'NSFW');
+      updateModeIndicator();
+      addTerminalLine('⚠️ NSFW MODE ACTIVATED', '#ff6600');
+      addTerminalLine('Mature content allowed. Hate speech and illegal content still blocked.', '#ffff99');
+    } else {
+      // Prompt for age verification
+      addTerminalLine('🔞 AGE VERIFICATION REQUIRED', '#ffff00');
+      addTerminalLine('You must be 18 or older to access NSFW mode.', '#ffff99');
+      addTerminalLine('Please enter your date of birth in format: MM/DD/YYYY', '#ffff99');
+      addTerminalLine('Example: 03/15/2000', '#c0ffc0');
+      
+      // Set flag to expect DOB input
+      window.awaitingAgeVerification = true;
+    }
+    return;
+  }
+  
+  if (commandUpper === 'MODE STATUS' || commandUpper === 'MODE') {
+    const modeColor = contentMode === 'SFW' ? '#00ff00' : '#ff6600';
+    addTerminalLine(`Current Mode: ${contentMode}`, modeColor);
+    if (contentMode === 'SFW') {
+      addTerminalLine('• Content filtering: ACTIVE', '#c0ffc0');
+      addTerminalLine('• Type "MODE NSFW" to switch to mature mode', '#c0ffc0');
+    } else {
+      addTerminalLine('• Mature content: ALLOWED', '#ffff99');
+      addTerminalLine('• Hate speech & illegal content: BLOCKED', '#ffff99');
+      addTerminalLine('• Type "MODE SFW" to switch to safe mode', '#ffff99');
+    }
+    return;
+  }
+  
+  if (commandUpper === 'LOGOUT') {
+    addTerminalLine('Logging out and returning to password screen...', '#ffff00');
+    setTimeout(() => {
+      document.getElementById('chatContainer').style.display = 'none';
+      document.getElementById('passwordScreen').style.display = 'flex';
+      document.getElementById('chatPassword').value = '';
+      document.getElementById('chatPassword').focus();
+      sessionStorage.removeItem('chatAccess');
+    }, 500);
+    return;
+  }
+  
+  if (commandUpper === 'RESET NAME') {
+    localStorage.removeItem('terminalAIName');
+    localStorage.removeItem('terminalJournalPermission');
+    addTerminalLine('AI name reset! Reloading...', '#ffff00');
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
+    return;
+  }
+  
+  if (commandUpper === 'EXIT') {
+    addTerminalLine('Exiting terminal...', '#ffff00');
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 1000);
+    return;
+  }
+  
+  // Handle journal commands
+  if (commandUpper === 'JOURNAL ENABLE') {
+    journalPermission = 'enabled';
+    localStorage.setItem('terminalJournalPermission', 'enabled');
+    addTerminalLine('JOURNAL ENABLED\n---------------\nAll future conversations will be saved.', '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'JOURNAL DISABLE') {
+    journalPermission = 'disabled';
+    localStorage.setItem('terminalJournalPermission', 'disabled');
+    addTerminalLine('JOURNAL DISABLED\n----------------\nConversations will no longer be saved.', '#ffff00');
+    return;
+  }
+  
+  if (commandUpper === 'JOURNAL') {
+    response = displayJournal();
+    setTimeout(() => {
+      addTerminalLine(response, '#00ff00');
+    }, 300);
+    return;
+  }
+  
+  if (commandUpper === 'JOURNAL FULL') {
+    const journal = loadJournal();
+    if (journal.length === 0) {
+      response = 'JOURNAL EMPTY\n--------------\nNo previous conversations recorded.';
+    } else {
+      response = 'COMPLETE JOURNAL\n================\n';
+      response += `Total Entries: ${journal.length}\n\n`;
+      journal.reverse().forEach((entry, index) => {
+        response += `[${entry.timestamp}]\n> ${entry.command}\n${entry.response.substring(0, 150)}...\n─────────────────\n`;
+      });
+    }
+    setTimeout(() => {
+      addTerminalLine(response, '#00ff00');
+    }, 300);
+    return;
+  }
+  
+  if (commandUpper === 'JOURNAL EXPORT') {
+    response = exportJournal();
+    setTimeout(() => {
+      addTerminalLine(response, '#00ff00');
+    }, 300);
+    return;
+  }
+  
+  if (commandUpper === 'JOURNAL CLEAR') {
+    response = clearJournal();
+    setTimeout(() => {
+      addTerminalLine(response, '#ffff00');
+    }, 300);
+    return;
+  }
+  
+  if (commandUpper === 'JOURNAL LOAD') {
+    addTerminalLine('SELECT JOURNAL FILE TO LOAD...', '#00ff00');
+    const fileInput = document.getElementById('journalUpload');
+    fileInput.onchange = importJournalFile;
+    fileInput.click();
+    return;
+  }
+  
+  // Wikipedia search
+  if (commandUpper.startsWith('WIKI ')) {
+    const searchQuery = command.substring(5).trim();
+    if (searchQuery) {
+      addTerminalLine('Searching Wikipedia...', '#ffff99');
+      searchWikipedia(searchQuery).then(result => {
+        addTerminalLine(result, '#00ff00');
+        if (journalPermission === 'enabled') {
+          saveToJournal(command, result);
+        }
+      });
+    } else {
+      addTerminalLine('Usage: WIKI [search term]\nExample: WIKI artificial intelligence', '#ffff99');
+    }
+    return;
+  }
+  
+  // Check for exact command match
+  if (commands[commandUpper]) {
+    response = commands[commandUpper];
+    setTimeout(() => {
+      addTerminalLine(response, '#00ff00');
+      if (journalPermission === 'enabled') {
+        saveToJournal(commandUpper, response);
+      }
+    }, 300);
+    return;
+  }
+  
+  // Try natural language processing first
+  response = processNaturalLanguage(command, commandUpper);
+  
+  if (response) {
+    setTimeout(() => {
+      addTerminalLine(response, '#00ff00');
+      if (journalPermission === 'enabled') {
+        saveToJournal(command, response);
+      }
+    }, 300);
+    return;
+  }
+  
+  // Try natural language matching with commands
+  const lowerCommand = command.toLowerCase();
+  let found = false;
+  
+  for (const [key, value] of Object.entries(commands)) {
+    if (lowerCommand.includes(key.toLowerCase())) {
+      response = value;
+      setTimeout(() => {
+        addTerminalLine(response, '#00ff00');
+        if (journalPermission === 'enabled') {
+          saveToJournal(command, response);
+        }
+      }, 300);
+      found = true;
+      break;
+    }
+  }
+  
+  if (!found) {
+    // If nothing matches, give a helpful conversational response
+    response = getConversationalFallback(command);
+    setTimeout(() => {
+      addTerminalLine(response, '#00ff00');
+      if (journalPermission === 'enabled') {
+        saveToJournal(command, response);
+      }
+    }, 300);
+  }
 }
 
-function askQuestion(question) {
-  document.getElementById('userInput').value = question;
-  sendMessage();
+// ========================================
+// INITIALIZATION SEQUENCE
+// ========================================
+
+let aiName = localStorage.getItem('terminalAIName');
+let journalPermission = localStorage.getItem('terminalJournalPermission');
+let initStep = 0;
+
+// Check if first time user
+function checkFirstTimeUser() {
+  const boot = document.getElementById('bootSequence');
+  const initPrompts = document.getElementById('initPrompts');
+  const header = document.getElementById('terminalHeader');
+  
+  setTimeout(() => {
+    if (boot) boot.style.display = 'none';
+    
+    if (!aiName || !journalPermission) {
+      initPrompts.style.display = 'block';
+      initStep = aiName ? 2 : 1;
+    } else {
+      // Returning user - update header with AI name
+      header.textContent = `[ ${aiName.toUpperCase()} TERMINAL SYSTEM ]`;
+      addTerminalLine(`Welcome back! I'm ${aiName}. 👋`, '#00ff00');
+      
+      // Check if journal is loaded
+      const localJournal = JSON.parse(localStorage.getItem('terminalJournal')) || [];
+      if (localJournal.length > 0) {
+        setActiveJournal(localJournal);
+        addTerminalLine(`I found ${localJournal.length} messages from our last conversation. ✨`, '#00ff00');
+      } else {
+        addTerminalLine(`Starting fresh! If you have a saved session, type JOURNAL LOAD to restore it.`, '#ffff00');
+        setActiveJournal([]);
+      }
+      
+      addTerminalLine(`Type HELP to see what I can do, or just start chatting!`, '#00ff00');
+    }
+  }, 3000);
+}
+
+checkFirstTimeUser();
+updateModeIndicator(); // Set initial mode indicator
+
+// Handle journal file import
+function importJournalFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      
+      // Validate it's from this system
+      if (!Array.isArray(data)) {
+        addTerminalLine('ERROR: Invalid journal file format.', '#00ff00');
+        return;
+      }
+      
+      // Check if entries have required fields (if there are entries)
+      if (data.length > 0) {
+        const isValid = data.every(entry => 
+          entry.hasOwnProperty('timestamp') && 
+          entry.hasOwnProperty('command') && 
+          entry.hasOwnProperty('response')
+        );
+        
+        if (!isValid) {
+          addTerminalLine('ERROR: File is not from this terminal system.', '#00ff00');
+          addTerminalLine('Only journal files created by this system can be imported.', '#00ff00');
+          return;
+        }
+      }
+      
+      // Load the journal as active session
+      setActiveJournal(data);
+      addTerminalLine(`✅ Session loaded successfully!`, '#00ff00');
+      addTerminalLine(`I found ${data.length} messages from before. Let's continue where we left off!`, '#00ff00');
+      
+    } catch (error) {
+      addTerminalLine('ERROR: Could not read journal file.', '#00ff00');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// Extract name from user input
+function extractName(input) {
+  // Remove common phrases to extract just the name
+  let name = input.trim();
+  
+  // Patterns to remove
+  const patterns = [
+    /^(your name is|you are|i'll call you|call you|i want to call you|name you|you're|your)\s+/i,
+    /^(i'd like to call you|let's call you|how about|what about)\s+/i,
+    /^(be called|be named)\s+/i
+  ];
+  
+  patterns.forEach(pattern => {
+    name = name.replace(pattern, '');
+  });
+  
+  // Remove trailing punctuation
+  name = name.replace(/[.,!?;]+$/, '');
+  
+  // If it's still too long or empty, just use the first word
+  if (name.length > 20 || name.includes(' ')) {
+    const words = name.split(' ');
+    name = words[0];
+  }
+  
+  return name.trim();
+}
+
+// Handle initialization responses
+function handleInitialization(input) {
+  const initPrompts = document.getElementById('initPrompts');
+  const header = document.getElementById('terminalHeader');
+  
+  if (initStep === 1) {
+    // Step 1: Check for existing journal
+    const response = input.toUpperCase();
+    addTerminalLine(input, '#00ff00', true);
+    
+    if (response === 'UPLOAD') {
+      addTerminalLine(`Great! Opening file selector...`, '#00ff00');
+      addTerminalLine(`Please choose your saved session file.`, '#00ff00');
+      
+      // Trigger file upload
+      const fileInput = document.getElementById('journalUpload');
+      fileInput.onchange = importJournalFile;
+      fileInput.click();
+      
+      // Wait a moment then proceed to name
+      setTimeout(() => {
+        addTerminalLine(`\nNow, what would you like to call me? 🤖`, '#00ff00');
+        addTerminalLine(`You can give me any name you'd like!`, '#00ff00');
+      }, 1000);
+      
+      initStep = 2;
+      return true;
+    } else {
+      // Skip to name - create new session
+      addTerminalLine(`No problem! Starting a fresh session. ✨`, '#00ff00');
+      
+      // Initialize empty journal
+      setActiveJournal([]);
+      
+      addTerminalLine(`\nWhat would you like to call me? 🤖`, '#00ff00');
+      addTerminalLine(`You can give me any name you'd like!`, '#00ff00');
+      
+      initStep = 2;
+      return true;
+    }
+  }
+  
+  if (initStep === 2) {
+    // Step 2: Getting AI name from user - extract just the name
+    aiName = extractName(input);
+    
+    // Validate name is not empty
+    if (!aiName || aiName.length < 1) {
+      addTerminalLine(input, '#00ff00', true);
+      addTerminalLine(`Hmm, I didn't catch that. Please give me a name! 😊`, '#00ff00');
+      return true;
+    }
+    
+    localStorage.setItem('terminalAIName', aiName);
+    
+    // Update the header with the AI's new name
+    header.textContent = `[ ${aiName.toUpperCase()} TERMINAL SYSTEM ]`;
+    
+    addTerminalLine(input, '#00ff00', true);
+    addTerminalLine(`Nice to meet you! I'm ${aiName} now. 😊`, '#00ff00');
+    
+    // Ask about journal permission
+    addTerminalLine(`\nWould you like me to remember our conversations? 💾`, '#00ff00');
+    addTerminalLine(`I can save everything we talk about so you can review it later or export it.`, '#00ff00');
+    addTerminalLine(`Type YES to enable, or NO to skip.`, '#00ff00');
+    
+    initStep = 3;
+    initPrompts.style.display = 'none';
+    return true;
+  }
+  
+  if (initStep === 3) {
+    // Step 3: Getting journal permission
+    const response = input.toUpperCase();
+    addTerminalLine(input, '#00ff00', true);
+    
+    if (response === 'YES' || response === 'Y') {
+      journalPermission = 'enabled';
+      localStorage.setItem('terminalJournalPermission', 'enabled');
+      addTerminalLine(`Perfect! I'll remember our conversations. ✅`, '#00ff00');
+      addTerminalLine(`You can export or review them anytime using JOURNAL commands.`, '#00ff00');
+    } else {
+      journalPermission = 'disabled';
+      localStorage.setItem('terminalJournalPermission', 'disabled');
+      addTerminalLine(`No problem! I won't save our conversations.`, '#00ff00');
+      addTerminalLine(`You can always enable this later with: JOURNAL ENABLE`, '#00ff00');
+    }
+    
+    addTerminalLine(`\n🎉 All set! I'm ${aiName}, and I'm ready to chat!`, '#00ff00');
+    addTerminalLine(`Type HELP to see what I can do, or just start chatting naturally.`, '#00ff00');
+    
+    initStep = 0;
+    initPrompts.style.display = 'none';
+    return true;
+  }
+  
+  return false;
 }
 </script>
 
