@@ -355,3 +355,121 @@ h1 {
       }
     });
   </script>
+  
+  <style>
+/* Spotify Player Widget */
+#spotifyWidget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  background: #000;
+  border: 3px solid #1DB954;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  z-index: 9999;
+  cursor: move;
+}
+
+#spotifyHeader {
+  background: #1DB954;
+  color: #fff;
+  padding: 8px 12px;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  border-radius: 7px 7px 0 0;
+}
+
+#spotifyMinimize {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 5px;
+  line-height: 1;
+}
+
+#spotifyMinimize:hover {
+  color: #000;
+}
+</style>
+
+<!-- Draggable Spotify Player Widget -->
+<div id="spotifyWidget">
+  <div id="spotifyHeader">
+    <span>🎵 Spotify Player</span>
+    <button id="spotifyMinimize" onclick="toggleSpotifySpec()">−</button>
+  </div>
+  <div id="spotifyContent">
+    <iframe style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+  </div>
+</div>
+
+<script>
+// Draggable Spotify Widget
+let spotifySpecDragging = false;
+let spotifySpecCurrentX;
+let spotifySpecCurrentY;
+let spotifySpecInitialX;
+let spotifySpecInitialY;
+let spotifySpecXOffset = 0;
+let spotifySpecYOffset = 0;
+
+const spotifySpecWidget = document.getElementById('spotifyWidget');
+const spotifySpecHeader = document.getElementById('spotifyHeader');
+
+spotifySpecHeader.addEventListener('mousedown', spotifySpecDragStart);
+document.addEventListener('mousemove', spotifySpecDrag);
+document.addEventListener('mouseup', spotifySpecDragEnd);
+
+function spotifySpecDragStart(e) {
+  spotifySpecInitialX = e.clientX - spotifySpecXOffset;
+  spotifySpecInitialY = e.clientY - spotifySpecYOffset;
+  
+  if (e.target === spotifySpecHeader || e.target.parentElement === spotifySpecHeader) {
+    spotifySpecDragging = true;
+  }
+}
+
+function spotifySpecDrag(e) {
+  if (spotifySpecDragging) {
+    e.preventDefault();
+    spotifySpecCurrentX = e.clientX - spotifySpecInitialX;
+    spotifySpecCurrentY = e.clientY - spotifySpecInitialY;
+    spotifySpecXOffset = spotifySpecCurrentX;
+    spotifySpecYOffset = spotifySpecCurrentY;
+    
+    spotifySpecSetTranslate(spotifySpecCurrentX, spotifySpecCurrentY, spotifySpecWidget);
+  }
+}
+
+function spotifySpecDragEnd(e) {
+  spotifySpecInitialX = spotifySpecCurrentX;
+  spotifySpecInitialY = spotifySpecCurrentY;
+  spotifySpecDragging = false;
+}
+
+function spotifySpecSetTranslate(xPos, yPos, el) {
+  el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+}
+
+function toggleSpotifySpec() {
+  const content = document.getElementById('spotifyContent');
+  const btn = document.getElementById('spotifyMinimize');
+  
+  if (content.style.display === 'none') {
+    content.style.display = 'block';
+    btn.textContent = '−';
+    spotifySpecWidget.style.width = '300px';
+  } else {
+    content.style.display = 'none';
+    btn.textContent = '+';
+    spotifySpecWidget.style.width = '200px';
+  }
+}
+</script>
