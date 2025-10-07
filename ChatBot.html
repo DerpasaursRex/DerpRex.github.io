@@ -682,6 +682,88 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 // ========================================
+// PRIVACY PROTECTION SYSTEM
+// ========================================
+
+function detectPersonalInfo(text) {
+  const detections = [];
+  
+  // IP Address detection (IPv4 and IPv6)
+  const ipv4Regex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+  const ipv6Regex = /\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/g;
+  
+  if (ipv4Regex.test(text) || ipv6Regex.test(text)) {
+    detections.push('IP Address');
+  }
+  
+  // Email addresses
+  const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
+  if (emailRegex.test(text)) {
+    detections.push('Email Address');
+  }
+  
+  // Phone numbers (various formats)
+  const phoneRegex = /(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
+  if (phoneRegex.test(text)) {
+    detections.push('Phone Number');
+  }
+  
+  // Street addresses (basic detection)
+  const addressRegex = /\b\d+\s+[A-Za-z]+\s+(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Lane|Ln|Drive|Dr|Court|Ct|Way)\b/gi;
+  if (addressRegex.test(text)) {
+    detections.push('Street Address');
+  }
+  
+  // Social Security Numbers (US format)
+  const ssnRegex = /\b\d{3}-\d{2}-\d{4}\b/g;
+  if (ssnRegex.test(text)) {
+    detections.push('Social Security Number');
+  }
+  
+  // Credit card numbers (basic 16-digit detection)
+  const creditCardRegex = /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g;
+  if (creditCardRegex.test(text)) {
+    detections.push('Credit Card Number');
+  }
+  
+  // Zip codes (US format)
+  const zipRegex = /\b\d{5}(?:-\d{4})?\b/g;
+  if (zipRegex.test(text)) {
+    detections.push('Zip Code');
+  }
+  
+  return detections;
+}
+
+function sanitizePersonalInfo(text) {
+  let sanitized = text;
+  
+  // Replace IP addresses
+  sanitized = sanitized.replace(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g, '[IP_REDACTED]');
+  sanitized = sanitized.replace(/\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/g, '[IP_REDACTED]');
+  
+  // Replace email addresses
+  sanitized = sanitized.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL_REDACTED]');
+  
+  // Replace phone numbers
+  sanitized = sanitized.replace(/(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g, '[PHONE_REDACTED]');
+  
+  // Replace street addresses
+  sanitized = sanitized.replace(/\b\d+\s+[A-Za-z]+\s+(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Lane|Ln|Drive|Dr|Court|Ct|Way)\b/gi, '[ADDRESS_REDACTED]');
+  
+  // Replace SSN
+  sanitized = sanitized.replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[SSN_REDACTED]');
+  
+  // Replace credit cards
+  sanitized = sanitized.replace(/\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, '[CARD_REDACTED]');
+  
+  // Replace zip codes
+  sanitized = sanitized.replace(/\b\d{5}(?:-\d{4})?\b/g, '[ZIP_REDACTED]');
+  
+  return sanitized;
+}
+
+// ========================================
 // CONTENT FILTERING SYSTEM (SFW/NSFW)
 // ========================================
 
@@ -839,23 +921,34 @@ function initializeMemory() {
 function extractAndLearn(userInput, botResponse) {
   if (!currentUser) return;
   
+  // Check for personal info before learning
+  const personalInfo = detectPersonalInfo(userInput);
+  if (personalInfo.length > 0) {
+    // Don't learn from messages containing personal info
+    return;
+  }
+  
   const lower = userInput.toLowerCase();
   
-  // Extract user's name
+  // Extract user's name (first name only, no full names)
   if (/my name is|i'm called|call me|i am/i.test(lower)) {
     const nameMatch = lower.match(/(?:my name is|i'm called|call me|i am)\s+([a-z]+)/i);
     if (nameMatch && nameMatch[1]) {
-      userMemory.userName = nameMatch[1];
-      saveMemory();
+      const name = nameMatch[1];
+      // Only store if it's a single word (first name)
+      if (!name.includes(' ')) {
+        userMemory.userName = name;
+        saveMemory();
+      }
     }
   }
   
-  // Extract preferences (likes/dislikes)
+  // Extract preferences (likes/dislikes) - sanitized
   if (/i (love|like|enjoy|prefer|hate|dislike)/i.test(lower)) {
     const prefMatch = lower.match(/i (love|like|enjoy|prefer|hate|dislike)\s+(.+?)(?:\.|!|$)/i);
     if (prefMatch) {
       const sentiment = prefMatch[1];
-      const thing = prefMatch[2].trim();
+      const thing = sanitizePersonalInfo(prefMatch[2].trim());
       
       if (!userMemory.preferences[thing]) {
         userMemory.preferences[thing] = sentiment;
@@ -864,9 +957,10 @@ function extractAndLearn(userInput, botResponse) {
     }
   }
   
-  // Extract important facts user shares
+  // Extract important facts user shares - sanitized
   if (/i (work|study|live|am from|come from)/i.test(lower)) {
-    const fact = userInput.substring(0, 100); // Store first 100 chars
+    const sanitizedInput = sanitizePersonalInfo(userInput);
+    const fact = sanitizedInput.substring(0, 100); // Store first 100 chars
     if (!userMemory.facts.includes(fact)) {
       userMemory.facts.push(fact);
       if (userMemory.facts.length > 20) userMemory.facts.shift(); // Keep last 20
@@ -874,8 +968,9 @@ function extractAndLearn(userInput, botResponse) {
     }
   }
   
-  // Track discussed topics
-  const words = lower.split(' ').filter(w => w.length > 4);
+  // Track discussed topics (sanitized)
+  const sanitizedInput = sanitizePersonalInfo(userInput);
+  const words = sanitizedInput.toLowerCase().split(' ').filter(w => w.length > 4);
   words.forEach(word => {
     if (!userMemory.topics.includes(word)) {
       userMemory.topics.push(word);
@@ -1849,6 +1944,18 @@ function executeCommand() {
   }
   
   const commandUpper = command.toUpperCase();
+  
+  // Check for personal information
+  const personalInfoDetected = detectPersonalInfo(command);
+  if (personalInfoDetected.length > 0) {
+    addTerminalLine(command, '#ffff00', true);
+    input.value = '';
+    addTerminalLine('🛡️ PRIVACY PROTECTION ACTIVATED', '#ff6600');
+    addTerminalLine(`Detected: ${personalInfoDetected.join(', ')}`, '#ffff99');
+    addTerminalLine('Personal information has been redacted for your safety.', '#ffff99');
+    addTerminalLine('Your message will not be saved.', '#ffff99');
+    return;
+  }
   
   // Check content filter (except for mode switching commands)
   if (!commandUpper.startsWith('MODE ')) {
