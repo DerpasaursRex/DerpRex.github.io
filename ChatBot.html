@@ -92,30 +92,116 @@
   </div>
 </div>
 
-<!-- Password Screen -->
-<div id="passwordScreen" class="container-fluid" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: none; justify-content: center; align-items: center; background: #000;">
+<!-- Registration Screen (First Time Users) -->
+<div id="registrationScreen" class="container-fluid" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: none; justify-content: center; align-items: center; background: #000;">
   <div style="max-width: 600px; width: 90%; background: #000; border: 3px solid #00ff00; padding: 40px; box-shadow: 0 0 30px rgba(0,255,0,0.3);">
     <div style="border-bottom: 2px solid #00ff00; padding-bottom: 15px; margin-bottom: 30px; text-align: center;">
       <pre style="color: #00ff00; margin: 0; font-size: 12px;">
 ╔═══════════════════════════════════════════╗
-║     SECURE ACCESS TERMINAL v1.0           ║
-║     Authorization Required                ║
+║     NEW USER REGISTRATION                 ║
+║     Create Your Account                   ║
 ╚═══════════════════════════════════════════╝
       </pre>
     </div>
     
     <div style="margin-bottom: 25px;">
       <div style="color: #00ff00; margin-bottom: 10px; font-family: 'Courier New', monospace; font-size: 16px;">
-        🔒 ACCESS RESTRICTED
+        👋 Welcome to the AI Chat System!
       </div>
       <div style="color: #c0ffc0; margin-bottom: 20px; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.6;">
-        This AI chat system requires authentication.
-        <br>Please enter your password to continue.
+        Create a username and password to save your conversations and preferences.
+        <br><br>Your data will be stored securely and privately.
+      </div>
+    </div>
+    
+    <div id="registrationError" style="color: #ff6666; font-family: 'Courier New', monospace; margin-bottom: 15px; display: none;">
+      ❌ Error message here
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+      <label style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px; display: block; margin-bottom: 8px;">
+        CREATE USERNAME:
+      </label>
+      <input type="text" id="regUsername" 
+             style="width: 100%; background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 12px; font-family: 'Courier New', monospace; font-size: 16px; outline: none;"
+             placeholder="Choose a username..."
+             onkeypress="if(event.key==='Enter') document.getElementById('regPassword').focus()">
+      <div style="color: #ffff99; font-size: 12px; margin-top: 5px; font-family: 'Courier New', monospace;">
+        3-20 characters, letters and numbers only
+      </div>
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+      <label style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px; display: block; margin-bottom: 8px;">
+        CREATE PASSWORD:
+      </label>
+      <input type="password" id="regPassword" 
+             style="width: 100%; background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 12px; font-family: 'Courier New', monospace; font-size: 16px; outline: none;"
+             placeholder="Choose a password..."
+             onkeypress="if(event.key==='Enter') document.getElementById('regPasswordConfirm').focus()">
+      <div style="color: #ffff99; font-size: 12px; margin-top: 5px; font-family: 'Courier New', monospace;">
+        At least 6 characters
+      </div>
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+      <label style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px; display: block; margin-bottom: 8px;">
+        CONFIRM PASSWORD:
+      </label>
+      <input type="password" id="regPasswordConfirm" 
+             style="width: 100%; background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 12px; font-family: 'Courier New', monospace; font-size: 16px; outline: none;"
+             placeholder="Re-enter password..."
+             onkeypress="if(event.key==='Enter') registerNewUser()">
+    </div>
+    
+    <button onclick="registerNewUser()" 
+            style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; cursor: pointer; transition: all 0.2s; margin-bottom: 10px;"
+            onmouseover="this.style.background='#00cc00'" 
+            onmouseout="this.style.background='#00ff00'">
+      [ CREATE ACCOUNT ]
+    </button>
+    
+    <div style="text-align: center; margin-top: 15px;">
+      <a href="#" onclick="showLoginScreen(); return false;" style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px; text-decoration: underline;">
+        Already have an account? Login here
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Login Screen (Returning Users) -->
+<div id="passwordScreen" class="container-fluid" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: none; justify-content: center; align-items: center; background: #000;">
+  <div style="max-width: 600px; width: 90%; background: #000; border: 3px solid #00ff00; padding: 40px; box-shadow: 0 0 30px rgba(0,255,0,0.3);">
+    <div style="border-bottom: 2px solid #00ff00; padding-bottom: 15px; margin-bottom: 30px; text-align: center;">
+      <pre style="color: #00ff00; margin: 0; font-size: 12px;">
+╔═══════════════════════════════════════════╗
+║     SECURE ACCESS TERMINAL v1.0           ║
+║     User Login                            ║
+╚═══════════════════════════════════════════╝
+      </pre>
+    </div>
+    
+    <div style="margin-bottom: 25px;">
+      <div style="color: #00ff00; margin-bottom: 10px; font-family: 'Courier New', monospace; font-size: 16px;">
+        🔒 USER LOGIN
+      </div>
+      <div style="color: #c0ffc0; margin-bottom: 20px; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.6;">
+        Welcome back! Login to access your chat history.
       </div>
     </div>
     
     <div id="passwordError" style="color: #ff6666; font-family: 'Courier New', monospace; margin-bottom: 15px; display: none;">
-      ❌ ACCESS DENIED: Incorrect password
+      ❌ ACCESS DENIED: Invalid credentials
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+      <label style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px; display: block; margin-bottom: 8px;">
+        USERNAME:
+      </label>
+      <input type="text" id="chatUsername" 
+             style="width: 100%; background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 12px; font-family: 'Courier New', monospace; font-size: 16px; outline: none;"
+             placeholder="Enter username..."
+             onkeypress="if(event.key==='Enter') document.getElementById('chatPassword').focus()">
     </div>
     
     <div style="margin-bottom: 20px;">
@@ -129,11 +215,17 @@
     </div>
     
     <button onclick="checkChatPassword()" 
-            style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; cursor: pointer; transition: all 0.2s;"
+            style="width: 100%; background: #00ff00; color: #000; border: none; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; cursor: pointer; transition: all 0.2s; margin-bottom: 10px;"
             onmouseover="this.style.background='#00cc00'" 
             onmouseout="this.style.background='#00ff00'">
-      [ ACCESS SYSTEM ]
+      [ LOGIN ]
     </button>
+    
+    <div style="text-align: center; margin-top: 15px;">
+      <a href="#" onclick="showRegistrationScreen(); return false;" style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px; text-decoration: underline;">
+        New user? Create an account
+      </a>
+    </div>
   </div>
 </div>
 
@@ -276,38 +368,237 @@ body {
 // PASSWORD PROTECTION
 // ========================================
 
-const CHAT_PASSWORD = "VoidRules"; // Change this to your desired password
+const CHAT_PASSWORD = "VoidRules"; // Master password (no longer used for new users)
+let currentUser = null;
+
+// User database (stored in localStorage)
+function getUserDatabase() {
+  return JSON.parse(localStorage.getItem('userDatabase')) || {};
+}
+
+function saveUserDatabase(db) {
+  localStorage.setItem('userDatabase', JSON.stringify(db));
+}
+
+function showRegistrationScreen() {
+  document.getElementById('passwordScreen').style.display = 'none';
+  document.getElementById('registrationScreen').style.display = 'flex';
+  document.getElementById('passwordError').style.display = 'none';
+  setTimeout(() => {
+    document.getElementById('regUsername').focus();
+  }, 100);
+}
+
+function showLoginScreen() {
+  document.getElementById('registrationScreen').style.display = 'none';
+  document.getElementById('passwordScreen').style.display = 'flex';
+  document.getElementById('registrationError').style.display = 'none';
+  setTimeout(() => {
+    document.getElementById('chatUsername').focus();
+  }, 100);
+}
+
+function registerNewUser() {
+  const usernameInput = document.getElementById('regUsername');
+  const passwordInput = document.getElementById('regPassword');
+  const confirmInput = document.getElementById('regPasswordConfirm');
+  const errorDiv = document.getElementById('registrationError');
+  
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value;
+  const confirmPassword = confirmInput.value;
+  
+  // Validate username
+  if (!username) {
+    errorDiv.textContent = '❌ Please enter a username';
+    errorDiv.style.display = 'block';
+    usernameInput.focus();
+    return;
+  }
+  
+  if (username.length < 3 || username.length > 20) {
+    errorDiv.textContent = '❌ Username must be 3-20 characters';
+    errorDiv.style.display = 'block';
+    usernameInput.focus();
+    return;
+  }
+  
+  if (!/^[a-zA-Z0-9]+$/.test(username)) {
+    errorDiv.textContent = '❌ Username can only contain letters and numbers';
+    errorDiv.style.display = 'block';
+    usernameInput.focus();
+    return;
+  }
+  
+  // Check if username already exists
+  const userDB = getUserDatabase();
+  if (userDB[username]) {
+    errorDiv.textContent = '❌ Username already taken. Please choose another.';
+    errorDiv.style.display = 'block';
+    usernameInput.value = '';
+    usernameInput.focus();
+    return;
+  }
+  
+  // Validate password
+  if (!password) {
+    errorDiv.textContent = '❌ Please enter a password';
+    errorDiv.style.display = 'block';
+    passwordInput.focus();
+    return;
+  }
+  
+  if (password.length < 6) {
+    errorDiv.textContent = '❌ Password must be at least 6 characters';
+    errorDiv.style.display = 'block';
+    passwordInput.focus();
+    return;
+  }
+  
+  if (password !== confirmPassword) {
+    errorDiv.textContent = '❌ Passwords do not match';
+    errorDiv.style.display = 'block';
+    confirmInput.value = '';
+    confirmInput.focus();
+    return;
+  }
+  
+  // Create new user account
+  userDB[username] = {
+    password: password,
+    created: new Date().toISOString(),
+    lastLogin: new Date().toISOString()
+  };
+  saveUserDatabase(userDB);
+  
+  // Clear registration form
+  usernameInput.value = '';
+  passwordInput.value = '';
+  confirmInput.value = '';
+  errorDiv.style.display = 'none';
+  
+  // Show success message and login
+  document.getElementById('registrationScreen').style.display = 'none';
+  loginUser(username);
+}
 
 function checkChatPassword() {
-  const input = document.getElementById('chatPassword');
-  const password = input.value;
+  const usernameInput = document.getElementById('chatUsername');
+  const passwordInput = document.getElementById('chatPassword');
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value;
   const errorDiv = document.getElementById('passwordError');
   
-  if (password === CHAT_PASSWORD) {
-    // Correct password - show chat system
-    document.getElementById('passwordScreen').style.display = 'none';
-    document.getElementById('chatContainer').style.display = 'block';
-    
-    // Store session
-    sessionStorage.setItem('chatAccess', 'granted');
-    
-    // Focus on command input
-    setTimeout(() => {
-      document.getElementById('commandInput').focus();
-    }, 100);
-  } else {
-    // Incorrect password
+  // Validate inputs
+  if (!username) {
+    errorDiv.textContent = '❌ Please enter a username';
     errorDiv.style.display = 'block';
-    input.value = '';
-    input.focus();
-    
-    // Shake animation
-    const passwordScreen = document.getElementById('passwordScreen').firstElementChild;
-    passwordScreen.style.animation = 'shake 0.5s';
-    setTimeout(() => {
-      passwordScreen.style.animation = '';
-    }, 500);
+    usernameInput.focus();
+    return;
   }
+  
+  if (!password) {
+    errorDiv.textContent = '❌ Please enter a password';
+    errorDiv.style.display = 'block';
+    passwordInput.focus();
+    return;
+  }
+  
+  const userDB = getUserDatabase();
+  
+  // Check if user exists
+  if (userDB[username]) {
+    // Existing user - verify password
+    if (userDB[username].password === password) {
+      loginUser(username);
+    } else {
+      // Wrong password
+      errorDiv.textContent = '❌ ACCESS DENIED: Incorrect password';
+      errorDiv.style.display = 'block';
+      passwordInput.value = '';
+      passwordInput.focus();
+      
+      // Shake animation
+      const passwordScreen = document.getElementById('passwordScreen').firstElementChild;
+      passwordScreen.style.animation = 'shake 0.5s';
+      setTimeout(() => {
+        passwordScreen.style.animation = '';
+      }, 500);
+    }
+  } else {
+    // User doesn't exist - redirect to registration
+    errorDiv.textContent = '❌ User not found. Please create an account first.';
+    errorDiv.style.display = 'block';
+    
+    setTimeout(() => {
+      showRegistrationScreen();
+    }, 2000);
+  }
+}
+
+function loginUser(username) {
+  currentUser = username;
+  sessionStorage.setItem('currentUser', username);
+  
+  // Update last login
+  const userDB = getUserDatabase();
+  if (userDB[username]) {
+    userDB[username].lastLogin = new Date().toISOString();
+    saveUserDatabase(userDB);
+  }
+  
+  // Load user-specific data
+  loadUserData(username);
+  
+  // Initialize smart memory for this user
+  initializeMemory();
+  
+  // Show chat system
+  document.getElementById('passwordScreen').style.display = 'none';
+  document.getElementById('chatContainer').style.display = 'block';
+  
+  // Focus on command input
+  setTimeout(() => {
+    document.getElementById('commandInput').focus();
+  }, 100);
+}
+
+function loadUserData(username) {
+  const userDataKey = `user_${username}`;
+  const userData = JSON.parse(localStorage.getItem(userDataKey)) || {};
+  
+  // Load user-specific settings
+  if (userData.aiName) {
+    localStorage.setItem('terminalAIName', userData.aiName);
+  }
+  if (userData.journalPermission) {
+    localStorage.setItem('terminalJournalPermission', userData.journalPermission);
+  }
+  if (userData.journal) {
+    localStorage.setItem('terminalJournal', JSON.stringify(userData.journal));
+  }
+  if (userData.contentMode) {
+    localStorage.setItem('contentMode', userData.contentMode);
+  }
+  if (userData.ageVerified) {
+    localStorage.setItem('ageVerified', userData.ageVerified);
+  }
+}
+
+function saveUserData() {
+  if (!currentUser) return;
+  
+  const userDataKey = `user_${currentUser}`;
+  const userData = {
+    aiName: localStorage.getItem('terminalAIName'),
+    journalPermission: localStorage.getItem('terminalJournalPermission'),
+    journal: JSON.parse(localStorage.getItem('terminalJournal') || '[]'),
+    contentMode: localStorage.getItem('contentMode'),
+    ageVerified: localStorage.getItem('ageVerified'),
+    lastSaved: new Date().toISOString()
+  };
+  
+  localStorage.setItem(userDataKey, JSON.stringify(userData));
 }
 
 // ========================================
@@ -335,30 +626,57 @@ function selectLanguage(lang) {
   userLanguage = lang;
   localStorage.setItem('userLanguage', lang);
   
-  // Hide language screen, show password screen
-  document.getElementById('languageScreen').style.display = 'none';
-  document.getElementById('passwordScreen').style.display = 'flex';
+  const userDB = getUserDatabase();
+  const hasUsers = Object.keys(userDB).length > 0;
   
-  setTimeout(() => {
-    document.getElementById('chatPassword').focus();
-  }, 100);
+  // Hide language screen
+  document.getElementById('languageScreen').style.display = 'none';
+  
+  if (!hasUsers) {
+    // No users exist - show registration
+    document.getElementById('registrationScreen').style.display = 'flex';
+    setTimeout(() => {
+      document.getElementById('regUsername').focus();
+    }, 100);
+  } else {
+    // Users exist - show login
+    document.getElementById('passwordScreen').style.display = 'flex';
+    setTimeout(() => {
+      document.getElementById('chatUsername').focus();
+    }, 100);
+  }
 }
 
-// Always show language or password screen on load
+// Always show language or registration/login screen on load
 window.addEventListener('DOMContentLoaded', function() {
+  const userDB = getUserDatabase();
+  const hasUsers = Object.keys(userDB).length > 0;
+  
   if (!userLanguage) {
     // Show language selection first
     document.getElementById('languageScreen').style.display = 'flex';
+    document.getElementById('registrationScreen').style.display = 'none';
     document.getElementById('passwordScreen').style.display = 'none';
     document.getElementById('chatContainer').style.display = 'none';
-  } else {
-    // Language already selected, go to password
+  } else if (!hasUsers) {
+    // Language selected but no users exist - show registration
     document.getElementById('languageScreen').style.display = 'none';
+    document.getElementById('registrationScreen').style.display = 'flex';
+    document.getElementById('passwordScreen').style.display = 'none';
+    document.getElementById('chatContainer').style.display = 'none';
+    
+    setTimeout(() => {
+      document.getElementById('regUsername').focus();
+    }, 100);
+  } else {
+    // Language selected and users exist - show login
+    document.getElementById('languageScreen').style.display = 'none';
+    document.getElementById('registrationScreen').style.display = 'none';
     document.getElementById('passwordScreen').style.display = 'flex';
     document.getElementById('chatContainer').style.display = 'none';
     
     setTimeout(() => {
-      document.getElementById('chatPassword').focus();
+      document.getElementById('chatUsername').focus();
     }, 100);
   }
 });
@@ -500,6 +818,139 @@ function handleAgeVerification(input) {
 }
 
 // ========================================
+// SMART MEMORY SYSTEM - Context-aware learning
+// ========================================
+
+let userMemory = {};
+
+function initializeMemory() {
+  if (!currentUser) return;
+  
+  const memoryKey = `memory_${currentUser}`;
+  userMemory = JSON.parse(localStorage.getItem(memoryKey)) || {
+    userName: null,
+    preferences: {},
+    facts: [],
+    topics: [],
+    lastUpdated: new Date().toISOString()
+  };
+}
+
+function extractAndLearn(userInput, botResponse) {
+  if (!currentUser) return;
+  
+  const lower = userInput.toLowerCase();
+  
+  // Extract user's name
+  if (/my name is|i'm called|call me|i am/i.test(lower)) {
+    const nameMatch = lower.match(/(?:my name is|i'm called|call me|i am)\s+([a-z]+)/i);
+    if (nameMatch && nameMatch[1]) {
+      userMemory.userName = nameMatch[1];
+      saveMemory();
+    }
+  }
+  
+  // Extract preferences (likes/dislikes)
+  if (/i (love|like|enjoy|prefer|hate|dislike)/i.test(lower)) {
+    const prefMatch = lower.match(/i (love|like|enjoy|prefer|hate|dislike)\s+(.+?)(?:\.|!|$)/i);
+    if (prefMatch) {
+      const sentiment = prefMatch[1];
+      const thing = prefMatch[2].trim();
+      
+      if (!userMemory.preferences[thing]) {
+        userMemory.preferences[thing] = sentiment;
+        saveMemory();
+      }
+    }
+  }
+  
+  // Extract important facts user shares
+  if (/i (work|study|live|am from|come from)/i.test(lower)) {
+    const fact = userInput.substring(0, 100); // Store first 100 chars
+    if (!userMemory.facts.includes(fact)) {
+      userMemory.facts.push(fact);
+      if (userMemory.facts.length > 20) userMemory.facts.shift(); // Keep last 20
+      saveMemory();
+    }
+  }
+  
+  // Track discussed topics
+  const words = lower.split(' ').filter(w => w.length > 4);
+  words.forEach(word => {
+    if (!userMemory.topics.includes(word)) {
+      userMemory.topics.push(word);
+      if (userMemory.topics.length > 50) userMemory.topics.shift(); // Keep last 50
+    }
+  });
+  
+  saveMemory();
+}
+
+function saveMemory() {
+  if (!currentUser) return;
+  
+  userMemory.lastUpdated = new Date().toISOString();
+  const memoryKey = `memory_${currentUser}`;
+  localStorage.setItem(memoryKey, JSON.stringify(userMemory));
+}
+
+function recallMemory(query) {
+  const lower = query.toLowerCase();
+  
+  // Recall user's name
+  if (/what's my name|whats my name|my name|who am i/i.test(lower)) {
+    if (userMemory.userName) {
+      return `Your name is ${userMemory.userName}! 😊`;
+    }
+  }
+  
+  // Recall preferences
+  if (/what do i like|my preferences|remember about me/i.test(lower)) {
+    if (Object.keys(userMemory.preferences).length > 0) {
+      let response = `Here's what I remember about your preferences:\n\n`;
+      for (const [thing, sentiment] of Object.entries(userMemory.preferences)) {
+        response += `• You ${sentiment} ${thing}\n`;
+      }
+      return response;
+    } else {
+      return `I don't have any preferences recorded yet. Tell me what you like! 😊`;
+    }
+  }
+  
+  // Recall facts
+  if (/what do you know about me|tell me about myself|what have i told you/i.test(lower)) {
+    let response = `Here's what I remember about you:\n\n`;
+    
+    if (userMemory.userName) {
+      response += `📝 Name: ${userMemory.userName}\n\n`;
+    }
+    
+    if (Object.keys(userMemory.preferences).length > 0) {
+      response += `💭 Preferences:\n`;
+      for (const [thing, sentiment] of Object.entries(userMemory.preferences)) {
+        response += `  • You ${sentiment} ${thing}\n`;
+      }
+      response += '\n';
+    }
+    
+    if (userMemory.facts.length > 0) {
+      response += `📚 Things you've shared:\n`;
+      userMemory.facts.slice(-5).forEach(fact => {
+        response += `  • ${fact}\n`;
+      });
+    }
+    
+    if (!userMemory.userName && Object.keys(userMemory.preferences).length === 0 && userMemory.facts.length === 0) {
+      response = `I don't have much information about you yet. Tell me about yourself! 😊`;
+    }
+    
+    return response;
+  }
+  
+  return null;
+}
+
+// ========================================
 // JOURNAL SYSTEM - Persistent session data
 // ========================================
 
@@ -527,6 +978,7 @@ function saveToJournal(command, response) {
   if (window.journalSaveTimeout) clearTimeout(window.journalSaveTimeout);
   window.journalSaveTimeout = setTimeout(() => {
     localStorage.setItem('terminalJournal', JSON.stringify(activeJournal));
+    saveUserData(); // Save to user-specific storage
   }, 500);
   
   // Check if we should prompt to clear
@@ -697,6 +1149,10 @@ CONTENT MODES:
 MODE SFW     - Activate safe-for-work mode (default)
 MODE NSFW    - Activate mature content mode
 MODE STATUS  - Check current mode
+
+SMART MEMORY:
+MEMORY         - Show what the AI remembers about you
+FORGET ME      - Clear all learned information
 
 SPELL CHECK ON - Enable automatic spell checking
 SPELL CHECK OFF- Disable spell checking
@@ -1119,16 +1575,32 @@ function processNaturalLanguage(input, inputUpper) {
   const lower = input.toLowerCase();
   const aiName = localStorage.getItem('terminalAIName') || 'AI';
   
-  // Greetings (expanded)
+  // Greetings (expanded with memory)
   if (/^(hi|hello|hey|greetings|howdy|sup|yo|hiya|heya|morning|afternoon|evening|good morning|good afternoon|good evening)(\s|!|$|,)/i.test(lower)) {
-    const greetings = [
-      `Hey there! 👋 How can I help you today?`,
-      `Hello! Great to see you! What's on your mind?`,
-      `Hi! I'm ${aiName}. What would you like to chat about?`,
-      `Hey! 😊 What can I do for you?`,
-      `Greetings! How's your day going?`
-    ];
-    return greetings[Math.floor(Math.random() * greetings.length)];
+    let greeting;
+    
+    if (userMemory.userName) {
+      // Personalized greeting with user's name
+      const greetings = [
+        `Hey ${userMemory.userName}! 👋 How can I help you today?`,
+        `Hello ${userMemory.userName}! Great to see you again! What's on your mind?`,
+        `Hi ${userMemory.userName}! 😊 What can I do for you?`,
+        `Hey there, ${userMemory.userName}! How's your day going?`
+      ];
+      greeting = greetings[Math.floor(Math.random() * greetings.length)];
+    } else {
+      // Generic greeting
+      const greetings = [
+        `Hey there! 👋 How can I help you today?`,
+        `Hello! Great to see you! What's on your mind?`,
+        `Hi! I'm ${aiName}. What would you like to chat about?`,
+        `Hey! 😊 What can I do for you?`,
+        `Greetings! How's your day going?`
+      ];
+      greeting = greetings[Math.floor(Math.random() * greetings.length)];
+    }
+    
+    return greeting;
   }
   
   // How are you (expanded)
@@ -1459,13 +1931,19 @@ function executeCommand() {
   }
   
   if (commandUpper === 'LOGOUT') {
-    addTerminalLine('Logging out and returning to password screen...', '#ffff00');
+    addTerminalLine('Saving your data and logging out...', '#ffff00');
+    
+    // Save user data before logout
+    saveUserData();
+    
     setTimeout(() => {
       document.getElementById('chatContainer').style.display = 'none';
       document.getElementById('passwordScreen').style.display = 'flex';
+      document.getElementById('chatUsername').value = '';
       document.getElementById('chatPassword').value = '';
-      document.getElementById('chatPassword').focus();
-      sessionStorage.removeItem('chatAccess');
+      document.getElementById('chatUsername').focus();
+      sessionStorage.removeItem('currentUser');
+      currentUser = null;
     }, 500);
     return;
   }
@@ -1502,6 +1980,33 @@ function executeCommand() {
     localStorage.setItem('spellCheckEnabled', 'false');
     addTerminalLine('⚠️ SPELL CHECK DISABLED', '#ffff00');
     addTerminalLine('Messages will be sent without spell checking.', '#ffff99');
+    return;
+  }
+  
+  // Memory commands
+  if (commandUpper === 'MEMORY' || commandUpper === 'SHOW MEMORY') {
+    const memoryInfo = recallMemory('what do you know about me');
+    addTerminalLine(memoryInfo, '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'FORGET ME' || commandUpper === 'CLEAR MEMORY') {
+    if (!currentUser) {
+      addTerminalLine('No user logged in.', '#ff6666');
+      return;
+    }
+    
+    const memoryKey = `memory_${currentUser}`;
+    localStorage.removeItem(memoryKey);
+    userMemory = {
+      userName: null,
+      preferences: {},
+      facts: [],
+      topics: [],
+      lastUpdated: new Date().toISOString()
+    };
+    addTerminalLine('🧹 MEMORY CLEARED', '#ffff00');
+    addTerminalLine('All learned information about you has been forgotten.', '#ffff99');
     return;
   }
   
@@ -1650,12 +2155,21 @@ function executeCommand() {
     return;
   }
   
+  // Check if user is asking for recalled information
+  const memoryResponse = recallMemory(command);
+  if (memoryResponse) {
+    addTerminalLine(memoryResponse, '#00ff00');
+    saveToJournal(command, memoryResponse);
+    return;
+  }
+  
   // Try natural language processing first
   response = processNaturalLanguage(command, commandUpper);
   
   if (response) {
     addTerminalLine(response, '#00ff00');
     saveToJournal(command, response);
+    extractAndLearn(command, response); // Learn from this interaction
     return;
   }
   
@@ -1678,6 +2192,7 @@ function executeCommand() {
     response = getConversationalFallback(command);
     addTerminalLine(response, '#00ff00');
     saveToJournal(command, response);
+    extractAndLearn(command, response); // Learn even from unrecognized input
   }
 }
 
@@ -1701,7 +2216,8 @@ function checkFirstTimeUser() {
   } else {
     // Returning user - update header with AI name
     header.textContent = `[ ${aiName.toUpperCase()} TERMINAL SYSTEM ]`;
-    addTerminalLine(`Welcome back! I'm ${aiName}. 👋`, '#00ff00');
+    const username = currentUser || sessionStorage.getItem('currentUser') || 'User';
+    addTerminalLine(`Welcome back, ${username}! I'm ${aiName}. 👋`, '#00ff00');
     
     // Check if journal is loaded
     const localJournal = JSON.parse(localStorage.getItem('terminalJournal')) || [];
