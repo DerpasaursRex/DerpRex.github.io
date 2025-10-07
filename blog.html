@@ -318,115 +318,169 @@
 </div>
 
 <script>
-// Password protection
-const BLOG_PASSWORD = 'BrownWolfZack'; // Change this to your desired password
+// ========================================
+// SIMPLIFIED BLOG SYSTEM WITH PASSWORD PROTECTION
+// ========================================
 
-// Debug logging
-console.log('Blog script loaded successfully');
-console.log('Password protection initialized');
+const BLOG_PASSWORD = 'BrownWolfZack';
+console.log('Blog system loaded');
 
-// Debug function to check posts
-window.debugPosts = function() {
-  const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-  console.log('=== POST DEBUG INFO ===');
-  console.log('Total posts in localStorage:', posts.length);
-  console.log('Posts data:', posts);
-  console.log('blogPosts element:', document.getElementById('blogPosts'));
-  console.log('========================');
-  return posts;
-};
+// ========================================
+// HELPER FUNCTIONS
+// ========================================
 
-// Function to create a sample post for testing
-window.createSamplePost = function() {
-  const samplePost = {
-    title: 'Sample Post - ' + new Date().toLocaleTimeString(),
-    content: 'This is a sample post created for testing purposes. It should appear in the blog posts section.',
-    author: 'Catherine Ann MacDonald',
-    date: new Date().toLocaleDateString(),
-    id: Date.now(),
-    pinned: false
-  };
-  
-  console.log('Creating sample post:', samplePost);
-  
+function showAlert(message, type) {
+  const alertDiv = document.createElement('div');
+  alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+  alertDiv.innerHTML = `${message}<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>`;
+  document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.container').firstChild);
+  setTimeout(() => alertDiv.remove(), 3000);
+}
+
+function getPosts() {
   try {
-    let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-    posts.unshift(samplePost);
-    localStorage.setItem('blogPosts', JSON.stringify(posts));
-    console.log('Sample post saved. Total posts:', posts.length);
-    
-    // Refresh display
-    document.getElementById('blogPosts').innerHTML = '';
-    window.loadPosts();
-    
-    window.showMessage('Sample post created successfully!', 'success');
+    return JSON.parse(localStorage.getItem('blogPosts')) || [];
   } catch (error) {
-    console.error('Error creating sample post:', error);
-    window.showMessage('Error creating sample post.', 'danger');
+    console.error('Error loading posts:', error);
+    return [];
   }
-};
+}
+
+function savePosts(posts) {
+  try {
+    localStorage.setItem('blogPosts', JSON.stringify(posts));
+    return true;
+  } catch (error) {
+    console.error('Error saving posts:', error);
+    showAlert('Error saving posts!', 'danger');
+    return false;
+  }
+}
+
+function askPassword(action) {
+  const password = prompt(`Enter password to ${action}:`);
+  if (password === BLOG_PASSWORD) {
+    return true;
+  } else if (password !== null) {
+    alert('Incorrect password!');
+  }
+  return false;
+}
+
+// ========================================
+// PASSWORD & ACCESS CONTROL
+// ========================================
 
 function checkPassword() {
-  const enteredPassword = document.getElementById('accessPassword').value;
-  
-  if (enteredPassword === BLOG_PASSWORD) {
-    // Correct password - show posting form and data management
+  const password = document.getElementById('accessPassword').value;
+  if (password === BLOG_PASSWORD) {
     document.getElementById('passwordSection').style.display = 'none';
     document.getElementById('blogFormSection').style.display = 'block';
     document.getElementById('dataManagementSection').style.display = 'block';
-    
-    // Store session in localStorage
     localStorage.setItem('blogAccess', 'true');
-    
-    window.showMessage('Access granted! You can now post to the blog and access data management.', 'success');
+    showAlert('Access granted!', 'success');
   } else {
-    // Wrong password
-    window.showMessage('Incorrect password. Access denied.', 'danger');
+    showAlert('Incorrect password!', 'danger');
     document.getElementById('accessPassword').value = '';
   }
 }
 
 function logout() {
-  // Hide posting form and data management, show password section
   document.getElementById('blogFormSection').style.display = 'none';
   document.getElementById('dataManagementSection').style.display = 'none';
   document.getElementById('passwordSection').style.display = 'block';
-  
-  // Clear session
   localStorage.removeItem('blogAccess');
-  
-  // Clear form
   document.getElementById('blogForm').reset();
   document.getElementById('postAuthor').value = 'Catherine Ann MacDonald';
-  
-  window.showMessage('Posting locked. Password required to access.', 'info');
+  showAlert('Logged out', 'info');
 }
 
-// Check if user is already logged in
 function checkSession() {
   const hasAccess = localStorage.getItem('blogAccess') === 'true';
+  document.getElementById('passwordSection').style.display = hasAccess ? 'none' : 'block';
+  document.getElementById('blogFormSection').style.display = hasAccess ? 'block' : 'none';
+  document.getElementById('dataManagementSection').style.display = hasAccess ? 'block' : 'none';
+}
+
+// ========================================
+// DISPLAY POSTS
+// ========================================
+
+function displayPosts() {
+  console.log('Displaying posts...');
+  const posts = getPosts();
+  const container = document.getElementById('blogPosts');
+  container.innerHTML = '';
   
-  if (hasAccess) {
-    document.getElementById('passwordSection').style.display = 'none';
-    document.getElementById('blogFormSection').style.display = 'block';
-    document.getElementById('dataManagementSection').style.display = 'block';
-  } else {
-    document.getElementById('passwordSection').style.display = 'block';
-    document.getElementById('blogFormSection').style.display = 'none';
-    document.getElementById('dataManagementSection').style.display = 'none';
+  // Sort: pinned first, then by date
+  posts.sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+    return b.id - a.id; // Newer first
+  });
+  
+  posts.forEach(post => {
+    const postDiv = document.createElement('div');
+    postDiv.className = 'card mb-4';
+    postDiv.style.cssText = 'background-image: url("whitepaper.jpg"); background-size: cover;';
+    
+    const pinIcon = post.pinned ? '📌 ' : '';
+    const pinBtn = post.pinned ? 
+      `<button class="btn btn-sm btn-outline-warning" onclick="togglePin(${post.id})">Unpin</button>` :
+      `<button class="btn btn-sm btn-outline-secondary" onclick="togglePin(${post.id})">Pin</button>`;
+    
+    postDiv.innerHTML = `
+      <div class="card-body">
+        <h4>${pinIcon}${post.title}</h4>
+        <p><small class="text-muted">By ${post.author} on ${post.date}</small></p>
+        ${post.image ? `<img src="${post.image}" class="img-fluid mb-3" style="max-height:400px">` : ''}
+        <p>${post.content.replace(/\n/g, '<br>')}</p>
+        ${pinBtn}
+        <button class="btn btn-sm btn-outline-danger ml-2" onclick="deletePost(${post.id})">Delete</button>
+      </div>
+    `;
+    container.appendChild(postDiv);
+  });
+  
+  console.log(`Displayed ${posts.length} posts`);
+}
+
+// ========================================
+// POST MANAGEMENT
+// ========================================
+
+function togglePin(postId) {
+  if (!askPassword('pin/unpin this post')) return;
+  const posts = getPosts();
+  const post = posts.find(p => p.id === postId);
+  if (post) {
+    post.pinned = !post.pinned;
+    savePosts(posts);
+    displayPosts();
+    showAlert(`Post ${post.pinned ? 'pinned' : 'unpinned'}!`, 'success');
   }
 }
 
-// Blog functionality
+function deletePost(postId) {
+  if (!askPassword('delete this post')) return;
+  if (confirm('Really delete this post?')) {
+    const posts = getPosts().filter(p => p.id !== postId);
+    savePosts(posts);
+    displayPosts();
+    showAlert('Post deleted!', 'success');
+  }
+}
+
+// ========================================
+// INITIALIZE
+// ========================================
+
 document.addEventListener('DOMContentLoaded', function() {
-  // Check session first
+  console.log('Initializing blog...');
   checkSession();
+  displayPosts();
   
   const blogForm = document.getElementById('blogForm');
-  const blogPosts = document.getElementById('blogPosts');
-  
-  // Load posts from localStorage
-  window.loadPosts();
   
   blogForm.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -436,271 +490,88 @@ document.addEventListener('DOMContentLoaded', function() {
     const author = document.getElementById('postAuthor').value.trim();
     const isPinned = document.getElementById('pinPost').checked;
     const imageFile = document.getElementById('postImage').files[0];
-    const date = new Date().toLocaleDateString();
     
-    // Validate required fields
-    if (!title || !content || !author) {
-      window.showMessage('Please fill in all required fields (Title, Content, Author).', 'danger');
+    if (!title || !content) {
+      showAlert('Please enter title and content!', 'danger');
       return;
     }
     
-    console.log('Creating new post:', { title, content, author, isPinned });
+    console.log('Creating post:', title);
     
-    // Handle image upload
-    if (imageFile) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const imageData = e.target.result;
-        
-        // Create new post object with image
-        const newPost = {
-          title: title,
-          content: content,
-          author: author,
-          date: date,
-          id: Date.now(),
-          pinned: isPinned,
-          image: imageData,
-          imageName: imageFile.name
-        };
-        
-        // Save to localStorage
-        savePost(newPost);
-        
-        // Refresh the display to show all posts in correct order
-        document.getElementById('blogPosts').innerHTML = '';
-        window.loadPosts();
-        
-        // Clear form
+    const createPost = (imageData) => {
+      const newPost = {
+        id: Date.now(),
+        title,
+        content,
+        author,
+        date: new Date().toLocaleDateString(),
+        pinned: isPinned,
+        image: imageData || null
+      };
+      
+      const posts = getPosts();
+      posts.unshift(newPost);
+      
+      if (savePosts(posts)) {
         blogForm.reset();
         document.getElementById('postAuthor').value = 'Catherine Ann MacDonald';
-        
-        // Show success message
-        window.showMessage('Post with image published successfully!', 'success');
-      };
+        displayPosts();
+        showAlert('Post published!', 'success');
+      }
+    };
+    
+    if (imageFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => createPost(e.target.result);
       reader.readAsDataURL(imageFile);
     } else {
-      // Create new post object without image
-      const newPost = {
-        title: title,
-        content: content,
-        author: author,
-        date: date,
-        id: Date.now(),
-        pinned: isPinned
-      };
-      
-      // Save to localStorage
-      savePost(newPost);
-      
-      // Refresh the display to show all posts in correct order
-      document.getElementById('blogPosts').innerHTML = '';
-      window.loadPosts();
-      
-      // Clear form
-      blogForm.reset();
-      document.getElementById('postAuthor').value = 'Catherine Ann MacDonald';
-      
-      // Show success message
-      window.showMessage('Post published successfully!', 'success');
+      createPost();
     }
   });
   
-  function savePost(post) {
-    try {
-      console.log('Saving post to localStorage:', post.title);
-      let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-      posts.unshift(post); // Add to beginning
-      localStorage.setItem('blogPosts', JSON.stringify(posts));
-      console.log('Post saved successfully. Total posts:', posts.length);
-    } catch (error) {
-      console.error('Error saving post:', error);
-      window.showMessage('Error saving post. Please try again.', 'danger');
-    }
-  }
-  
-  // Move loadPosts to global scope
-  window.loadPosts = function() {
-    console.log('Loading posts...');
-    const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-    console.log('Found posts:', posts.length);
-    
-    // Clear existing posts first
-    const blogPosts = document.getElementById('blogPosts');
-    if (!blogPosts) {
-      console.error('blogPosts element not found!');
-      return;
-    }
-    blogPosts.innerHTML = '';
-    
-    // Sort posts: pinned first, then by date (newest first)
-    const sortedPosts = posts.sort((a, b) => {
-      if (a.pinned && !b.pinned) return -1;
-      if (!a.pinned && b.pinned) return 1;
-      return new Date(b.date) - new Date(a.date);
-    });
-    
-    console.log('Sorted posts:', sortedPosts.length);
-    sortedPosts.forEach((post, index) => {
-      console.log(`Adding post ${index + 1}:`, post.title);
-      window.addPostToDisplay(post);
-    });
-  };
-  
-  // Move addPostToDisplay to global scope
-  window.addPostToDisplay = function(post) {
-    console.log('Adding post to display:', post.title);
-    const blogPosts = document.getElementById('blogPosts');
-    if (!blogPosts) {
-      console.error('blogPosts element not found in addPostToDisplay!');
-      return;
-    }
-    
-    const postElement = document.createElement('div');
-    postElement.className = 'card mb-4';
-    postElement.style.backgroundImage = "url('whitepaper.jpg')";
-    postElement.style.backgroundSize = 'cover';
-    postElement.style.backgroundPosition = 'center';
-    postElement.style.backgroundRepeat = 'no-repeat';
-    
-    const pinIcon = post.pinned ? '📌' : '';
-    const pinButton = post.pinned ? 
-      `<button class="btn btn-sm btn-outline-warning" onclick="togglePin(${post.id})" title="Unpin post">📌 Unpin</button>` :
-      `<button class="btn btn-sm btn-outline-secondary" onclick="togglePin(${post.id})" title="Pin post">📌 Pin</button>`;
-    
-    const imageHtml = post.image ? 
-      `<div class="mb-3">
-        <img src="${post.image}" alt="${post.imageName || 'Blog image'}" class="img-fluid rounded" style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain;">
-      </div>` : '';
-    
-    postElement.innerHTML = `
-      <div class="card-body">
-        <h4 class="card-title">${pinIcon} ${post.title}</h4>
-        <p class="card-text"><small class="text-muted">Posted by ${post.author} on <span class="post-date">${post.date}</span></small></p>
-        ${imageHtml}
-        <p class="card-text">${post.content.replace(/\n/g, '<br>')}</p>
-        <div class="btn-group" role="group">
-          ${pinButton}
-          <button class="btn btn-sm btn-outline-danger" onclick="deletePost(${post.id})">Delete Post</button>
-        </div>
-      </div>
-    `;
-    
-    // Insert at the beginning (after the form)
-    if (blogPosts.children.length > 0) {
-      blogPosts.insertBefore(postElement, blogPosts.children[0]);
-    } else {
-      blogPosts.appendChild(postElement);
-    }
-    console.log('Post added to DOM:', post.title);
-  };
-  
-  // Move showMessage to global scope
-  window.showMessage = function(message, type) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
-    alertDiv.innerHTML = `
-      ${message}
-      <button type="button" class="close" data-dismiss="alert">
-        <span>&times;</span>
-      </button>
-    `;
-    
-    const container = document.querySelector('.container');
-    container.insertBefore(alertDiv, container.firstChild);
-    
-    // Auto-remove after 3 seconds
-    setTimeout(() => {
-      if (alertDiv.parentNode) {
-        alertDiv.remove();
-      }
-    }, 3000);
-  };
 });
 
-// Password verification function for pin/delete actions
-window.verifyPasswordForAction = function(action, callback) {
-  console.log(`Password verification requested for: ${action}`);
-  console.log('About to show password prompt');
-  
-  const enteredPassword = prompt(`Enter password to ${action}:`);
-  console.log('Password prompt result:', enteredPassword);
-  
-  if (enteredPassword === BLOG_PASSWORD) {
-    console.log('Password verified successfully');
-    callback();
-  } else if (enteredPassword !== null) { // User didn't cancel
-    console.log('Incorrect password entered');
-    window.showMessage('Incorrect password. Action denied.', 'danger');
-  } else {
-    console.log('Password prompt cancelled');
-  }
+// ========================================
+// DEBUG & TEST FUNCTIONS
+// ========================================
+
+window.debugPosts = function() {
+  const posts = getPosts();
+  console.log('Total posts:', posts.length);
+  console.log(posts);
+  alert(`Total posts: ${posts.length}`);
 };
 
-// Simple and reliable password verification
-window.verifyPasswordForAction = function(action, callback) {
-  // Simple prompt - this should work on all browsers
-  const password = prompt(`Password required for ${action}:\n\nEnter password:`);
-  
-  if (password === BLOG_PASSWORD) {
-    callback();
-  } else if (password !== null) {
-    alert('Incorrect password. Action denied.');
-  }
+window.createSamplePost = function() {
+  const post = {
+    id: Date.now(),
+    title: 'Sample Post ' + new Date().toLocaleTimeString(),
+    content: 'This is a sample post for testing.',
+    author: 'Catherine Ann MacDonald',
+    date: new Date().toLocaleDateString(),
+    pinned: false
+  };
+  const posts = getPosts();
+  posts.unshift(post);
+  savePosts(posts);
+  displayPosts();
+  showAlert('Sample post created!', 'success');
 };
 
-// Toggle pin function (global scope)
-function togglePin(postId) {
-  window.verifyPasswordForAction('pin/unpin this post', function() {
-    let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-    const postIndex = posts.findIndex(post => post.id === postId);
-    
-    if (postIndex !== -1) {
-      posts[postIndex].pinned = !posts[postIndex].pinned;
-      localStorage.setItem('blogPosts', JSON.stringify(posts));
-      
-      // Refresh the display
-      document.getElementById('blogPosts').innerHTML = '';
-      window.loadPosts();
-      
-      const action = posts[postIndex].pinned ? 'pinned' : 'unpinned';
-      window.showMessage(`Post ${action} successfully!`, 'success');
-    }
-  });
-}
+// Old duplicate functions removed - using simplified versions above
 
-// Delete post function (global scope)
-function deletePost(postId) {
-  window.verifyPasswordForAction('delete this post', function() {
-    if (confirm('Are you sure you want to delete this post?')) {
-      // Remove from localStorage
-      let posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-      posts = posts.filter(post => post.id !== postId);
-      localStorage.setItem('blogPosts', JSON.stringify(posts));
-      
-      // Refresh the display
-      document.getElementById('blogPosts').innerHTML = '';
-      window.loadPosts();
-      
-      window.showMessage('Post deleted successfully!', 'success');
-    }
-  });
-}
+// ========================================
+// DATA MANAGEMENT
+// ========================================
 
-// Duplicate showMessage function removed - using global version
-
-// Data Management Functions
 function exportBlogData() {
-  const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-  const dataStr = JSON.stringify(posts, null, 2);
-  const dataBlob = new Blob([dataStr], {type: 'application/json'});
-  
+  const posts = getPosts();
+  const blob = new Blob([JSON.stringify(posts, null, 2)], {type: 'application/json'});
   const link = document.createElement('a');
-  link.href = URL.createObjectURL(dataBlob);
+  link.href = URL.createObjectURL(blob);
   link.download = `blog-export-${new Date().toISOString().split('T')[0]}.json`;
   link.click();
-  
-  window.showMessage('Blog data exported successfully!', 'success');
+  showAlert('Data exported!', 'success');
 }
 
 function importBlogData(event) {
@@ -708,130 +579,64 @@ function importBlogData(event) {
   if (!file) return;
   
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = (e) => {
     try {
-      const importedPosts = JSON.parse(e.target.result);
-      
-      if (Array.isArray(importedPosts)) {
-        // Merge with existing posts (avoid duplicates by ID)
-        const existingPosts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-        const existingIds = new Set(existingPosts.map(p => p.id));
-        
-        const newPosts = importedPosts.filter(post => !existingIds.has(post.id));
-        const allPosts = [...newPosts, ...existingPosts];
-        
-        localStorage.setItem('blogPosts', JSON.stringify(allPosts));
-        
-        // Refresh display
-        document.getElementById('blogPosts').innerHTML = '';
-        window.loadPosts();
-        
-        window.showMessage(`Imported ${newPosts.length} new posts successfully!`, 'success');
+      const imported = JSON.parse(e.target.result);
+      if (Array.isArray(imported)) {
+        const existing = getPosts();
+        const existingIds = new Set(existing.map(p => p.id));
+        const newPosts = imported.filter(p => !existingIds.has(p.id));
+        savePosts([...newPosts, ...existing]);
+        displayPosts();
+        showAlert(`Imported ${newPosts.length} new posts!`, 'success');
       } else {
-        window.showMessage('Invalid file format. Please select a valid blog export file.', 'danger');
+        showAlert('Invalid file format!', 'danger');
       }
     } catch (error) {
-      window.showMessage('Error reading file. Please check the file format.', 'danger');
+      showAlert('Error reading file!', 'danger');
     }
   };
   reader.readAsText(file);
-  
-  // Reset file input
   event.target.value = '';
 }
 
 function backupToFile() {
-  const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-  const backupData = {
-    timestamp: new Date().toISOString(),
-    version: '1.0',
-    posts: posts
-  };
-  
-  const dataStr = JSON.stringify(backupData, null, 2);
-  const dataBlob = new Blob([dataStr], {type: 'application/json'});
-  
+  const posts = getPosts();
+  const backup = { timestamp: new Date().toISOString(), version: '1.0', posts };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], {type: 'application/json'});
   const link = document.createElement('a');
-  link.href = URL.createObjectURL(dataBlob);
+  link.href = URL.createObjectURL(blob);
   link.download = `blog-backup-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
   link.click();
-  
-  // Store backup info in localStorage
-  localStorage.setItem('lastBackup', JSON.stringify({
-    timestamp: backupData.timestamp,
-    postCount: posts.length
-  }));
-  
-  window.showMessage('Backup created successfully!', 'success');
+  showAlert('Backup created!', 'success');
 }
 
 function loadFromBackup() {
-  const backupInfo = localStorage.getItem('lastBackup');
-  if (!backupInfo) {
-    window.showMessage('No backup found. Please create a backup first.', 'warning');
-    return;
-  }
-  
-  const backup = JSON.parse(backupInfo);
-  const confirmRestore = confirm(
-    `Restore backup from ${new Date(backup.timestamp).toLocaleString()}?\n` +
-    `This will replace all current blog posts with ${backup.postCount} posts from the backup.`
-  );
-  
-  if (confirmRestore) {
-    // Trigger file input for backup file
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.json';
-    fileInput.onchange = function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const backupData = JSON.parse(e.target.result);
-          
-          if (backupData.posts && Array.isArray(backupData.posts)) {
-            localStorage.setItem('blogPosts', JSON.stringify(backupData.posts));
-            
-            // Refresh display
-            document.getElementById('blogPosts').innerHTML = '';
-            window.loadPosts();
-            
-            window.showMessage(`Restored ${backupData.posts.length} posts from backup!`, 'success');
-          } else {
-            window.showMessage('Invalid backup file format.', 'danger');
-          }
-        } catch (error) {
-          window.showMessage('Error reading backup file.', 'danger');
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const backup = JSON.parse(e.target.result);
+        if (backup.posts && Array.isArray(backup.posts)) {
+          savePosts(backup.posts);
+          displayPosts();
+          showAlert(`Restored ${backup.posts.length} posts!`, 'success');
+        } else {
+          showAlert('Invalid backup format!', 'danger');
         }
-      };
-      reader.readAsText(file);
+      } catch (error) {
+        showAlert('Error reading backup!', 'danger');
+      }
     };
-    fileInput.click();
-  }
+    reader.readAsText(file);
+  };
+  input.click();
 }
-
-// Auto-save functionality (saves every 30 seconds)
-setInterval(function() {
-  const posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-  if (posts.length > 0) {
-    localStorage.setItem('autoSave', JSON.stringify({
-      timestamp: new Date().toISOString(),
-      postCount: posts.length
-    }));
-  }
-}, 30000); // 30 seconds
-
-// Show last backup info on page load
-document.addEventListener('DOMContentLoaded', function() {
-  const backupInfo = localStorage.getItem('lastBackup');
-  if (backupInfo) {
-    const backup = JSON.parse(backupInfo);
-    console.log(`Last backup: ${new Date(backup.timestamp).toLocaleString()} (${backup.postCount} posts)`);
-  }
-});
 </script>
 
 <!-- Walking Character -->
