@@ -543,7 +543,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Sorted posts:', sortedPosts.length);
     sortedPosts.forEach((post, index) => {
       console.log(`Adding post ${index + 1}:`, post.title);
-      addPostToDisplay(post);
+      window.addPostToDisplay(post);
     });
   };
   
