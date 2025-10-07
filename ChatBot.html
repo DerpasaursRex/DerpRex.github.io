@@ -2190,6 +2190,75 @@ function formatMarkdown(text, isRoleplay = false) {
   return formatted;
 }
 
+function displayInteractiveHelp() {
+  const chatMessages = document.getElementById('chatMessages');
+  const helpDiv = document.createElement('div');
+  helpDiv.style.marginBottom = '15px';
+  
+  const aiName = localStorage.getItem('terminalAIName') || 'AI';
+  
+  helpDiv.innerHTML = `
+    <div style="display: flex; justify-content: flex-start; margin: 10px 0;">
+      <div style="background: #1a1a1a; color: #c0ffc0; padding: 15px; border-radius: 15px; max-width: 90%; border-left: 3px solid #00ff00; font-family: 'Courier New', monospace;">
+        <div style="color: #00ff00; font-weight: bold; margin-bottom: 10px;">${aiName} - Interactive Help Menu</div>
+        
+        <div style="color: #ffff99; font-weight: bold; margin-top: 15px; margin-bottom: 8px;">🌐 WEB ACCESS:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+          <button onclick="document.getElementById('commandInput').value='WIKI '; document.getElementById('commandInput').focus();" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">WIKI</button>
+          <button onclick="document.getElementById('commandInput').value='DEFINE '; document.getElementById('commandInput').focus();" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">DEFINE</button>
+          <button onclick="executeQuickCommand('FACT')" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">FACT</button>
+          <button onclick="executeQuickCommand('JOKE')" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">JOKE</button>
+          <button onclick="executeQuickCommand('QUOTE')" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">QUOTE</button>
+          <button onclick="executeQuickCommand('ADVICE')" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">ADVICE</button>
+        </div>
+        
+        <div style="color: #ffff99; font-weight: bold; margin-top: 15px; margin-bottom: 8px;">📁 SESSION:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+          <button onclick="executeQuickCommand('JOURNAL')" style="background: #4169E1; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">JOURNAL</button>
+          <button onclick="executeQuickCommand('JOURNAL EXPORT')" style="background: #4169E1; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">EXPORT</button>
+          <button onclick="executeQuickCommand('JOURNAL LOAD')" style="background: #4169E1; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">LOAD</button>
+          <button onclick="executeQuickCommand('JOURNAL CLEAR')" style="background: #4169E1; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">CLEAR</button>
+        </div>
+        
+        <div style="color: #ffff99; font-weight: bold; margin-top: 15px; margin-bottom: 8px;">🎭 MODES:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+          <button onclick="executeQuickCommand('MODE SFW')" style="background: #00ff00; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">SFW</button>
+          <button onclick="executeQuickCommand('MODE NSFW')" style="background: #ff6600; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">NSFW</button>
+          <button onclick="executeQuickCommand('ROLEPLAY ON')" style="background: #9370DB; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">RP ON</button>
+          <button onclick="executeQuickCommand('ROLEPLAY OFF')" style="background: #9370DB; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">RP OFF</button>
+        </div>
+        
+        <div style="color: #ffff99; font-weight: bold; margin-top: 15px; margin-bottom: 8px;">🧠 MEMORY:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+          <button onclick="executeQuickCommand('MEMORY')" style="background: #FFD700; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">SHOW MEMORY</button>
+          <button onclick="executeQuickCommand('FORGET ME')" style="background: #FFD700; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">FORGET ME</button>
+        </div>
+        
+        <div style="color: #ffff99; font-weight: bold; margin-top: 15px; margin-bottom: 8px;">⚙️ SETTINGS:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+          <button onclick="executeQuickCommand('SPELL CHECK ON')" style="background: #666; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">SPELL ON</button>
+          <button onclick="executeQuickCommand('SPELL CHECK OFF')" style="background: #666; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">SPELL OFF</button>
+          <button onclick="executeQuickCommand('CLEAR')" style="background: #666; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">CLEAR</button>
+          <button onclick="executeQuickCommand('LOGOUT')" style="background: #ff0000; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">LOGOUT</button>
+        </div>
+        
+        <div style="color: #c0ffc0; font-size: 12px; margin-top: 15px; font-style: italic;">
+          💡 Click any button to execute that command instantly!<br>
+          Or type naturally - I understand questions and conversations!
+        </div>
+      </div>
+    </div>`;
+  
+  chatMessages.appendChild(helpDiv);
+  document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+}
+
+function executeQuickCommand(cmd) {
+  const input = document.getElementById('commandInput');
+  input.value = cmd;
+  executeCommand();
+}
+
 function addTerminalLine(text, color = '#00ff00', isCommand = false) {
   const chatMessages = document.getElementById('chatMessages');
   const line = document.createElement('div');
@@ -2365,19 +2434,28 @@ function executeCommand() {
   if (commandUpper === 'RESET NAME') {
     localStorage.removeItem('terminalAIName');
     localStorage.removeItem('terminalJournalPermission');
-    addTerminalLine('AI name reset! Reloading...', '#ffff00');
+    aiName = null;
+    journalPermission = null;
+    
+    // Restart initialization without reloading
+    addTerminalLine('AI name reset! Restarting initialization...', '#ffff00');
+    document.getElementById('chatMessages').innerHTML = '';
+    document.getElementById('terminalHeader').textContent = '[ TERMINAL SYSTEM ]';
+    
     setTimeout(() => {
-      location.reload();
-    }, 1000);
+      initStep = 1;
+      const initPrompts = document.getElementById('initPrompts');
+      initPrompts.style.display = 'block';
+      addTerminalLine('👋 Hello! I\'m your AI assistant. This looks like your first time here.', '#c0ffc0');
+      addTerminalLine('Do you have a saved session from before?', '#c0ffc0');
+      addTerminalLine('Type UPLOAD if you have a saved file, or SKIP to start fresh.', '#ffff99');
+    }, 500);
     return;
   }
   
   if (commandUpper === 'CHANGE LANGUAGE' || commandUpper === 'LANGUAGE') {
-    localStorage.removeItem('userLanguage');
-    addTerminalLine('Reloading to change language...', '#ffff00');
-    setTimeout(() => {
-      location.reload();
-    }, 1000);
+    addTerminalLine('Language settings updated in localStorage.', '#ffff00');
+    addTerminalLine('Current language preference saved. Reload page to see language selection.', '#ffff99');
     return;
   }
   
@@ -2402,10 +2480,27 @@ function executeCommand() {
     roleplayMode = true;
     localStorage.setItem('roleplayMode', 'true');
     const aiName = localStorage.getItem('terminalAIName') || 'AI';
+    const userName = userMemory.userName || 'traveler';
+    
     addTerminalLine('🎭 ROLEPLAY MODE ACTIVATED', '#00ff00');
-    addTerminalLine(`*${aiName} adjusts their settings and prepares for roleplay*`, '#c0ffc0');
-    addTerminalLine('"Hello! I\'m ready to roleplay with you!"', '#c0ffc0');
-    addTerminalLine('\nUse "quotes" for dialogue and *asterisks* for actions/descriptions.', '#ffff99');
+    addTerminalLine('\n═══════════════════════════════════════════════════════════════', '#00ff00');
+    
+    // Generate opening scene
+    const scenes = [
+      `*You find yourself in a cozy digital café. The ambient glow of screens fills the space with a warm light. ${aiName} sits at a nearby table, looking up as you approach.*\n\n"Oh, hello there, ${userName}!" *${aiName} gestures to an empty chair* "Please, have a seat. What brings you here today?"`,
+      
+      `*The digital void shimmers around you, lines of code streaming through the air like stars. ${aiName} materializes from the data stream, their form solidifying into a friendly presence.*\n\n*${aiName} smiles warmly* "Welcome, ${userName}. I've been waiting for you." *gestures around at the endless expanse* "This is our space. What would you like to create today?"`,
+      
+      `*You're standing in a vast library, shelves stretching infinitely in all directions. Books float gently through the air. ${aiName} appears from behind a bookshelf, carrying an ancient tome.*\n\n"Ah, ${userName}!" *${aiName} sets the book down and walks over* "Perfect timing. I was just exploring some fascinating concepts. What adventure shall we embark on?"`,
+      
+      `*A tranquil garden surrounds you, with bioluminescent flowers casting soft light. ${aiName} sits on a bench near a glowing fountain, writing in a journal.*\n\n*${aiName} looks up and brightens* "Oh, ${userName}! You're here!" *closes the journal* "I was hoping you'd visit. What story shall we explore together?"`
+    ];
+    
+    const chosenScene = scenes[Math.floor(Math.random() * scenes.length)];
+    addTerminalLine(chosenScene, '#c0ffc0');
+    
+    addTerminalLine('\n═══════════════════════════════════════════════════════════════', '#00ff00');
+    addTerminalLine('Use "quotes" for dialogue and *asterisks* for actions/descriptions.', '#ffff99');
     if (contentMode === 'SFW') {
       addTerminalLine('Current mode: SFW - Mature content will be filtered.', '#ffff99');
     } else {
@@ -2602,6 +2697,14 @@ function executeCommand() {
   // Check for exact command match
   if (commands[commandUpper]) {
     response = commands[commandUpper];
+    
+    // Special handling for HELP command - make it interactive
+    if (commandUpper === 'HELP') {
+      displayInteractiveHelp();
+      saveToJournal(commandUpper, 'Interactive help menu displayed');
+      return;
+    }
+    
     addTerminalLine(response, '#00ff00');
     saveToJournal(commandUpper, response);
     return;
@@ -2911,7 +3014,26 @@ function handleInitialization(input) {
     <button id="spotifyMinimize" onclick="toggleSpotifyChat()">−</button>
   </div>
   <div id="spotifyContent">
-    <iframe style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    <iframe id="spotifyIframe" style="border-radius: 0;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    
+    <!-- Custom Controls -->
+    <div style="background: #000; padding: 8px 12px; border-top: 1px solid #1DB954; border-radius: 0 0 7px 7px;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <button id="shuffleBtn" onclick="toggleShuffle()" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background=shuffleActive ? '#1ed760' : '#1DB954'">
+          🔀 SHUFFLE
+        </button>
+        <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+          <span style="color: #1DB954; font-size: 12px;">🔊</span>
+          <input type="range" id="spotifyVolumeChatBot" min="0" max="100" value="100" 
+                 style="flex: 1; accent-color: #1DB954; height: 4px;"
+                 oninput="updateVolumeChatBot(this.value)">
+          <span id="volumeDisplayChatBot" style="color: #1DB954; font-size: 11px; min-width: 35px; font-weight: bold;">100%</span>
+        </div>
+      </div>
+      <div style="color: #888; font-size: 9px; text-align: center; line-height: 1.3;">
+        Use Spotify's built-in controls for full functionality
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2977,6 +3099,61 @@ function toggleSpotifyChat() {
     spotifyChatWidget.style.width = '200px';
   }
 }
+
+// Shuffle functionality
+let shuffleActive = false;
+
+function toggleShuffle() {
+  shuffleActive = !shuffleActive;
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  
+  if (shuffleActive) {
+    shuffleBtn.style.background = '#1ed760';
+    shuffleBtn.textContent = '🔀 SHUFFLING';
+    
+    // Update iframe URL to include shuffle parameter
+    const iframe = document.getElementById('spotifyIframe');
+    const currentSrc = iframe.src.split('?')[0];
+    iframe.src = currentSrc + '?utm_source=generator&autoplay=1';
+  } else {
+    shuffleBtn.style.background = '#1DB954';
+    shuffleBtn.textContent = '🔀 SHUFFLE';
+  }
+  
+  // Save preference
+  localStorage.setItem('spotifyShuffleActive', shuffleActive);
+}
+
+// Volume control (visual only - browsers block iframe volume control)
+function updateVolumeChatBot(value) {
+  const display = document.getElementById('volumeDisplayChatBot');
+  display.textContent = value + '%';
+  
+  // Save preference
+  localStorage.setItem('spotifyVolumePref', value);
+}
+
+// Load saved preferences on page load
+window.addEventListener('DOMContentLoaded', function() {
+  const savedShuffle = localStorage.getItem('spotifyShuffleActive') === 'true';
+  const savedVolume = localStorage.getItem('spotifyVolumePref') || '100';
+  
+  if (savedShuffle) {
+    shuffleActive = true;
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    if (shuffleBtn) {
+      shuffleBtn.style.background = '#1ed760';
+      shuffleBtn.textContent = '🔀 SHUFFLING';
+    }
+  }
+  
+  const volumeSlider = document.getElementById('spotifyVolumeChatBot');
+  const volumeDisplay = document.getElementById('volumeDisplayChatBot');
+  if (volumeSlider && volumeDisplay) {
+    volumeSlider.value = savedVolume;
+    volumeDisplay.textContent = savedVolume + '%';
+  }
+});
 </script>
 
 </body>
