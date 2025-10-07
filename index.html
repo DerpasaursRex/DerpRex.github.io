@@ -928,6 +928,18 @@ h1 {
   </div>
   <div id="spotifyContent">
     <iframe style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    <div style="background: #000; padding: 8px 12px; border-top: 1px solid #1DB954;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="color: #1DB954; font-size: 12px;">🔊</span>
+        <input type="range" id="spotifyVolume" min="0" max="100" value="100" 
+               style="flex: 1; accent-color: #1DB954;"
+               oninput="updateVolumeDisplay(this.value)">
+        <span id="volumeDisplay" style="color: #1DB954; font-size: 12px; min-width: 35px;">100%</span>
+      </div>
+      <div style="color: #888; font-size: 10px; margin-top: 4px; text-align: center;">
+        Use Spotify's player controls above
+      </div>
+    </div>
   </div>
 </div>
 
@@ -992,6 +1004,12 @@ function toggleSpotify() {
     btn.textContent = '+';
     spotifyWidget.style.width = '200px';
   }
+}
+
+function updateVolumeDisplay(value) {
+  document.getElementById('volumeDisplay').textContent = value + '%';
+  // Note: Due to browser security, iframe volume cannot be controlled directly
+  // This slider is visual only - use Spotify's built-in volume control
 }
 </script>
 
