@@ -249,8 +249,6 @@
             <input type="password" class="form-control" id="accessPassword" placeholder="Enter password">
           </div>
           <button type="button" class="btn" style="background-color: #b82b2f; color: white;" onclick="checkPassword()">Access Posting</button>
-          <button type="button" class="btn btn-info ml-2" onclick="debugPosts()">Debug Posts</button>
-          <button type="button" class="btn btn-success ml-2" onclick="createSamplePost()">Create Sample Post</button>
         </div>
       </div>
       
@@ -258,7 +256,11 @@
       <div id="blogFormSection" class="card mb-4" style="background-image: url('whitepaper.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; display: none;">
         <div class="card-body">
           <h5 class="card-title">Write New Post</h5>
-          <button type="button" class="btn btn-sm btn-outline-secondary mb-3" onclick="logout()">Lock Posting</button>
+          <div class="mb-3">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="logout()">Lock Posting</button>
+            <button type="button" class="btn btn-sm btn-info ml-2" onclick="debugPosts()">Debug Posts</button>
+            <button type="button" class="btn btn-sm btn-success ml-2" onclick="createSamplePost()">Create Sample Post</button>
+          </div>
           <form id="blogForm">
             <div class="form-group">
               <label for="postTitle">Post Title:</label>
