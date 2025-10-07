@@ -220,14 +220,31 @@
     
     <!-- Command Input -->
     <div style="background: #1a1a1a; padding: 15px; border-top: 2px solid #00ff00;">
+      <!-- Spell Check Suggestions -->
+      <div id="spellSuggestions" style="display: none; background: #000; border: 2px solid #ffff00; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+        <div style="color: #ffff00; font-family: 'Courier New', monospace; font-size: 12px; margin-bottom: 5px;">
+          ⚠️ Possible misspellings detected:
+        </div>
+        <div id="suggestionList" style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;"></div>
+        <div style="margin-top: 8px; display: flex; gap: 10px;">
+          <button onclick="acceptCorrections()" style="background: #00ff00; color: #000; border: none; padding: 5px 15px; font-family: 'Courier New', monospace; font-size: 12px; cursor: pointer; border-radius: 3px;">
+            FIX ALL
+          </button>
+          <button onclick="dismissSuggestions()" style="background: #666; color: #fff; border: none; padding: 5px 15px; font-family: 'Courier New', monospace; font-size: 12px; cursor: pointer; border-radius: 3px;">
+            IGNORE
+          </button>
+        </div>
+      </div>
+      
       <div style="display: flex; gap: 10px; align-items: center;">
         <span style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 18px; font-weight: bold;">&gt;</span>
         <input type="text" id="commandInput" 
                style="flex: 1; background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 12px; font-family: 'Courier New', monospace; font-size: 16px; outline: none;"
                placeholder="Type your message or command..."
-               onkeypress="if(event.key==='Enter') executeCommand()"
+               onkeypress="if(event.key==='Enter') checkSpellingBeforeSend()"
+               oninput="hideSpellSuggestions()"
                autofocus>
-        <button onclick="executeCommand()" 
+        <button onclick="checkSpellingBeforeSend()" 
                 style="background: #00ff00; color: #000; border: none; padding: 12px 24px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2s;"
                 onmouseover="this.style.background='#00cc00'" 
                 onmouseout="this.style.background='#00ff00'">SEND</button>
@@ -681,6 +698,8 @@ MODE SFW     - Activate safe-for-work mode (default)
 MODE NSFW    - Activate mature content mode
 MODE STATUS  - Check current mode
 
+SPELL CHECK ON - Enable automatic spell checking
+SPELL CHECK OFF- Disable spell checking
 CLEAR          - Clear terminal screen
 CONTINUE       - Continue session (dismiss clear prompt)
 LOGOUT         - Return to password screen
@@ -831,6 +850,120 @@ function typeWriter(text, element, speed = 10) {
     document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
   }
   type();
+}
+
+// ========================================
+// SPELL CHECK SYSTEM
+// ========================================
+
+let spellCheckCache = {};
+let pendingCorrections = {};
+let spellCheckEnabled = localStorage.getItem('spellCheckEnabled') !== 'false'; // Default enabled
+
+async function checkSpelling(text) {
+  // Skip if disabled
+  if (!spellCheckEnabled) {
+    return { errors: [] };
+  }
+  
+  // Skip spell check for commands
+  if (text.toUpperCase() === text || text.length < 3) {
+    return { errors: [] };
+  }
+  
+  try {
+    // Use LanguageTool API (free, no key required)
+    const url = 'https://api.languagetool.org/v2/check';
+    const params = new URLSearchParams({
+      text: text,
+      language: 'auto', // Auto-detect language
+      enabledOnly: 'false'
+    });
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params
+    });
+    
+    const data = await response.json();
+    
+    // Filter for spelling errors only
+    const errors = data.matches.filter(match => 
+      match.rule.issueType === 'misspelling' || 
+      match.rule.category.id === 'TYPOS'
+    ).slice(0, 5); // Limit to 5 suggestions
+    
+    return { errors: errors };
+  } catch (error) {
+    console.log('Spell check unavailable:', error);
+    return { errors: [] };
+  }
+}
+
+function checkSpellingBeforeSend() {
+  const input = document.getElementById('commandInput');
+  const text = input.value.trim();
+  
+  if (!text) return;
+  
+  // Check for misspellings
+  checkSpelling(text).then(result => {
+    if (result.errors.length > 0) {
+      showSpellSuggestions(result.errors, text);
+    } else {
+      executeCommand();
+    }
+  });
+}
+
+function showSpellSuggestions(errors, originalText) {
+  const suggestionsDiv = document.getElementById('spellSuggestions');
+  const suggestionList = document.getElementById('suggestionList');
+  
+  pendingCorrections = {};
+  let html = '';
+  
+  errors.forEach(error => {
+    const word = originalText.substring(error.offset, error.offset + error.length);
+    const suggestion = error.replacements[0]?.value || word;
+    pendingCorrections[word] = suggestion;
+    
+    html += `<div style="margin: 5px 0;">`;
+    html += `  <span style="color: #ff6666;">"${word}"</span> → `;
+    html += `  <span style="color: #00ff00;">"${suggestion}"</span>`;
+    html += `</div>`;
+  });
+  
+  suggestionList.innerHTML = html;
+  suggestionsDiv.style.display = 'block';
+}
+
+function acceptCorrections() {
+  const input = document.getElementById('commandInput');
+  let text = input.value;
+  
+  // Apply all corrections
+  for (const [wrong, correct] of Object.entries(pendingCorrections)) {
+    const regex = new RegExp(wrong.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    text = text.replace(regex, correct);
+  }
+  
+  input.value = text;
+  hideSpellSuggestions();
+  
+  // Now send the corrected message
+  executeCommand();
+}
+
+function dismissSuggestions() {
+  hideSpellSuggestions();
+  executeCommand();
+}
+
+function hideSpellSuggestions() {
+  document.getElementById('spellSuggestions').style.display = 'none';
+  pendingCorrections = {};
 }
 
 // ========================================
@@ -1353,6 +1486,22 @@ function executeCommand() {
     setTimeout(() => {
       location.reload();
     }, 1000);
+    return;
+  }
+  
+  if (commandUpper === 'SPELL CHECK ON' || commandUpper === 'SPELLCHECK ON') {
+    spellCheckEnabled = true;
+    localStorage.setItem('spellCheckEnabled', 'true');
+    addTerminalLine('✅ SPELL CHECK ENABLED', '#00ff00');
+    addTerminalLine('Messages will be checked for spelling errors before sending.', '#c0ffc0');
+    return;
+  }
+  
+  if (commandUpper === 'SPELL CHECK OFF' || commandUpper === 'SPELLCHECK OFF') {
+    spellCheckEnabled = false;
+    localStorage.setItem('spellCheckEnabled', 'false');
+    addTerminalLine('⚠️ SPELL CHECK DISABLED', '#ffff00');
+    addTerminalLine('Messages will be sent without spell checking.', '#ffff99');
     return;
   }
   
