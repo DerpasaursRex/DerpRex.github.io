@@ -107,11 +107,10 @@
       </div>
       
       <!-- Boot Sequence -->
-      <div id="bootSequence">
+      <div id="bootSequence" style="display: none;">
         <div style="color: #00ff00;">System initializing...</div>
         <div style="color: #00ff00;">Loading AI modules... [OK]</div>
         <div style="color: #00ff00;">Establishing connection... [OK]</div>
-        <div style="color: #ffff00;">WARNING: Legacy system detected</div>
         <div style="color: #00ff00;">Ready for input.</div>
         <div style="color: #00ff00; margin-top: 10px;">═══════════════════════════════════════════════════════════════</div>
       </div>
@@ -401,6 +400,8 @@ let lastClearPrompt = 0;
 const CLEAR_PROMPT_THRESHOLD = 50; // Prompt after 50 entries
 
 function saveToJournal(command, response) {
+  if (journalPermission !== 'enabled') return; // Early exit if disabled
+  
   if (!activeJournal) {
     activeJournal = [];
   }
@@ -413,11 +414,16 @@ function saveToJournal(command, response) {
   };
   activeJournal.push(entry);
   
-  // Also save to localStorage as backup
-  localStorage.setItem('terminalJournal', JSON.stringify(activeJournal));
+  // Batch save to localStorage (debounced)
+  if (window.journalSaveTimeout) clearTimeout(window.journalSaveTimeout);
+  window.journalSaveTimeout = setTimeout(() => {
+    localStorage.setItem('terminalJournal', JSON.stringify(activeJournal));
+  }, 500);
   
   // Check if we should prompt to clear
-  checkClearPrompt();
+  if (activeJournal.length % CLEAR_PROMPT_THRESHOLD === 0) {
+    checkClearPrompt();
+  }
 }
 
 function checkClearPrompt() {
@@ -554,10 +560,20 @@ VIDEOS       - Information about video content
 BLOG         - Access blog information
 NAVIGATE     - Site navigation guide
 
-WEB ACCESS:
+WEB ACCESS (Free APIs):
 WIKI [topic]   - Search Wikipedia for information
                Example: WIKI artificial intelligence
-               Natural: "What is quantum physics?"
+DEFINE [word]  - Get word definition with examples
+               Example: DEFINE serendipity
+FACT           - Get a random fun fact
+ADVICE         - Get random advice
+JOKE           - Get a dad joke
+QUOTE          - Get an inspirational quote
+GITHUB [user]  - Look up GitHub user profile
+               Example: GITHUB torvalds
+
+Natural language works too:
+"What is quantum physics?" "Define happiness" etc.
 
 SESSION MANAGEMENT:
 JOURNAL LOAD   - Load journal file to continue previous session
@@ -725,9 +741,10 @@ function typeWriter(text, element, speed = 10) {
 }
 
 // ========================================
-// WEB ACCESS - Wikipedia API (Free)
+// WEB ACCESS - Free APIs
 // ========================================
 
+// Wikipedia Search
 async function searchWikipedia(query) {
   try {
     const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=3`;
@@ -750,6 +767,121 @@ async function searchWikipedia(query) {
     return result;
   } catch (error) {
     return `❌ Error searching Wikipedia: ${error.message}`;
+  }
+}
+
+// Dictionary API - Free Dictionary
+async function getDefinition(word) {
+  try {
+    const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`;
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      return `No definition found for "${word}". Check your spelling!`;
+    }
+    
+    const data = await response.json();
+    const entry = data[0];
+    
+    let result = `📖 Definition of "${entry.word}":\n\n`;
+    
+    if (entry.phonetic) {
+      result += `Pronunciation: ${entry.phonetic}\n\n`;
+    }
+    
+    entry.meanings.slice(0, 2).forEach((meaning, idx) => {
+      result += `${meaning.partOfSpeech.toUpperCase()}:\n`;
+      meaning.definitions.slice(0, 2).forEach((def, i) => {
+        result += `  ${i + 1}. ${def.definition}\n`;
+        if (def.example) {
+          result += `     Example: "${def.example}"\n`;
+        }
+      });
+      result += '\n';
+    });
+    
+    return result;
+  } catch (error) {
+    return `❌ Error fetching definition: ${error.message}`;
+  }
+}
+
+// Random Fun Facts
+async function getRandomFact() {
+  try {
+    const url = 'https://uselessfacts.jsph.pl/random.json?language=en';
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    return `💡 Random Fact:\n\n${data.text}`;
+  } catch (error) {
+    return `❌ Error fetching fact: ${error.message}`;
+  }
+}
+
+// Random Advice
+async function getAdvice() {
+  try {
+    const url = 'https://api.adviceslip.com/advice';
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    return `💭 Random Advice:\n\n"${data.slip.advice}"`;
+  } catch (error) {
+    return `❌ Error fetching advice: ${error.message}`;
+  }
+}
+
+// Dad Jokes
+async function getDadJoke() {
+  try {
+    const response = await fetch('https://icanhazdadjoke.com/', {
+      headers: { 'Accept': 'application/json' }
+    });
+    const data = await response.json();
+    
+    return `😄 Dad Joke:\n\n${data.joke}`;
+  } catch (error) {
+    return `❌ Error fetching joke: ${error.message}`;
+  }
+}
+
+// Random Quote
+async function getRandomQuote() {
+  try {
+    const url = 'https://api.quotable.io/random';
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    return `✨ Random Quote:\n\n"${data.content}"\n\n— ${data.author}`;
+  } catch (error) {
+    return `❌ Error fetching quote: ${error.message}`;
+  }
+}
+
+// GitHub User Info
+async function getGitHubUser(username) {
+  try {
+    const url = `https://api.github.com/users/${encodeURIComponent(username)}`;
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      return `GitHub user "${username}" not found.`;
+    }
+    
+    const data = await response.json();
+    
+    let result = `🐙 GitHub User: ${data.login}\n\n`;
+    result += `Name: ${data.name || 'Not provided'}\n`;
+    result += `Bio: ${data.bio || 'No bio'}\n`;
+    result += `Public Repos: ${data.public_repos}\n`;
+    result += `Followers: ${data.followers}\n`;
+    result += `Following: ${data.following}\n`;
+    result += `Profile: ${data.html_url}\n`;
+    
+    return result;
+  } catch (error) {
+    return `❌ Error fetching GitHub user: ${error.message}`;
   }
 }
 
@@ -837,9 +969,26 @@ function processNaturalLanguage(input, inputUpper) {
     return jokes[Math.floor(Math.random() * jokes.length)];
   }
   
+  // Dictionary definition recognition
+  if (/^(define|definition of|meaning of)\s+(.+)/i.test(lower)) {
+    const match = lower.match(/^(define|definition of|meaning of)\s+(.+)/i);
+    if (match && match[2]) {
+      const word = match[2].trim();
+      setTimeout(async () => {
+        addTerminalLine('Looking up definition...', '#ffff99');
+        const result = await getDefinition(word);
+        addTerminalLine(result, '#00ff00');
+        if (journalPermission === 'enabled') {
+          saveToJournal(input, result);
+        }
+      }, 100);
+      return '📖 Searching dictionary...';
+    }
+  }
+  
   // Wikipedia search recognition
-  if (/^(search|look up|find|what is|what are|tell me about|who is|who was|define)\s+(.+)/i.test(lower)) {
-    const match = lower.match(/^(search|look up|find|what is|what are|tell me about|who is|who was|define)\s+(.+)/i);
+  if (/^(search|look up|find|what is|what are|tell me about|who is|who was)\s+(.+)/i.test(lower)) {
+    const match = lower.match(/^(search|look up|find|what is|what are|tell me about|who is|who was)\s+(.+)/i);
     if (match && match[2]) {
       const query = match[2].trim();
       // Trigger Wikipedia search asynchronously
@@ -853,6 +1002,31 @@ function processNaturalLanguage(input, inputUpper) {
       }, 100);
       return '🔍 Searching...';
     }
+  }
+  
+  // Random content requests
+  if (/give me (a |an )?(fact|joke|quote|advice)/i.test(lower)) {
+    setTimeout(async () => {
+      let result;
+      if (/fact/i.test(lower)) {
+        addTerminalLine('Getting a random fact...', '#ffff99');
+        result = await getRandomFact();
+      } else if (/joke/i.test(lower)) {
+        addTerminalLine('Getting a joke...', '#ffff99');
+        result = await getDadJoke();
+      } else if (/quote/i.test(lower)) {
+        addTerminalLine('Getting a quote...', '#ffff99');
+        result = await getRandomQuote();
+      } else if (/advice/i.test(lower)) {
+        addTerminalLine('Getting some advice...', '#ffff99');
+        result = await getAdvice();
+      }
+      addTerminalLine(result, '#00ff00');
+      if (journalPermission === 'enabled') {
+        saveToJournal(input, result);
+      }
+    }, 100);
+    return '⏳ One moment...';
   }
   
   // Return null if no match - will try command matching next
@@ -1106,19 +1280,67 @@ function executeCommand() {
     return;
   }
   
+  // Helper function for async API calls
+  const handleAsyncAPI = async (apiFunc, loadingMsg, ...args) => {
+    addTerminalLine(loadingMsg, '#ffff99');
+    const result = await apiFunc(...args);
+    addTerminalLine(result, '#00ff00');
+    saveToJournal(command, result); // saveToJournal handles permission check
+  };
+  
   // Wikipedia search
   if (commandUpper.startsWith('WIKI ')) {
     const searchQuery = command.substring(5).trim();
     if (searchQuery) {
-      addTerminalLine('Searching Wikipedia...', '#ffff99');
-      searchWikipedia(searchQuery).then(result => {
-        addTerminalLine(result, '#00ff00');
-        if (journalPermission === 'enabled') {
-          saveToJournal(command, result);
-        }
-      });
+      handleAsyncAPI(searchWikipedia, 'Searching Wikipedia...', searchQuery);
     } else {
       addTerminalLine('Usage: WIKI [search term]\nExample: WIKI artificial intelligence', '#ffff99');
+    }
+    return;
+  }
+  
+  // Dictionary lookup
+  if (commandUpper.startsWith('DEFINE ')) {
+    const word = command.substring(7).trim();
+    if (word) {
+      handleAsyncAPI(getDefinition, 'Looking up definition...', word);
+    } else {
+      addTerminalLine('Usage: DEFINE [word]\nExample: DEFINE serendipity', '#ffff99');
+    }
+    return;
+  }
+  
+  // Random fact
+  if (commandUpper === 'FACT' || commandUpper === 'RANDOM FACT') {
+    handleAsyncAPI(getRandomFact, 'Fetching a random fact...');
+    return;
+  }
+  
+  // Random advice
+  if (commandUpper === 'ADVICE' || commandUpper === 'RANDOM ADVICE') {
+    handleAsyncAPI(getAdvice, 'Getting advice...');
+    return;
+  }
+  
+  // Dad joke
+  if (commandUpper === 'JOKE' || commandUpper === 'DAD JOKE') {
+    handleAsyncAPI(getDadJoke, 'Fetching a joke...');
+    return;
+  }
+  
+  // Random quote
+  if (commandUpper === 'QUOTE' || commandUpper === 'RANDOM QUOTE') {
+    handleAsyncAPI(getRandomQuote, 'Fetching a quote...');
+    return;
+  }
+  
+  // GitHub user lookup
+  if (commandUpper.startsWith('GITHUB ')) {
+    const username = command.substring(7).trim();
+    if (username) {
+      handleAsyncAPI(getGitHubUser, 'Fetching GitHub profile...', username);
+    } else {
+      addTerminalLine('Usage: GITHUB [username]\nExample: GITHUB torvalds', '#ffff99');
     }
     return;
   }
@@ -1126,12 +1348,8 @@ function executeCommand() {
   // Check for exact command match
   if (commands[commandUpper]) {
     response = commands[commandUpper];
-    setTimeout(() => {
-      addTerminalLine(response, '#00ff00');
-      if (journalPermission === 'enabled') {
-        saveToJournal(commandUpper, response);
-      }
-    }, 300);
+    addTerminalLine(response, '#00ff00');
+    saveToJournal(commandUpper, response);
     return;
   }
   
@@ -1139,12 +1357,8 @@ function executeCommand() {
   response = processNaturalLanguage(command, commandUpper);
   
   if (response) {
-    setTimeout(() => {
-      addTerminalLine(response, '#00ff00');
-      if (journalPermission === 'enabled') {
-        saveToJournal(command, response);
-      }
-    }, 300);
+    addTerminalLine(response, '#00ff00');
+    saveToJournal(command, response);
     return;
   }
   
@@ -1155,12 +1369,8 @@ function executeCommand() {
   for (const [key, value] of Object.entries(commands)) {
     if (lowerCommand.includes(key.toLowerCase())) {
       response = value;
-      setTimeout(() => {
-        addTerminalLine(response, '#00ff00');
-        if (journalPermission === 'enabled') {
-          saveToJournal(command, response);
-        }
-      }, 300);
+      addTerminalLine(response, '#00ff00');
+      saveToJournal(command, response);
       found = true;
       break;
     }
@@ -1169,12 +1379,8 @@ function executeCommand() {
   if (!found) {
     // If nothing matches, give a helpful conversational response
     response = getConversationalFallback(command);
-    setTimeout(() => {
-      addTerminalLine(response, '#00ff00');
-      if (journalPermission === 'enabled') {
-        saveToJournal(command, response);
-      }
-    }, 300);
+    addTerminalLine(response, '#00ff00');
+    saveToJournal(command, response);
   }
 }
 
@@ -1188,34 +1394,30 @@ let initStep = 0;
 
 // Check if first time user
 function checkFirstTimeUser() {
-  const boot = document.getElementById('bootSequence');
   const initPrompts = document.getElementById('initPrompts');
   const header = document.getElementById('terminalHeader');
   
-  setTimeout(() => {
-    if (boot) boot.style.display = 'none';
+  // Immediate load - no delay
+  if (!aiName || !journalPermission) {
+    initPrompts.style.display = 'block';
+    initStep = aiName ? 2 : 1;
+  } else {
+    // Returning user - update header with AI name
+    header.textContent = `[ ${aiName.toUpperCase()} TERMINAL SYSTEM ]`;
+    addTerminalLine(`Welcome back! I'm ${aiName}. 👋`, '#00ff00');
     
-    if (!aiName || !journalPermission) {
-      initPrompts.style.display = 'block';
-      initStep = aiName ? 2 : 1;
+    // Check if journal is loaded
+    const localJournal = JSON.parse(localStorage.getItem('terminalJournal')) || [];
+    if (localJournal.length > 0) {
+      setActiveJournal(localJournal);
+      addTerminalLine(`Session restored: ${localJournal.length} messages loaded. ✨`, '#00ff00');
     } else {
-      // Returning user - update header with AI name
-      header.textContent = `[ ${aiName.toUpperCase()} TERMINAL SYSTEM ]`;
-      addTerminalLine(`Welcome back! I'm ${aiName}. 👋`, '#00ff00');
-      
-      // Check if journal is loaded
-      const localJournal = JSON.parse(localStorage.getItem('terminalJournal')) || [];
-      if (localJournal.length > 0) {
-        setActiveJournal(localJournal);
-        addTerminalLine(`I found ${localJournal.length} messages from our last conversation. ✨`, '#00ff00');
-      } else {
-        addTerminalLine(`Starting fresh! If you have a saved session, type JOURNAL LOAD to restore it.`, '#ffff00');
-        setActiveJournal([]);
-      }
-      
-      addTerminalLine(`Type HELP to see what I can do, or just start chatting!`, '#00ff00');
+      addTerminalLine(`Starting fresh! Type JOURNAL LOAD to restore a saved session.`, '#00ff00');
+      setActiveJournal([]);
     }
-  }, 3000);
+    
+    addTerminalLine(`Type HELP to see what I can do, or just start chatting!`, '#00ff00');
+  }
 }
 
 checkFirstTimeUser();
