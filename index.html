@@ -742,6 +742,69 @@
         </div>
       </div>
       
+      <!-- Contact Section -->
+      <div style="background-image: url('whitepaper.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px;">
+        <h3 style="color: #b82b2f; font-weight: bold; margin-bottom: 10px;">Contacts</h3>
+        
+        <div style="background: rgba(184,43,47,0.1); padding: 10px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid #b82b2f;">
+          <small style="color: #333; font-size: 11px;">
+            <strong>Note:</strong> Requires Gmail to send. Form will open Gmail compose window.
+          </small>
+        </div>
+        
+        <form id="contactForm" onsubmit="sendGmail(event)" style="margin-bottom: 15px;">
+          <div class="form-group">
+            <label for="contactName" style="color: #b82b2f; font-weight: 600; font-size: 14px;">Name:</label>
+            <input type="text" class="form-control form-control-sm" id="contactName" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="contactEmail" style="color: #b82b2f; font-weight: 600; font-size: 14px;">Your Email:</label>
+            <input type="email" class="form-control form-control-sm" id="contactEmail" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="contactMessage" style="color: #b82b2f; font-weight: 600; font-size: 14px;">Message:</label>
+            <textarea class="form-control form-control-sm" id="contactMessage" rows="4" required></textarea>
+          </div>
+          
+          <button type="submit" class="btn btn-sm" style="background-color: #b82b2f; color: white; width: 100%;">Send via Gmail</button>
+        </form>
+        
+        <div style="padding-top: 15px; border-top: 1px solid rgba(184,43,47,0.2);">
+          <strong style="color: #b82b2f;">Social Media:</strong>
+          <div style="margin-top: 10px; text-align: center;">
+            <a href="https://www.instagram.com/derpasaurs_16/" target="_blank" style="display: inline-block; transition: transform 0.2s ease;">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" style="width: 40px; height: 40px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <script>
+        function sendGmail(event) {
+          event.preventDefault();
+          
+          const name = document.getElementById('contactName').value;
+          const email = document.getElementById('contactEmail').value;
+          const message = document.getElementById('contactMessage').value;
+          
+          // Create Gmail compose link with form data
+          const subject = encodeURIComponent(`Message from ${name}`);
+          const body = encodeURIComponent(`From: ${name}\nReply to: ${email}\n\nMessage:\n${message}`);
+          const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=catiemac2014@gmail.com&su=${subject}&body=${body}`;
+          
+          // Open Gmail in new tab
+          window.open(gmailLink, '_blank');
+          
+          // Clear form
+          document.getElementById('contactForm').reset();
+          
+          // Show confirmation
+          alert('Opening Gmail to send your message!');
+        }
+      </script>
+      
       <hr class="d-sm-none">
     </div>
     <div class="col-sm-8">
