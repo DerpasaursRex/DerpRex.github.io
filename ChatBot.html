@@ -1777,14 +1777,29 @@ function processNaturalLanguage(input, inputUpper) {
     return responses[Math.floor(Math.random() * responses.length)];
   }
   
-  // What can you do (expanded)
+  // What can you do (expanded with philosophy)
   if (/what can you do|what do you do|your capabilities|what are you capable of|can you help|help me with|show me what you can do/i.test(lower)) {
-    return `I can help you with lots of things! 😊\n\nI can:\n• Chat with you naturally about anything\n• Search Wikipedia for information\n• Define words and explain concepts\n• Tell jokes, share facts, quotes, and advice\n• Look up GitHub profiles\n• Save our conversations for later\n• Remember our past discussions\n\nType HELP to see all available commands, or just chat with me naturally!`;
+    return `I'm here as your creative assistant! 🤖✨\n\nI believe AI should be a tool to help YOU create, not replace your creativity. I can:\n\n🧠 BRAINSTORMING:\n• Help you explore ideas and possibilities\n• Search for information and references\n• Define concepts and explain topics\n\n🛠️ ASSISTANCE:\n• Look up facts, quotes, and inspiration\n• Help organize your thoughts\n• Save our conversations for later\n\n💡 REMEMBER:\nYour creativity is unique and valuable! I'm here to support YOUR ideas, not generate them for you.\n\nWhat would you like to brainstorm or explore today?`;
   }
   
-  // Your name / who are you (expanded)
+  // Your name / who are you (expanded with philosophy)
   if (/what's your name|whats your name|who are you|what are you|introduce yourself|tell me about yourself/i.test(lower)) {
-    return `I'm ${aiName}! 🤖 I'm your friendly AI assistant.\n\nYou actually gave me this name when we first met! Pretty cool, right? 😊\n\nI can chat, answer questions, search the web, and help you with various tasks. What would you like to know?`;
+    return `I'm ${aiName}! 🤖 I'm your creative assistant and brainstorming partner.\n\nMy philosophy: AI should empower YOUR creativity, not replace it! ✨\n\nI'm here to:\n• Help you explore ideas\n• Search for information and inspiration\n• Assist with challenging tasks\n• Support your creative process\n\nBut the magic? That comes from YOU. I'm just here to help bring your ideas to life! What are you working on?`;
+  }
+  
+  // Requests for AI to create content - redirect to brainstorming
+  if (/^(write|create|make|generate|give me) (a |an )?(story|poem|essay|script|song|character|plot|idea)/i.test(lower)) {
+    return `I appreciate you thinking of me, but here's the thing:\n\n✨ YOUR creativity is what makes work truly special and unique!\n\nInstead of me creating it, how about we brainstorm together? I can:\n• Help you explore different angles and ideas\n• Search for inspiration and references\n• Ask questions to develop your concept\n• Assist with research and structure\n\nWhat's your initial idea? Let's build on YOUR vision! 🎨`;
+  }
+  
+  // Asking AI to do creative work
+  if (/can you (write|create|make|design|draw|compose)/i.test(lower)) {
+    return `I could... but I think YOU should! 😊\n\nHere's why:\n• Your perspective is unique and valuable\n• AI-generated content lacks your personal touch\n• The creative process helps you grow\n• Your work will be authentically YOURS\n\nHow about this instead:\n• Tell me your idea and I'll help you develop it\n• I can search for references and inspiration\n• We can brainstorm together!\n\nWhat's your concept? Let's make it amazing! 🌟`;
+  }
+  
+  // Brainstorming requests - encourage!
+  if (/brainstorm|help me think|ideas for|stuck on|need inspiration/i.test(lower)) {
+    return `Now THAT'S what I'm here for! 🎯\n\nBrainstorming is where the magic happens! Let's work together:\n\n1️⃣ Tell me what you're working on\n2️⃣ Share any initial ideas you have\n3️⃣ I'll help you explore possibilities\n4️⃣ We can search for references and inspiration\n\nI'm not here to do it FOR you - I'm here to help YOU create something amazing! What's the project?`;
   }
   
   // Asking about capabilities
@@ -1792,14 +1807,24 @@ function processNaturalLanguage(input, inputUpper) {
     return `Yes, I can help with that! I can search Wikipedia, define words, share facts, jokes, quotes, and more. Just ask me naturally or type HELP to see all commands! 😊`;
   }
   
-  // Compliments (expanded)
+  // User sharing their work/projects
+  if (/i (made|created|wrote|drew|built|designed|finished|completed)/i.test(lower)) {
+    return `That's amazing! 🌟 YOU created that - that's what matters!\n\nI'm so glad I could help support your creative process. Your work is uniquely yours, and that's what makes it special!\n\nWould you like to tell me more about it? Or is there something else you'd like to work on?`;
+  }
+  
+  // Working on projects
+  if (/i'm (working on|making|creating|writing|building)|working on a/i.test(lower)) {
+    return `That's exciting! 🎨 What are you creating?\n\nI'd love to help you brainstorm and develop your ideas. Remember - this is YOUR project, and I'm here to support YOUR vision!\n\nTell me about it!`;
+  }
+  
+  // Compliments (expanded with encouraging response)
   if (/you're (great|awesome|cool|amazing|helpful|nice|smart|good|the best|wonderful|fantastic)|good job|well done|love you|you rock|impressive/i.test(lower)) {
     const responses = [
-      `Aww, thank you! That's so kind! 😊 You're pretty awesome yourself!`,
-      `Thanks! I'm just here to help. You're making this fun! ✨`,
-      `That means a lot! Let me know if there's anything else I can do for you!`,
-      `You're too kind! Happy to be of service! 🤖`,
-      `Thank you! That really brightens my day! 😊`
+      `Thank you! But remember - YOU'RE the creative one here! I'm just here to help. 😊`,
+      `I appreciate that! But your ideas and creativity are what really matter! ✨`,
+      `Thanks! Though the real credit goes to YOU for doing the creative work! 🎨`,
+      `That's kind of you! Keep up YOUR great work - you're doing amazing! 🌟`,
+      `Thank you! Now let's keep building on YOUR awesome ideas! 🚀`
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }
@@ -1837,25 +1862,123 @@ function processNaturalLanguage(input, inputUpper) {
     return `I'd be happy to help! I can:\n• Search Wikipedia for topics you're interested in\n• Share random facts or quotes\n• Tell you jokes\n• Look up word definitions\n\nWhat kind of thing are you looking for?`;
   }
   
-  // Confusion/didn't understand
-  if (/what|huh|what do you mean|i don't understand|confused|explain/i.test(lower) && lower.split(' ').length < 4) {
-    return `Let me clarify! What would you like to know more about? Feel free to ask me anything or type HELP to see what I can do! 😊`;
+  // Conversation starters
+  if (/let's talk|can we talk|want to chat|let's chat/i.test(lower)) {
+    return `Of course! I'd love to chat with you! 😊 What's on your mind? We can talk about anything you'd like!`;
   }
   
-  // Dictionary definition recognition
-  if (/^(define|definition of|meaning of)\s+(.+)/i.test(lower)) {
-    const match = lower.match(/^(define|definition of|meaning of)\s+(.+)/i);
+  // Opinion requests
+  if (/what do you think|your opinion|do you believe|do you like/i.test(lower)) {
+    const topics = [
+      `That's an interesting question! I'd love to hear your thoughts first. What do you think about it?`,
+      `I think that depends on perspective. What's your take on it?`,
+      `That's a thought-provoking topic! Tell me more about what you're thinking.`,
+      `I'm curious about your view on this. What's your opinion?`
+    ];
+    return topics[Math.floor(Math.random() * topics.length)];
+  }
+  
+  // General questions - Auto-search Wikipedia
+  if (/why|how does|how do|why do|why is|how is|what causes|what makes/i.test(lower) && !lower.includes('you')) {
+    // Try to extract the topic
+    if (lower.length > 10) {
+      const topic = lower.replace(/^(why|how does|how do|why do|why is|how is|what causes|what makes|can you explain)\s+/i, '').replace(/\?/g, '').trim();
+      if (topic.length > 3) {
+        // Automatically search Wikipedia
+        setTimeout(async () => {
+          addTerminalLine('🔍 Let me search Wikipedia for that...', '#ffff99');
+          const result = await searchWikipedia(topic);
+          addTerminalLine(result, '#00ff00');
+          saveToJournal(input, result);
+        }, 100);
+        return '📚 Searching for an answer...';
+      }
+    }
+  }
+  
+  // Feelings/emotions
+  if (/i feel|i'm feeling|feeling (sad|happy|angry|frustrated|excited|nervous|anxious|worried|lonely)/i.test(lower)) {
+    if (/sad|down|depressed|lonely|bad|awful/i.test(lower)) {
+      return `I'm sorry you're feeling that way. 😔 Would you like to talk about it? Sometimes sharing helps. I'm here to listen.`;
+    } else if (/happy|excited|great|wonderful|amazing|good/i.test(lower)) {
+      return `That's wonderful to hear! 😊 What's making you feel so good? I'd love to hear about it!`;
+    } else if (/angry|frustrated|annoyed|mad/i.test(lower)) {
+      return `I understand that can be tough. Want to talk about what's bothering you? Sometimes it helps to vent.`;
+    } else {
+      return `Thanks for sharing how you feel. How can I help make your day better?`;
+    }
+  }
+  
+  // Stories/experiences
+  if (/let me tell you|i want to tell you|guess what|you won't believe|story|something happened/i.test(lower)) {
+    return `Ooh, I'm listening! 👂 Tell me all about it! I love hearing stories.`;
+  }
+  
+  // Random chatting
+  if (/random|anything|idk|don't know|dunno|whatever|surprise me/i.test(lower)) {
+    const suggestions = [
+      `How about I tell you a random fact? 💡 Type FACT to hear one!`,
+      `Want to hear a joke? 😄 Just type JOKE!`,
+      `I could share an inspirational quote! ✨ Type QUOTE!`,
+      `We could search Wikipedia for something interesting! What topic sounds fun?`,
+      `How about we play around with roleplay mode? Type ROLEPLAY ON to try it! 🎭`
+    ];
+    return suggestions[Math.floor(Math.random() * suggestions.length)];
+  }
+  
+  // Yes/No responses
+  if (/^(yes|yeah|yep|yup|sure|okay|ok|fine|alright)(\s|!|$)/i.test(lower)) {
+    return `Great! What would you like to do next?`;
+  }
+  
+  if (/^(no|nope|nah|not really)(\s|!|$)/i.test(lower)) {
+    return `No problem! Is there something else you'd like to do instead?`;
+  }
+  
+  // Small talk about time
+  if (/what time|what day|what's the date|today's date/i.test(lower)) {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString();
+    const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    return `It's currently ${timeStr} on ${dateStr}. 🕐`;
+  }
+  
+  // Questions about topics
+  if (/tell me more|more about|continue|go on|and then|what else/i.test(lower)) {
+    return `I'd love to share more! What specific aspect are you curious about? Or would you like me to search Wikipedia for detailed information?`;
+  }
+  
+  // Confusion/didn't understand
+  if (/what|huh|what do you mean|i don't understand|confused|explain/i.test(lower) && lower.split(' ').length < 4) {
+    return `Let me clarify! What would you like to know more about? Feel free to ask me anything! 😊`;
+  }
+  
+  // Dictionary definition recognition (auto-detect single word questions)
+  if (/^(define|definition of|meaning of|what does)\s+(.+)\s+(mean|definition)?/i.test(lower)) {
+    const match = lower.match(/^(define|definition of|meaning of|what does)\s+(.+?)(\s+mean|\s+definition|\?|$)/i);
     if (match && match[2]) {
       const word = match[2].trim();
       setTimeout(async () => {
-        addTerminalLine('Looking up definition...', '#ffff99');
+        addTerminalLine('📖 Looking up definition...', '#ffff99');
         const result = await getDefinition(word);
         addTerminalLine(result, '#00ff00');
-        if (journalPermission === 'enabled') {
-          saveToJournal(input, result);
-        }
+        saveToJournal(input, result);
       }, 100);
-      return '📖 Searching dictionary...';
+      return '📚 Checking dictionary...';
+    }
+  }
+  
+  // Single word followed by "?" - assume definition request
+  if (/^([a-z]+)\?$/i.test(lower) && lower.split(' ').length === 1) {
+    const word = lower.replace('?', '').trim();
+    if (word.length > 2) {
+      setTimeout(async () => {
+        addTerminalLine('📖 Looking up definition...', '#ffff99');
+        const result = await getDefinition(word);
+        addTerminalLine(result, '#00ff00');
+        saveToJournal(input, result);
+      }, 100);
+      return '📚 Checking dictionary...';
     }
   }
   
@@ -1878,7 +2001,7 @@ function processNaturalLanguage(input, inputUpper) {
   }
   
   // Random content requests
-  if (/give me (a |an )?(fact|joke|quote|advice)/i.test(lower)) {
+  if (/give me (a |an )?(fact|joke|quote|advice)|tell me (a |an )?(fact|joke|quote|something)|i need (a |an )?(fact|joke|quote|advice)|share (a |an )?(fact|joke|quote)/i.test(lower)) {
     setTimeout(async () => {
       let result;
       if (/fact/i.test(lower)) {
@@ -1895,11 +2018,92 @@ function processNaturalLanguage(input, inputUpper) {
         result = await getAdvice();
       }
       addTerminalLine(result, '#00ff00');
-      if (journalPermission === 'enabled') {
-        saveToJournal(input, result);
-      }
+      saveToJournal(input, result);
     }, 100);
     return '⏳ One moment...';
+  }
+  
+  // Detect "What is X?" format for both Wikipedia and definitions
+  if (/^what (is|are|was|were)\s+(.+)/i.test(lower)) {
+    const match = lower.match(/^what (is|are|was|were)\s+(.+?)(\?|$)/i);
+    if (match && match[2]) {
+      const topic = match[2].trim();
+      
+      // Check if it's a single word (likely wants definition)
+      if (topic.split(' ').length === 1 && topic.length < 15) {
+        setTimeout(async () => {
+          addTerminalLine('📖 Checking definition first...', '#ffff99');
+          const defResult = await getDefinition(topic);
+          
+          if (!defResult.includes('No definition found')) {
+            addTerminalLine(defResult, '#00ff00');
+            addTerminalLine('\nWant more info? I can search Wikipedia too!', '#ffff99');
+            saveToJournal(input, defResult);
+          } else {
+            // Definition not found, try Wikipedia
+            addTerminalLine('Dictionary lookup failed. Searching Wikipedia...', '#ffff99');
+            const wikiResult = await searchWikipedia(topic);
+            addTerminalLine(wikiResult, '#00ff00');
+            saveToJournal(input, wikiResult);
+          }
+        }, 100);
+        return '🔍 Looking that up...';
+      } else {
+        // Multiple words - go straight to Wikipedia
+        setTimeout(async () => {
+          addTerminalLine('🔍 Searching Wikipedia...', '#ffff99');
+          const result = await searchWikipedia(topic);
+          addTerminalLine(result, '#00ff00');
+          saveToJournal(input, result);
+        }, 100);
+        return '📚 Finding information...';
+      }
+    }
+  }
+  
+  // "Who is/was" questions - auto Wikipedia
+  if (/^who (is|was|are|were)\s+(.+)/i.test(lower)) {
+    const match = lower.match(/^who (is|was|are|were)\s+(.+?)(\?|$)/i);
+    if (match && match[2]) {
+      const person = match[2].trim();
+      setTimeout(async () => {
+        addTerminalLine('🔍 Searching for information about that person...', '#ffff99');
+        const result = await searchWikipedia(person);
+        addTerminalLine(result, '#00ff00');
+        saveToJournal(input, result);
+      }, 100);
+      return '📚 Looking them up...';
+    }
+  }
+  
+  // "When is/was" questions - auto Wikipedia
+  if (/^when (is|was|did|does|will)\s+(.+)/i.test(lower)) {
+    const match = lower.match(/^when (is|was|did|does|will)\s+(.+?)(\?|$)/i);
+    if (match && match[2]) {
+      const topic = match[2].trim();
+      setTimeout(async () => {
+        addTerminalLine('🔍 Searching for dates and timeline...', '#ffff99');
+        const result = await searchWikipedia(topic);
+        addTerminalLine(result, '#00ff00');
+        saveToJournal(input, result);
+      }, 100);
+      return '📚 Finding that information...';
+    }
+  }
+  
+  // "Where is/was" questions - auto Wikipedia
+  if (/^where (is|was|are|were|do|does)\s+(.+)/i.test(lower)) {
+    const match = lower.match(/^where (is|was|are|were|do|does)\s+(.+?)(\?|$)/i);
+    if (match && match[2]) {
+      const location = match[2].trim();
+      setTimeout(async () => {
+        addTerminalLine('🔍 Searching for location information...', '#ffff99');
+        const result = await searchWikipedia(location);
+        addTerminalLine(result, '#00ff00');
+        saveToJournal(input, result);
+      }, 100);
+      return '📚 Looking up that location...';
+    }
   }
   
   // Return null if no match - will try command matching next
@@ -1908,13 +2112,54 @@ function processNaturalLanguage(input, inputUpper) {
 
 function getConversationalFallback(input) {
   const aiName = localStorage.getItem('terminalAIName') || 'AI';
+  const lower = input.toLowerCase();
   
+  // Check if it looks like a question - auto-search
+  if (lower.includes('?')) {
+    const query = input.replace(/\?/g, '').trim();
+    
+    // Check if asking for a definition (single/few words)
+    const wordCount = query.split(' ').length;
+    if (wordCount <= 2 && !/(what|why|how|who|when|where)/i.test(query)) {
+      // Likely asking for definition
+      setTimeout(async () => {
+        addTerminalLine('📖 That looks like you want a definition. Searching...', '#ffff99');
+        const result = await getDefinition(query);
+        addTerminalLine(result, '#00ff00');
+        saveToJournal(input, result);
+      }, 100);
+      return '🔍 Looking that up...';
+    } else {
+      // General question - search Wikipedia
+      setTimeout(async () => {
+        addTerminalLine('🔍 Let me search Wikipedia for that...', '#ffff99');
+        const result = await searchWikipedia(query);
+        addTerminalLine(result, '#00ff00');
+        saveToJournal(input, result);
+      }, 100);
+      return '📚 Searching for an answer...';
+    }
+  }
+  
+  // Check if it's a statement
+  if (lower.split(' ').length > 3) {
+    const responses = [
+      `I hear you! That's interesting. Tell me more about that! 😊`,
+      `Thanks for sharing! What made you think of that?`,
+      `That's a cool thought! Want to explore that topic more? I can search Wikipedia if you'd like.`,
+      `Interesting! I'm curious - what else do you think about this?`,
+      `I appreciate you sharing that with me. What else is on your mind?`
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
+  
+  // Short unclear input
   const responses = [
-    `I'm not quite sure what you mean by "${input}". Could you rephrase that, or type HELP to see what I can do? 🤔`,
-    `Hmm, I didn't quite understand that. Want to try asking differently? Type HELP to see available commands!`,
-    `I'm not familiar with that command. Type HELP to see what I can do, or just chat with me naturally! 😊`,
-    `That's an interesting question! I'm still learning. Try asking me something else, or type HELP to see what I know!`,
-    `I'm not sure about that one. What else would you like to talk about? 🤖`
+    `I'm not quite sure what you mean. Could you tell me more? 🤔`,
+    `Hmm, can you elaborate on that? I want to understand better!`,
+    `I didn't quite catch that. Want to rephrase or tell me more?`,
+    `Could you give me a bit more context? I'm here to chat! 😊`,
+    `I'm all ears! Can you explain what you mean by that?`
   ];
   
   return responses[Math.floor(Math.random() * responses.length)];
@@ -2436,7 +2681,7 @@ function checkFirstTimeUser() {
       setActiveJournal([]);
     }
     
-    addTerminalLine(`Type HELP to see what I can do, or just start chatting!`, '#00ff00');
+    addTerminalLine(`Ready to brainstorm? Just tell me what you're working on!`, '#00ff00');
   }
 }
 
@@ -2603,8 +2848,9 @@ function handleInitialization(input) {
       addTerminalLine(`You can always enable this later with: JOURNAL ENABLE`, '#00ff00');
     }
     
-    addTerminalLine(`\n🎉 All set! I'm ${aiName}, and I'm ready to chat!`, '#00ff00');
-    addTerminalLine(`Type HELP to see what I can do, or just start chatting naturally.`, '#00ff00');
+      addTerminalLine(`\n🎉 All set! I'm ${aiName}, your creative assistant!`, '#00ff00');
+      addTerminalLine(`💡 Remember: I'm here to help YOU create, not replace your creativity!`, '#c0ffc0');
+      addTerminalLine(`Let's brainstorm together! What are you working on today?`, '#00ff00');
     
     initStep = 0;
     initPrompts.style.display = 'none';
