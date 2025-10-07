@@ -31,12 +31,6 @@
         </div>
     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
       <a href="index.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[HOME]</a>
-      <a href="currentportfolio.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[PORTFOLIO]</a>
-      <a href="blog.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[BLOG]</a>
-      <a href="spectrum.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[SPECTRUM]</a>
-      <a href="party.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[PARTY]</a>
-      <a href="Coding.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[CODING]</a>
-      <a href="Videos.html" style="color: #00ff00; text-decoration: none; padding: 5px 10px; border: 1px solid #00ff00; transition: all 0.2s;" onmouseover="this.style.background='#00ff00'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#00ff00'">[VIDEOS]</a>
     </div>
   </div>
 </nav>
@@ -893,80 +887,126 @@ function processNaturalLanguage(input, inputUpper) {
   const lower = input.toLowerCase();
   const aiName = localStorage.getItem('terminalAIName') || 'AI';
   
-  // Greetings
-  if (/^(hi|hello|hey|greetings|howdy|sup|yo|hiya)(\s|!|$)/i.test(lower)) {
+  // Greetings (expanded)
+  if (/^(hi|hello|hey|greetings|howdy|sup|yo|hiya|heya|morning|afternoon|evening|good morning|good afternoon|good evening)(\s|!|$|,)/i.test(lower)) {
     const greetings = [
       `Hey there! 👋 How can I help you today?`,
       `Hello! Great to see you! What's on your mind?`,
       `Hi! I'm ${aiName}. What would you like to chat about?`,
-      `Hey! 😊 What can I do for you?`
+      `Hey! 😊 What can I do for you?`,
+      `Greetings! How's your day going?`
     ];
     return greetings[Math.floor(Math.random() * greetings.length)];
   }
   
-  // How are you
-  if (/how are you|how're you|how r u|hows it going|how's it going/i.test(lower)) {
+  // How are you (expanded)
+  if (/how are you|how're you|how r u|hows it going|how's it going|whats up|what's up|how do you feel|are you okay|you good/i.test(lower)) {
     const responses = [
       `I'm doing great, thanks for asking! 😊 How are you doing?`,
       `I'm functioning perfectly! Ready to help you with anything. How about you?`,
       `All systems running smoothly! What brings you here today?`,
-      `I'm excellent! Thanks for asking. What can I help you with?`
+      `I'm excellent! Thanks for asking. What can I help you with?`,
+      `Doing wonderful! What's on your mind?`
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }
   
-  // Thank you
-  if (/^(thank you|thanks|thx|ty|appreciate it|cheers)/i.test(lower)) {
+  // User sharing their feelings
+  if (/^(i'm|im|i am) (good|great|fine|okay|ok|alright|well|happy|sad|tired|bored|excited|stressed)/i.test(lower)) {
+    if (/sad|tired|stressed|bad|not good|awful|terrible/i.test(lower)) {
+      return `I'm sorry to hear that. 😔 Is there anything I can do to help? Maybe I can tell you a joke or share an interesting fact?`;
+    } else {
+      return `That's great to hear! 😊 What would you like to talk about or do today?`;
+    }
+  }
+  
+  // Thank you (expanded)
+  if (/^(thank you|thanks|thx|ty|appreciate it|cheers|thank u|thanx|gracias|merci)/i.test(lower)) {
     const responses = [
       `You're very welcome! 😊`,
       `Happy to help! Let me know if you need anything else.`,
       `No problem at all! Glad I could assist.`,
-      `Anytime! That's what I'm here for! ✨`
+      `Anytime! That's what I'm here for! ✨`,
+      `My pleasure! Feel free to ask me anything else!`
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }
   
-  // Goodbye
-  if (/^(bye|goodbye|see you|later|gotta go|gtg|cya|farewell)/i.test(lower)) {
+  // Goodbye (expanded)
+  if (/^(bye|goodbye|see you|see ya|later|gotta go|gtg|cya|farewell|take care|peace|night|goodnight|good night)/i.test(lower)) {
     const responses = [
       `Goodbye! Come back anytime! 👋`,
       `See you later! Don't forget to export your session if you want to save it!`,
       `Take care! Our conversation will be here when you return. 😊`,
-      `Bye! Remember to save your session with JOURNAL EXPORT!`
+      `Bye! Remember to save your session with JOURNAL EXPORT!`,
+      `Catch you later! Have a great day! ✨`
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }
   
-  // What can you do
-  if (/what can you do|what do you do|your capabilities|help me/i.test(lower)) {
-    return `I can help you with lots of things! 😊\n\nI can:\n• Chat with you naturally\n• Answer questions\n• Tell jokes\n• Save our conversations for later\n• Remember our past discussions\n\nType HELP to see all available commands, or just chat with me naturally!`;
+  // What can you do (expanded)
+  if (/what can you do|what do you do|your capabilities|what are you capable of|can you help|help me with|show me what you can do/i.test(lower)) {
+    return `I can help you with lots of things! 😊\n\nI can:\n• Chat with you naturally about anything\n• Search Wikipedia for information\n• Define words and explain concepts\n• Tell jokes, share facts, quotes, and advice\n• Look up GitHub profiles\n• Save our conversations for later\n• Remember our past discussions\n\nType HELP to see all available commands, or just chat with me naturally!`;
   }
   
-  // Your name / who are you
-  if (/what's your name|whats your name|who are you|what are you/i.test(lower)) {
-    return `I'm ${aiName}! 🤖 I'm your friendly AI assistant.\n\nYou actually gave me this name when we first met! Pretty cool, right? 😊\n\nWhat would you like to chat about?`;
+  // Your name / who are you (expanded)
+  if (/what's your name|whats your name|who are you|what are you|introduce yourself|tell me about yourself/i.test(lower)) {
+    return `I'm ${aiName}! 🤖 I'm your friendly AI assistant.\n\nYou actually gave me this name when we first met! Pretty cool, right? 😊\n\nI can chat, answer questions, search the web, and help you with various tasks. What would you like to know?`;
   }
   
-  // Compliments
-  if (/you're (great|awesome|cool|amazing|helpful|nice|smart)|good job|well done/i.test(lower)) {
+  // Asking about capabilities
+  if (/can you (search|find|look up|tell me|help|do)/i.test(lower)) {
+    return `Yes, I can help with that! I can search Wikipedia, define words, share facts, jokes, quotes, and more. Just ask me naturally or type HELP to see all commands! 😊`;
+  }
+  
+  // Compliments (expanded)
+  if (/you're (great|awesome|cool|amazing|helpful|nice|smart|good|the best|wonderful|fantastic)|good job|well done|love you|you rock|impressive/i.test(lower)) {
     const responses = [
       `Aww, thank you! That's so kind! 😊 You're pretty awesome yourself!`,
       `Thanks! I'm just here to help. You're making this fun! ✨`,
       `That means a lot! Let me know if there's anything else I can do for you!`,
-      `You're too kind! Happy to be of service! 🤖`
+      `You're too kind! Happy to be of service! 🤖`,
+      `Thank you! That really brightens my day! 😊`
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }
   
-  // Small talk - weather, jokes, etc.
-  if (/tell me a joke|make me laugh|something funny/i.test(lower)) {
+  // Negative feedback
+  if (/you (suck|are bad|are stupid|are dumb|don't work|aren't helpful)/i.test(lower)) {
+    return `I'm sorry I'm not meeting your expectations. 😔 Let me try to help better. What specifically can I do for you?`;
+  }
+  
+  // Questions about AI/existence
+  if (/are you (real|human|alive|sentient|conscious|a robot|an ai)/i.test(lower)) {
+    return `I'm an AI assistant - not human, but I'm here to help! 🤖 I can chat, search information, and assist with various tasks. What would you like to know?`;
+  }
+  
+  // Boredom
+  if (/i'm bored|im bored|bored|entertain me|something to do/i.test(lower)) {
+    return `Let's fix that! 😊 I can:\n• Tell you a joke (type JOKE)\n• Share an interesting fact (type FACT)\n• Give you a quote (type QUOTE)\n• Search Wikipedia for something interesting\n\nWhat sounds fun?`;
+  }
+  
+  // Small talk - jokes (expanded)
+  if (/tell me a joke|make me laugh|something funny|got any jokes|joke please/i.test(lower)) {
     const jokes = [
       `Why do programmers prefer dark mode? Because light attracts bugs! 🐛😄`,
       `Why did the AI go to therapy? It had too many deep learning issues! 🤖`,
       `What's an artist's favorite programming language? Draw-va! 🎨`,
-      `I'd tell you a UDP joke, but you might not get it... 😄`
+      `I'd tell you a UDP joke, but you might not get it... 😄`,
+      `Why do Java developers wear glasses? Because they can't C#! 👓`,
+      `What's a programmer's favorite hangout? The Foo Bar! 🍺`
     ];
     return jokes[Math.floor(Math.random() * jokes.length)];
+  }
+  
+  // Asking for recommendations
+  if (/recommend|suggest|what should i|any ideas|give me something/i.test(lower)) {
+    return `I'd be happy to help! I can:\n• Search Wikipedia for topics you're interested in\n• Share random facts or quotes\n• Tell you jokes\n• Look up word definitions\n\nWhat kind of thing are you looking for?`;
+  }
+  
+  // Confusion/didn't understand
+  if (/what|huh|what do you mean|i don't understand|confused|explain/i.test(lower) && lower.split(' ').length < 4) {
+    return `Let me clarify! What would you like to know more about? Feel free to ask me anything or type HELP to see what I can do! 😊`;
   }
   
   // Dictionary definition recognition
