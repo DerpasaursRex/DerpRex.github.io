@@ -282,7 +282,13 @@
       
       <!-- Blog Posts Display -->
       <div id="blogPosts">
-        <!-- Your blog posts will appear here -->
+        <!-- Posts will load here -->
+      </div>
+      
+      <!-- Status indicator for debugging -->
+      <div id="blogStatus" style="display:none; margin-top: 20px; padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px;">
+        <h5>Blog System Status</h5>
+        <p id="statusText">Loading...</p>
       </div>
     </div>
   </div>
@@ -323,7 +329,12 @@
 // ========================================
 
 const BLOG_PASSWORD = 'BrownWolfZack';
-console.log('Blog system loaded');
+console.log('===================');
+console.log('BLOG SYSTEM v3.0');
+console.log('===================');
+console.log('Password:', BLOG_PASSWORD);
+console.log('LocalStorage available:', typeof(Storage) !== "undefined");
+console.log('Current posts:', (JSON.parse(localStorage.getItem('blogPosts') || '[]')).length);
 
 // ========================================
 // HELPER FUNCTIONS
@@ -407,42 +418,77 @@ function checkSession() {
 // ========================================
 
 function displayPosts() {
-  console.log('Displaying posts...');
-  const posts = getPosts();
-  const container = document.getElementById('blogPosts');
-  container.innerHTML = '';
-  
-  // Sort: pinned first, then by date
-  posts.sort((a, b) => {
-    if (a.pinned && !b.pinned) return -1;
-    if (!a.pinned && b.pinned) return 1;
-    return b.id - a.id; // Newer first
-  });
-  
-  posts.forEach(post => {
-    const postDiv = document.createElement('div');
-    postDiv.className = 'card mb-4';
-    postDiv.style.cssText = 'background-image: url("whitepaper.jpg"); background-size: cover;';
+  console.log('displayPosts called');
+  try {
+    const posts = getPosts();
+    console.log('Posts loaded:', posts.length);
     
-    const pinIcon = post.pinned ? '📌 ' : '';
-    const pinBtn = post.pinned ? 
-      `<button class="btn btn-sm btn-outline-warning" onclick="togglePin(${post.id})">Unpin</button>` :
-      `<button class="btn btn-sm btn-outline-secondary" onclick="togglePin(${post.id})">Pin</button>`;
+    const container = document.getElementById('blogPosts');
+    if (!container) {
+      console.error('blogPosts container not found!');
+      return;
+    }
     
-    postDiv.innerHTML = `
-      <div class="card-body">
-        <h4>${pinIcon}${post.title}</h4>
-        <p><small class="text-muted">By ${post.author} on ${post.date}</small></p>
-        ${post.image ? `<img src="${post.image}" class="img-fluid mb-3" style="max-height:400px">` : ''}
-        <p>${post.content.replace(/\n/g, '<br>')}</p>
-        ${pinBtn}
-        <button class="btn btn-sm btn-outline-danger ml-2" onclick="deletePost(${post.id})">Delete</button>
-      </div>
-    `;
-    container.appendChild(postDiv);
-  });
-  
-  console.log(`Displayed ${posts.length} posts`);
+    container.innerHTML = '';
+    
+    if (posts.length === 0) {
+      console.log('No posts to display');
+      return;
+    }
+    
+    // Sort: pinned first, then by date
+    posts.sort((a, b) => {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return b.id - a.id;
+    });
+    
+    posts.forEach(post => {
+      const postDiv = document.createElement('div');
+      postDiv.className = 'card mb-4';
+      postDiv.style.cssText = 'background-image: url("whitepaper.jpg"); background-size: cover; background-position: center;';
+      
+      const pinIcon = post.pinned ? '📌 ' : '';
+      const pinBtn = post.pinned ? 
+        `<button class="btn btn-sm btn-outline-warning" onclick="togglePin(${post.id})">Unpin</button>` :
+        `<button class="btn btn-sm btn-outline-secondary" onclick="togglePin(${post.id})">Pin</button>`;
+      
+      postDiv.innerHTML = `
+        <div class="card-body">
+          <h4>${pinIcon}${post.title}</h4>
+          <p><small class="text-muted">By ${post.author} on ${post.date}</small></p>
+          ${post.image ? `<img src="${post.image}" class="img-fluid mb-3" style="max-height:400px">` : ''}
+          <p>${post.content.replace(/\n/g, '<br>')}</p>
+          ${pinBtn}
+          <button class="btn btn-sm btn-outline-danger ml-2" onclick="deletePost(${post.id})">Delete</button>
+        </div>
+      `;
+      container.appendChild(postDiv);
+    });
+    
+    console.log(`Successfully displayed ${posts.length} posts`);
+    
+    // Update status indicator
+    const statusDiv = document.getElementById('blogStatus');
+    const statusText = document.getElementById('statusText');
+    if (statusDiv && statusText) {
+      if (posts.length === 0) {
+        statusDiv.style.display = 'block';
+        statusText.textContent = '✅ Blog system working! No posts yet. Create your first post above.';
+      } else {
+        statusDiv.style.display = 'none';
+      }
+    }
+  } catch (error) {
+    console.error('Error in displayPosts:', error);
+    // Show error status
+    const statusDiv = document.getElementById('blogStatus');
+    const statusText = document.getElementById('statusText');
+    if (statusDiv && statusText) {
+      statusDiv.style.display = 'block';
+      statusText.textContent = '❌ Error loading posts: ' + error.message;
+    }
+  }
 }
 
 // ========================================
@@ -476,11 +522,17 @@ function deletePost(postId) {
 // ========================================
 
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Initializing blog...');
-  checkSession();
-  displayPosts();
+  console.log('DOM loaded - initializing blog system');
   
-  const blogForm = document.getElementById('blogForm');
+  try {
+    checkSession();
+    displayPosts();
+    
+    const blogForm = document.getElementById('blogForm');
+    if (!blogForm) {
+      console.error('Blog form not found!');
+      return;
+    }
   
   blogForm.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -529,6 +581,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
+  } catch (error) {
+    console.error('Error initializing blog:', error);
+  }
+  
+  console.log('Blog initialization complete');
 });
 
 // ========================================
