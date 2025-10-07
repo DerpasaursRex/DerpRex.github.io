@@ -768,6 +768,7 @@ function sanitizePersonalInfo(text) {
 // ========================================
 
 let contentMode = localStorage.getItem('contentMode') || 'SFW'; // Default to SFW
+let roleplayMode = localStorage.getItem('roleplayMode') === 'true' || false;
 
 // SFW Mode - Blocked words and patterns
 const SFW_BLOCKED_WORDS = [
@@ -1245,6 +1246,12 @@ MODE SFW     - Activate safe-for-work mode (default)
 MODE NSFW    - Activate mature content mode
 MODE STATUS  - Check current mode
 
+ROLEPLAY MODE:
+ROLEPLAY ON  - Activate roleplay mode (respects SFW/NSFW)
+ROLEPLAY OFF - Deactivate roleplay mode
+RP STATUS    - Check roleplay status
+Format: "dialogue" for speech, *actions* for descriptions
+
 SMART MEMORY:
 MEMORY         - Show what the AI remembers about you
 FORGET ME      - Clear all learned information
@@ -1670,7 +1677,34 @@ function processNaturalLanguage(input, inputUpper) {
   const lower = input.toLowerCase();
   const aiName = localStorage.getItem('terminalAIName') || 'AI';
   
-  // Greetings (expanded with memory)
+  // Roleplay-specific responses
+  if (roleplayMode) {
+    // Greetings in roleplay mode
+    if (/^(hi|hello|hey|greetings|howdy|sup|yo|hiya|heya|morning|afternoon|evening|good morning|good afternoon|good evening)(\s|!|$|,)/i.test(lower)) {
+      const userName = userMemory.userName || 'friend';
+      const rpGreetings = [
+        `*${aiName} waves enthusiastically* "Hey ${userName}! Great to see you!" *smiles warmly*`,
+        `*${aiName} looks up and grins* "Hello there! How are you doing today?"`,
+        `*${aiName} approaches with a friendly expression* "Hi! What brings you here?"`,
+        `"Hey!" *${aiName} gives a cheerful wave* "Ready for an adventure?"`
+      ];
+      return rpGreetings[Math.floor(Math.random() * rpGreetings.length)];
+    }
+    
+    // Generic roleplay response for unrecognized input
+    if (input.includes('"') || input.includes('*')) {
+      // User is doing roleplay format - respond in kind
+      const rpResponses = [
+        `*${aiName} listens carefully* "I'm here. What would you like to do?"`,
+        `"Interesting..." *${aiName} contemplates thoughtfully*`,
+        `*${aiName} nods* "I understand. Tell me more."`,
+        `"Hmm..." *${aiName} looks curious* "What happens next?"`
+      ];
+      return rpResponses[Math.floor(Math.random() * rpResponses.length)];
+    }
+  }
+  
+  // Normal mode greetings (expanded with memory)
   if (/^(hi|hello|hey|greetings|howdy|sup|yo|hiya|heya|morning|afternoon|evening|good morning|good afternoon|good evening)(\s|!|$|,)/i.test(lower)) {
     let greeting;
     
@@ -1886,6 +1920,31 @@ function getConversationalFallback(input) {
   return responses[Math.floor(Math.random() * responses.length)];
 }
 
+function formatMarkdown(text, isRoleplay = false) {
+  let formatted = text;
+  
+  if (isRoleplay) {
+    // In roleplay mode: "dialogue" and *actions*
+    // Keep quoted text as dialogue
+    // Keep *actions* as italic descriptions
+    
+    // Format actions/descriptions: *text* becomes italic
+    formatted = formatted.replace(/\*(.+?)\*/g, '<em style="color: inherit; opacity: 0.9;">$1</em>');
+    
+    // Format dialogue: "text" stays in quotes but can be styled
+    formatted = formatted.replace(/"(.+?)"/g, '"<span style="font-weight: normal;">$1</span>"');
+  } else {
+    // Normal mode: markdown formatting
+    // Bold-Italic: **text** becomes <strong><em>text</em></strong>
+    formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong><em>$1</em></strong>');
+    
+    // Italic: *text* becomes <em>text</em>
+    formatted = formatted.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  }
+  
+  return formatted;
+}
+
 function addTerminalLine(text, color = '#00ff00', isCommand = false) {
   const chatMessages = document.getElementById('chatMessages');
   const line = document.createElement('div');
@@ -1893,12 +1952,15 @@ function addTerminalLine(text, color = '#00ff00', isCommand = false) {
   line.style.fontFamily = "'Courier New', monospace";
   line.style.lineHeight = '1.6';
   
+  // Apply markdown formatting
+  const formattedText = formatMarkdown(text, roleplayMode);
+  
   if (isCommand) {
     // User message - right-aligned bubble style
     line.innerHTML = `
       <div style="display: flex; justify-content: flex-end; margin: 10px 0;">
         <div style="background: #00ff00; color: #000; padding: 10px 15px; border-radius: 15px 15px 0 15px; max-width: 80%; word-wrap: break-word;">
-          <strong>You:</strong> ${text}
+          <strong>You:</strong> ${formattedText}
         </div>
       </div>`;
   } else {
@@ -1914,7 +1976,7 @@ function addTerminalLine(text, color = '#00ff00', isCommand = false) {
       <div style="display: flex; justify-content: flex-start; margin: 10px 0;">
         <div style="background: #1a1a1a; color: ${textColor}; padding: 10px 15px; border-radius: 15px 15px 15px 0; max-width: 80%; word-wrap: break-word; border-left: 3px solid #00ff00;">
           <div style="color: #00ff00; font-weight: bold; margin-bottom: 5px;">${aiName}</div>
-          <pre style="margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; color: ${textColor};">${text}</pre>
+          <div style="margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; color: ${textColor};">${formattedText}</div>
         </div>
       </div>`;
   }
@@ -2087,6 +2149,44 @@ function executeCommand() {
     localStorage.setItem('spellCheckEnabled', 'false');
     addTerminalLine('⚠️ SPELL CHECK DISABLED', '#ffff00');
     addTerminalLine('Messages will be sent without spell checking.', '#ffff99');
+    return;
+  }
+  
+  // Roleplay mode
+  if (commandUpper === 'ROLEPLAY ON' || commandUpper === 'RP ON') {
+    roleplayMode = true;
+    localStorage.setItem('roleplayMode', 'true');
+    const aiName = localStorage.getItem('terminalAIName') || 'AI';
+    addTerminalLine('🎭 ROLEPLAY MODE ACTIVATED', '#00ff00');
+    addTerminalLine(`*${aiName} adjusts their settings and prepares for roleplay*`, '#c0ffc0');
+    addTerminalLine('"Hello! I\'m ready to roleplay with you!"', '#c0ffc0');
+    addTerminalLine('\nUse "quotes" for dialogue and *asterisks* for actions/descriptions.', '#ffff99');
+    if (contentMode === 'SFW') {
+      addTerminalLine('Current mode: SFW - Mature content will be filtered.', '#ffff99');
+    } else {
+      addTerminalLine('Current mode: NSFW - Mature content allowed.', '#ff6600');
+    }
+    return;
+  }
+  
+  if (commandUpper === 'ROLEPLAY OFF' || commandUpper === 'RP OFF') {
+    roleplayMode = false;
+    localStorage.setItem('roleplayMode', 'false');
+    addTerminalLine('🎭 ROLEPLAY MODE DEACTIVATED', '#ffff00');
+    addTerminalLine('Returning to normal chat mode.', '#ffff99');
+    return;
+  }
+  
+  if (commandUpper === 'RP STATUS' || commandUpper === 'ROLEPLAY STATUS') {
+    const status = roleplayMode ? 'ACTIVE' : 'INACTIVE';
+    const statusColor = roleplayMode ? '#00ff00' : '#ffff99';
+    addTerminalLine(`Roleplay Mode: ${status}`, statusColor);
+    if (roleplayMode) {
+      addTerminalLine('Use "quotes" for dialogue and *asterisks* for actions.', '#c0ffc0');
+      addTerminalLine(`Content filtering: ${contentMode} mode active`, '#c0ffc0');
+    } else {
+      addTerminalLine('Type ROLEPLAY ON to activate roleplay mode.', '#c0ffc0');
+    }
     return;
   }
   
