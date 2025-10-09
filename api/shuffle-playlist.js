@@ -44,25 +44,44 @@ export default async function handler(req, res) {
     }
 
     // Get playlist tracks
-    const playlistResponse = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+    console.log('Fetching playlist:', playlistId);
+    const playlistResponse = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=50`, {
       headers: {
         'Authorization': `Bearer ${tokenData.access_token}`
       }
     });
 
     const playlistData = await playlistResponse.json();
+    console.log('Playlist response status:', playlistResponse.status);
 
     if (!playlistResponse.ok) {
-      return res.status(playlistResponse.status).json({ error: 'Failed to get playlist' });
+      console.error('Playlist fetch failed:', playlistData);
+      return res.status(playlistResponse.status).json({ 
+        error: 'Failed to get playlist',
+        details: playlistData.error?.message || 'Unknown error'
+      });
     }
 
-    // Shuffle the tracks
-    const tracks = playlistData.items;
-    const shuffled = tracks.sort(() => Math.random() - 0.5);
+    // Check if we have tracks
+    if (!playlistData.items || playlistData.items.length === 0) {
+      console.error('No tracks in playlist');
+      return res.status(404).json({ error: 'No tracks found in playlist' });
+    }
+
+    console.log('Got', playlistData.items.length, 'tracks');
+
+    // Shuffle the tracks (Fisher-Yates shuffle for better randomness)
+    const tracks = [...playlistData.items];
+    for (let i = tracks.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tracks[i], tracks[j]] = [tracks[j], tracks[i]];
+    }
+
+    console.log('Shuffled successfully');
 
     res.status(200).json({ 
-      tracks: shuffled,
-      total: shuffled.length 
+      tracks: tracks,
+      total: tracks.length 
     });
 
   } catch (error) {

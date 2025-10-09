@@ -17,11 +17,20 @@ export default async function handler(req, res) {
     const clientId = process.env.SPOTIFY_CLIENT_ID;
     const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
+    console.log('Client ID present:', !!clientId);
+    console.log('Client Secret present:', !!clientSecret);
+
     if (!clientId || !clientSecret) {
-      return res.status(500).json({ error: 'Missing Spotify credentials' });
+      console.error('Missing credentials');
+      return res.status(500).json({ 
+        error: 'Missing Spotify credentials',
+        hasClientId: !!clientId,
+        hasClientSecret: !!clientSecret
+      });
     }
 
     // Get access token using Client Credentials flow
+    console.log('Requesting token from Spotify...');
     const response = await fetch('https://accounts.spotify.com/api/token', {
       method: 'POST',
       headers: {
@@ -32,11 +41,17 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    console.log('Spotify response status:', response.status);
 
     if (!response.ok) {
-      return res.status(response.status).json({ error: data.error_description || 'Failed to get token' });
+      console.error('Token request failed:', data);
+      return res.status(response.status).json({ 
+        error: data.error_description || 'Failed to get token',
+        details: data
+      });
     }
 
+    console.log('Token received successfully');
     res.status(200).json({ 
       access_token: data.access_token,
       expires_in: data.expires_in 
@@ -44,7 +59,10 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Error getting Spotify token:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message 
+    });
   }
 }
 
