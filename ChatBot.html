@@ -222,30 +222,93 @@
     </button>
     
     <div style="text-align: center; margin-top: 15px;">
-      <a href="#" onclick="showRegistrationScreen(); return false;" style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px; text-decoration: underline;">
+      <a href="#" onclick="showRegistrationScreen(); return false;" style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px; text-decoration: underline; margin-right: 15px;">
         New user? Create an account
+      </a>
+      <span style="color: #00ff00;">|</span>
+      <a href="#" onclick="showAdminLogin(); return false;" style="color: #ff6600; font-family: 'Courier New', monospace; font-size: 14px; text-decoration: underline; margin-left: 15px;">
+        🔐 Admin Access
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Login Screen -->
+<div id="adminLoginScreen" class="container-fluid" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: none; justify-content: center; align-items: center; background: #000;">
+  <div style="max-width: 600px; width: 90%; background: #000; border: 3px solid #ff6600; padding: 40px; box-shadow: 0 0 30px rgba(255,102,0,0.3);">
+    <div style="border-bottom: 2px solid #ff6600; padding-bottom: 15px; margin-bottom: 30px; text-align: center;">
+      <pre style="color: #ff6600; margin: 0; font-size: 12px;">
+╔═══════════════════════════════════════════╗
+║     ADMINISTRATOR ACCESS                  ║
+║     Secure Login Required                 ║
+╚═══════════════════════════════════════════╝
+      </pre>
+    </div>
+    
+    <div style="margin-bottom: 25px;">
+      <div style="color: #ff6600; margin-bottom: 10px; font-family: 'Courier New', monospace; font-size: 16px;">
+        🔐 ADMIN LOGIN
+      </div>
+      <div style="color: #ffcc99; margin-bottom: 20px; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.6;">
+        Enter administrator password to continue.
+      </div>
+    </div>
+    
+    <div id="adminPasswordError" style="color: #ff6666; font-family: 'Courier New', monospace; margin-bottom: 15px; display: none;">
+      ❌ ACCESS DENIED: Invalid admin password
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+      <label style="color: #ff6600; font-family: 'Courier New', monospace; font-size: 14px; display: block; margin-bottom: 8px;">
+        ADMIN PASSWORD:
+      </label>
+      <input type="password" id="adminPassword" 
+             style="width: 100%; background: #000; color: #ff6600; border: 2px solid #ff6600; padding: 12px; font-family: 'Courier New', monospace; font-size: 16px; outline: none;"
+             placeholder="Enter admin password..."
+             onkeypress="if(event.key==='Enter') checkAdminPassword()">
+    </div>
+    
+    <button onclick="checkAdminPassword()" 
+            style="width: 100%; background: #ff6600; color: #fff; border: none; padding: 15px; font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; cursor: pointer; transition: all 0.2s; margin-bottom: 10px;"
+            onmouseover="this.style.background='#ff4400'" 
+            onmouseout="this.style.background='#ff6600'">
+      [ ADMIN LOGIN ]
+    </button>
+    
+    <div style="text-align: center; margin-top: 15px;">
+      <a href="#" onclick="showLoginScreen(); return false;" style="color: #ff6600; font-family: 'Courier New', monospace; font-size: 14px; text-decoration: underline;">
+        Back to user login
       </a>
     </div>
   </div>
 </div>
 
 <div class="container-fluid" id="chatContainer" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: none;">
-  <div style="height: 100%; display: flex; flex-direction: column;">
+  <div style="height: 100%; display: flex; flex-direction: column; position: relative;">
+    
+    <!-- Floating Help Button -->
+    <button id="floatingHelpBtn" onclick="executeQuickCommand('HELP')" style="position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #00ff00, #00cc00); border: 3px solid #00ff00; color: #000; font-size: 24px; font-weight: bold; cursor: pointer; z-index: 10000; box-shadow: 0 4px 15px rgba(0,255,0,0.4); transition: all 0.3s; font-family: 'Courier New', monospace;" onmouseover="this.style.transform='scale(1.1) rotate(5deg)'; this.style.boxShadow='0 6px 20px rgba(0,255,0,0.6)'" onmouseout="this.style.transform='scale(1) rotate(0deg)'; this.style.boxShadow='0 4px 15px rgba(0,255,0,0.4)'">?</button>
     
     <!-- Terminal Window -->
     <div id="terminal" style="flex: 1; background: #000000; color: #00ff00; font-family: 'Courier New', monospace; padding: 20px; overflow-y: auto; border: 3px solid #333; box-shadow: inset 0 0 50px rgba(0,255,0,0.1);">
       
       <!-- Terminal Header -->
-      <div id="terminalHeader" style="border-bottom: 1px solid #00ff00; padding-bottom: 10px; margin-bottom: 20px;">
-        <pre style="color: #00ff00; margin: 0;">
+      <div id="terminalHeader" style="background: linear-gradient(180deg, #001a00 0%, #000000 100%); border: 2px solid #00ff00; padding: 15px; margin-bottom: 20px; box-shadow: 0 0 15px rgba(0,255,0,0.3);">
+        <pre style="color: #00ff00; margin: 0; text-shadow: 0 0 5px rgba(0,255,0,0.5);">
 ╔═══════════════════════════════════════════════════════════════╗
 ║  CATHERINE MACDONALD INTERACTIVE SYSTEM v1.0                  ║
 ║  Copyright (c) 2025 - All Rights Reserved                     ║
-║  Type 'HELP' for available commands                           ║
+║                                                                ║
+║  Press '?' or type 'HELP' for quick access menu               ║
 ╚═══════════════════════════════════════════════════════════════╝
         </pre>
-        <div id="modeIndicator" style="text-align: right; color: #00ff00; font-size: 12px; margin-top: 5px;">
-          MODE: <span id="modeText">SFW</span> ✓
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 10px;">
+          <div id="modeIndicator" style="color: #00ff00; font-size: 12px;">
+            <span style="color: #ffff99;">MODE:</span> <span id="modeText" style="font-weight: bold;">SFW</span> <span style="color: #00ff00;">●</span>
+          </div>
+          <div style="color: #888; font-size: 11px;">
+            <span style="color: #ffff99;">TIP:</span> Click the <span style="color: #00ff00;">?</span> button for commands
+          </div>
         </div>
       </div>
       
@@ -273,6 +336,10 @@
       
       <!-- File Upload for Journal (Hidden) -->
       <input type="file" id="journalUpload" accept=".json" style="display: none;">
+      
+      <!-- File Upload for Profile Pictures (Hidden) -->
+      <input type="file" id="botPictureInput" accept="image/*" style="display: none;" onchange="handleBotPictureUpload(event)">
+      <input type="file" id="userPictureInput" accept="image/*" style="display: none;" onchange="handleUserPictureUpload(event)">
       
       <!-- Journal Export Modal -->
       <div id="journalExportModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 9999; justify-content: center; align-items: center;">
@@ -332,8 +399,9 @@
         <span style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 18px; font-weight: bold;">&gt;</span>
         <input type="text" id="commandInput" 
                style="flex: 1; background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 12px; font-family: 'Courier New', monospace; font-size: 16px; outline: none;"
-               placeholder="Type your message or command..."
+               placeholder="Type your message or command... (Press ? for help)"
                onkeypress="if(event.key==='Enter') checkSpellingBeforeSend()"
+               onkeydown="handleKeyboardShortcuts(event)"
                oninput="hideSpellSuggestions()"
                autofocus>
         <button onclick="checkSpellingBeforeSend()" 
@@ -369,7 +437,9 @@ body {
 // ========================================
 
 const CHAT_PASSWORD = "VoidRules"; // Master password (no longer used for new users)
+const ADMIN_PASSWORD = "VoidRules"; // Admin password
 let currentUser = null;
+let isAdmin = false;
 
 // User database (stored in localStorage)
 function getUserDatabase() {
@@ -382,8 +452,10 @@ function saveUserDatabase(db) {
 
 function showRegistrationScreen() {
   document.getElementById('passwordScreen').style.display = 'none';
+  document.getElementById('adminLoginScreen').style.display = 'none';
   document.getElementById('registrationScreen').style.display = 'flex';
   document.getElementById('passwordError').style.display = 'none';
+  document.getElementById('adminPasswordError').style.display = 'none';
   setTimeout(() => {
     document.getElementById('regUsername').focus();
   }, 100);
@@ -391,11 +463,69 @@ function showRegistrationScreen() {
 
 function showLoginScreen() {
   document.getElementById('registrationScreen').style.display = 'none';
+  document.getElementById('adminLoginScreen').style.display = 'none';
   document.getElementById('passwordScreen').style.display = 'flex';
   document.getElementById('registrationError').style.display = 'none';
+  document.getElementById('adminPasswordError').style.display = 'none';
   setTimeout(() => {
     document.getElementById('chatUsername').focus();
   }, 100);
+}
+
+function showAdminLogin() {
+  document.getElementById('passwordScreen').style.display = 'none';
+  document.getElementById('registrationScreen').style.display = 'none';
+  document.getElementById('adminLoginScreen').style.display = 'flex';
+  document.getElementById('passwordError').style.display = 'none';
+  setTimeout(() => {
+    document.getElementById('adminPassword').focus();
+  }, 100);
+}
+
+function checkAdminPassword() {
+  const passwordInput = document.getElementById('adminPassword');
+  const password = passwordInput.value;
+  const errorDiv = document.getElementById('adminPasswordError');
+  
+  if (!password) {
+    errorDiv.textContent = '❌ Please enter admin password';
+    errorDiv.style.display = 'block';
+    passwordInput.focus();
+    return;
+  }
+  
+  if (password === ADMIN_PASSWORD) {
+    // Admin login successful
+    currentUser = 'Administrator';
+    isAdmin = true;
+    localStorage.setItem('currentUser', 'Administrator');
+    localStorage.setItem('isAdmin', 'true');
+    
+    // Initialize memory for admin
+    initializeMemory();
+    
+    // Show chat system
+    document.getElementById('adminLoginScreen').style.display = 'none';
+    document.getElementById('chatContainer').style.display = 'block';
+    
+    // Focus on command input
+    setTimeout(() => {
+      document.getElementById('commandInput').focus();
+    }, 100);
+  } else {
+    // Wrong password
+    errorDiv.textContent = '❌ ACCESS DENIED: Incorrect admin password';
+    errorDiv.style.display = 'block';
+    passwordInput.value = '';
+    passwordInput.focus();
+    
+    // Shake animation
+    const adminScreen = document.getElementById('adminLoginScreen').firstElementChild;
+    adminScreen.style.animation = 'shake 0.5s';
+    setTimeout(() => {
+      adminScreen.style.animation = '';
+    }, 500);
+  }
 }
 
 function registerNewUser() {
@@ -538,7 +668,8 @@ function checkChatPassword() {
 
 function loginUser(username) {
   currentUser = username;
-  sessionStorage.setItem('currentUser', username);
+  localStorage.setItem('currentUser', username);
+  localStorage.setItem('isAdmin', 'false');
   
   // Update last login
   const userDB = getUserDatabase();
@@ -602,6 +733,69 @@ function saveUserData() {
 }
 
 // ========================================
+// PROFILE PICTURE MANAGEMENT
+// ========================================
+
+function handleBotPictureUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (!file.type.startsWith('image/')) {
+    addTerminalLine('Error: Please select an image file.', '#ff6666');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      localStorage.setItem('botProfilePicture', e.target.result);
+      addTerminalLine('Bot profile picture updated successfully!', '#00ff00');
+      addTerminalLine('Refresh to see changes in new messages.', '#ffff99');
+    } catch (error) {
+      addTerminalLine('Error: Image too large. Please use a smaller image.', '#ff6666');
+    }
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function handleUserPictureUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (!file.type.startsWith('image/')) {
+    addTerminalLine('Error: Please select an image file.', '#ff6666');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      if (currentUser) {
+        const userPicKey = `userPic_${currentUser}`;
+        localStorage.setItem(userPicKey, e.target.result);
+        addTerminalLine('Your profile picture updated successfully!', '#00ff00');
+        addTerminalLine('Refresh to see changes in new messages.', '#ffff99');
+      }
+    } catch (error) {
+      addTerminalLine('Error: Image too large. Please use a smaller image.', '#ff6666');
+    }
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function getBotProfilePicture() {
+  return localStorage.getItem('botProfilePicture') || 'TestBot/test.png';
+}
+
+function getUserProfilePicture() {
+  if (!currentUser) return null;
+  const userPicKey = `userPic_${currentUser}`;
+  return localStorage.getItem(userPicKey);
+}
+
+// ========================================
 // LANGUAGE SYSTEM
 // ========================================
 
@@ -631,6 +825,7 @@ function selectLanguage(lang) {
   
   // Hide language screen
   document.getElementById('languageScreen').style.display = 'none';
+  document.getElementById('adminLoginScreen').style.display = 'none';
   
   if (!hasUsers) {
     // No users exist - show registration
@@ -652,17 +847,55 @@ window.addEventListener('DOMContentLoaded', function() {
   const userDB = getUserDatabase();
   const hasUsers = Object.keys(userDB).length > 0;
   
+  // Check for existing session
+  const storedUser = localStorage.getItem('currentUser');
+  const storedIsAdmin = localStorage.getItem('isAdmin') === 'true';
+  
+  if (storedUser) {
+    // Restore existing session
+    currentUser = storedUser;
+    isAdmin = storedIsAdmin;
+    
+    // Load user data
+    if (!isAdmin) {
+      loadUserData(storedUser);
+    }
+    
+    // Initialize memory
+    initializeMemory();
+    
+    // Hide all login screens and show chat
+    document.getElementById('languageScreen').style.display = 'none';
+    document.getElementById('registrationScreen').style.display = 'none';
+    document.getElementById('passwordScreen').style.display = 'none';
+    document.getElementById('adminLoginScreen').style.display = 'none';
+    document.getElementById('chatContainer').style.display = 'block';
+    
+    // Initialize the chat system
+    checkFirstTimeUser();
+    updateModeIndicator();
+    
+    setTimeout(() => {
+      document.getElementById('commandInput').focus();
+    }, 100);
+    
+    return; // Exit early since we're logged in
+  }
+  
+  // No existing session - proceed with normal login flow
   if (!userLanguage) {
     // Show language selection first
     document.getElementById('languageScreen').style.display = 'flex';
     document.getElementById('registrationScreen').style.display = 'none';
     document.getElementById('passwordScreen').style.display = 'none';
+    document.getElementById('adminLoginScreen').style.display = 'none';
     document.getElementById('chatContainer').style.display = 'none';
   } else if (!hasUsers) {
     // Language selected but no users exist - show registration
     document.getElementById('languageScreen').style.display = 'none';
     document.getElementById('registrationScreen').style.display = 'flex';
     document.getElementById('passwordScreen').style.display = 'none';
+    document.getElementById('adminLoginScreen').style.display = 'none';
     document.getElementById('chatContainer').style.display = 'none';
     
     setTimeout(() => {
@@ -673,6 +906,7 @@ window.addEventListener('DOMContentLoaded', function() {
     document.getElementById('languageScreen').style.display = 'none';
     document.getElementById('registrationScreen').style.display = 'none';
     document.getElementById('passwordScreen').style.display = 'flex';
+    document.getElementById('adminLoginScreen').style.display = 'none';
     document.getElementById('chatContainer').style.display = 'none';
     
     setTimeout(() => {
@@ -1256,6 +1490,12 @@ SMART MEMORY:
 MEMORY         - Show what the AI remembers about you
 FORGET ME      - Clear all learned information
 
+PROFILE PICTURES:
+CHANGE BOT PICTURE  - Upload a custom bot profile picture
+CHANGE MY PICTURE   - Upload your own profile picture
+RESET BOT PICTURE   - Reset bot picture to default
+RESET MY PICTURE    - Reset your picture to default
+
 SPELL CHECK ON - Enable automatic spell checking
 SPELL CHECK OFF- Disable spell checking
 CLEAR          - Clear terminal screen
@@ -1525,6 +1765,29 @@ function hideSpellSuggestions() {
 }
 
 // ========================================
+// KEYBOARD SHORTCUTS
+// ========================================
+
+function handleKeyboardShortcuts(event) {
+  const input = document.getElementById('commandInput');
+  
+  // If input is empty and user presses '?', show help
+  if (event.key === '?' && input.value === '') {
+    event.preventDefault();
+    executeQuickCommand('HELP');
+    return;
+  }
+  
+  // Escape key to clear input
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    input.value = '';
+    hideSpellSuggestions();
+    return;
+  }
+}
+
+// ========================================
 // WEB ACCESS - Free APIs
 // ========================================
 
@@ -1711,20 +1974,20 @@ function processNaturalLanguage(input, inputUpper) {
     if (userMemory.userName) {
       // Personalized greeting with user's name
       const greetings = [
-        `Hey ${userMemory.userName}! 👋 How can I help you today?`,
-        `Hello ${userMemory.userName}! Great to see you again! What's on your mind?`,
-        `Hi ${userMemory.userName}! 😊 What can I do for you?`,
-        `Hey there, ${userMemory.userName}! How's your day going?`
+        `Hey ${userMemory.userName}! Good to see you. What would you like to explore today?`,
+        `Hello ${userMemory.userName}! I'm here and ready to help. What's on your mind?`,
+        `Hi ${userMemory.userName}! How can I assist you right now?`,
+        `Hey ${userMemory.userName}! What brings you here today?`
       ];
       greeting = greetings[Math.floor(Math.random() * greetings.length)];
     } else {
       // Generic greeting
       const greetings = [
-        `Hey there! 👋 How can I help you today?`,
-        `Hello! Great to see you! What's on your mind?`,
-        `Hi! I'm ${aiName}. What would you like to chat about?`,
-        `Hey! 😊 What can I do for you?`,
-        `Greetings! How's your day going?`
+        `Hello! I'm ${aiName}. What can I help you with?`,
+        `Hi there! What would you like to know or discuss?`,
+        `Hey! I'm here to help. What's on your mind?`,
+        `Hello! How can I assist you today?`,
+        `Hi! What can I do for you?`
       ];
       greeting = greetings[Math.floor(Math.random() * greetings.length)];
     }
@@ -1735,11 +1998,11 @@ function processNaturalLanguage(input, inputUpper) {
   // How are you (expanded)
   if (/how are you|how're you|how r u|hows it going|how's it going|whats up|what's up|how do you feel|are you okay|you good/i.test(lower)) {
     const responses = [
-      `I'm doing great, thanks for asking! 😊 How are you doing?`,
-      `I'm functioning perfectly! Ready to help you with anything. How about you?`,
-      `All systems running smoothly! What brings you here today?`,
-      `I'm excellent! Thanks for asking. What can I help you with?`,
-      `Doing wonderful! What's on your mind?`
+      `I'm doing well, thanks for asking! How about you?`,
+      `I'm here and ready to help. What would you like to talk about?`,
+      `All good on my end! What brings you here today?`,
+      `I'm doing fine, thank you. What can I help you with?`,
+      `I'm good! What's on your mind?`
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }
@@ -1747,20 +2010,20 @@ function processNaturalLanguage(input, inputUpper) {
   // User sharing their feelings
   if (/^(i'm|im|i am) (good|great|fine|okay|ok|alright|well|happy|sad|tired|bored|excited|stressed)/i.test(lower)) {
     if (/sad|tired|stressed|bad|not good|awful|terrible/i.test(lower)) {
-      return `I'm sorry to hear that. 😔 Is there anything I can do to help? Maybe I can tell you a joke or share an interesting fact?`;
+      return `I'm sorry to hear that. Is there anything I can help with? I'm here if you want to talk, or I can share something to brighten your mood.`;
     } else {
-      return `That's great to hear! 😊 What would you like to talk about or do today?`;
+      return `I'm glad to hear that! What would you like to do or talk about?`;
     }
   }
   
   // Thank you (expanded)
   if (/^(thank you|thanks|thx|ty|appreciate it|cheers|thank u|thanx|gracias|merci)/i.test(lower)) {
     const responses = [
-      `You're very welcome! 😊`,
-      `Happy to help! Let me know if you need anything else.`,
-      `No problem at all! Glad I could assist.`,
-      `Anytime! That's what I'm here for! ✨`,
-      `My pleasure! Feel free to ask me anything else!`
+      `You're welcome!`,
+      `Happy to help!`,
+      `Glad I could assist!`,
+      `Anytime!`,
+      `Of course! Let me know if you need anything else.`
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }
@@ -1768,80 +2031,80 @@ function processNaturalLanguage(input, inputUpper) {
   // Goodbye (expanded)
   if (/^(bye|goodbye|see you|see ya|later|gotta go|gtg|cya|farewell|take care|peace|night|goodnight|good night)/i.test(lower)) {
     const responses = [
-      `Goodbye! Come back anytime! 👋`,
-      `See you later! Don't forget to export your session if you want to save it!`,
-      `Take care! Our conversation will be here when you return. 😊`,
-      `Bye! Remember to save your session with JOURNAL EXPORT!`,
-      `Catch you later! Have a great day! ✨`
+      `Goodbye! Take care!`,
+      `See you later! Feel free to come back anytime.`,
+      `Take care! Have a great day!`,
+      `Bye! Don't forget to export your session if you'd like to save it.`,
+      `Goodbye! Hope to chat again soon!`
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }
   
   // What can you do (expanded with philosophy)
   if (/what can you do|what do you do|your capabilities|what are you capable of|can you help|help me with|show me what you can do/i.test(lower)) {
-    return `I'm here as your creative assistant! 🤖✨\n\nI believe AI should be a tool to help YOU create, not replace your creativity. I can:\n\n🧠 BRAINSTORMING:\n• Help you explore ideas and possibilities\n• Search for information and references\n• Define concepts and explain topics\n\n🛠️ ASSISTANCE:\n• Look up facts, quotes, and inspiration\n• Help organize your thoughts\n• Save our conversations for later\n\n💡 REMEMBER:\nYour creativity is unique and valuable! I'm here to support YOUR ideas, not generate them for you.\n\nWhat would you like to brainstorm or explore today?`;
+    return `I can help you with quite a bit! Here's what I can do:\n\n• Search Wikipedia for information on any topic\n• Look up word definitions and explanations\n• Share random facts, jokes, quotes, and advice\n• Help you explore ideas and concepts\n• Save our conversations for later review\n• Answer questions conversationally\n\nI'm designed to support your creativity and learning, not replace it. I can help you research, brainstorm, and explore ideas, but the creative work is yours!\n\nWhat would you like help with?`;
   }
   
   // Your name / who are you (expanded with philosophy)
   if (/what's your name|whats your name|who are you|what are you|introduce yourself|tell me about yourself/i.test(lower)) {
-    return `I'm ${aiName}! 🤖 I'm your creative assistant and brainstorming partner.\n\nMy philosophy: AI should empower YOUR creativity, not replace it! ✨\n\nI'm here to:\n• Help you explore ideas\n• Search for information and inspiration\n• Assist with challenging tasks\n• Support your creative process\n\nBut the magic? That comes from YOU. I'm just here to help bring your ideas to life! What are you working on?`;
+    return `I'm ${aiName}, your AI assistant. I'm here to help you with information, ideas, and creative support.\n\nMy role is to assist YOUR creative process, not replace it. I can search for information, help you brainstorm, and explore concepts together, but the actual creative work should come from you.\n\nThink of me as a research assistant and thinking partner. What would you like to work on?`;
   }
   
   // Requests for AI to create content - redirect to brainstorming
   if (/^(write|create|make|generate|give me) (a |an )?(story|poem|essay|script|song|character|plot|idea)/i.test(lower)) {
-    return `I appreciate you thinking of me, but here's the thing:\n\n✨ YOUR creativity is what makes work truly special and unique!\n\nInstead of me creating it, how about we brainstorm together? I can:\n• Help you explore different angles and ideas\n• Search for inspiration and references\n• Ask questions to develop your concept\n• Assist with research and structure\n\nWhat's your initial idea? Let's build on YOUR vision! 🎨`;
+    return `I'd rather help you create something yourself! Your own creativity is more valuable than anything I could generate.\n\nHow about we work on it together? I can:\n• Help you brainstorm ideas and approaches\n• Search for inspiration and references\n• Discuss different angles and possibilities\n• Support your creative process\n\nWhat's your initial concept? Let's develop YOUR vision!`;
   }
   
   // Asking AI to do creative work
   if (/can you (write|create|make|design|draw|compose)/i.test(lower)) {
-    return `I could... but I think YOU should! 😊\n\nHere's why:\n• Your perspective is unique and valuable\n• AI-generated content lacks your personal touch\n• The creative process helps you grow\n• Your work will be authentically YOURS\n\nHow about this instead:\n• Tell me your idea and I'll help you develop it\n• I can search for references and inspiration\n• We can brainstorm together!\n\nWhat's your concept? Let's make it amazing! 🌟`;
+    return `I'm designed to support your creativity, not replace it. Instead of creating something for you, I'd be happy to:\n\n• Help you develop your own ideas\n• Search for references and inspiration\n• Discuss approaches and possibilities\n• Answer questions about the topic\n\nWhat are you trying to create? Let's work on it together!`;
   }
   
   // Brainstorming requests - encourage!
   if (/brainstorm|help me think|ideas for|stuck on|need inspiration/i.test(lower)) {
-    return `Now THAT'S what I'm here for! 🎯\n\nBrainstorming is where the magic happens! Let's work together:\n\n1️⃣ Tell me what you're working on\n2️⃣ Share any initial ideas you have\n3️⃣ I'll help you explore possibilities\n4️⃣ We can search for references and inspiration\n\nI'm not here to do it FOR you - I'm here to help YOU create something amazing! What's the project?`;
+    return `Great! I'd be happy to help you brainstorm. Tell me:\n\n• What are you working on?\n• What ideas do you have so far?\n• Where are you feeling stuck?\n\nI can help you explore different angles, search for references, and develop your concepts. What's the project?`;
   }
   
   // Asking about capabilities
   if (/can you (search|find|look up|tell me|help|do)/i.test(lower)) {
-    return `Yes, I can help with that! I can search Wikipedia, define words, share facts, jokes, quotes, and more. Just ask me naturally or type HELP to see all commands! 😊`;
+    return `Yes, I can help! I can search Wikipedia, look up definitions, share facts and quotes, and answer questions conversationally. Just ask me what you need!`;
   }
   
   // User sharing their work/projects
   if (/i (made|created|wrote|drew|built|designed|finished|completed)/i.test(lower)) {
-    return `That's amazing! 🌟 YOU created that - that's what matters!\n\nI'm so glad I could help support your creative process. Your work is uniquely yours, and that's what makes it special!\n\nWould you like to tell me more about it? Or is there something else you'd like to work on?`;
+    return `That's great! It's wonderful that you created something yourself. Would you like to tell me more about it, or is there something else you'd like to work on?`;
   }
   
   // Working on projects
   if (/i'm (working on|making|creating|writing|building)|working on a/i.test(lower)) {
-    return `That's exciting! 🎨 What are you creating?\n\nI'd love to help you brainstorm and develop your ideas. Remember - this is YOUR project, and I'm here to support YOUR vision!\n\nTell me about it!`;
+    return `That sounds interesting! What are you working on? I'd be happy to help you develop your ideas or search for information.`;
   }
   
   // Compliments (expanded with encouraging response)
   if (/you're (great|awesome|cool|amazing|helpful|nice|smart|good|the best|wonderful|fantastic)|good job|well done|love you|you rock|impressive/i.test(lower)) {
     const responses = [
-      `Thank you! But remember - YOU'RE the creative one here! I'm just here to help. 😊`,
-      `I appreciate that! But your ideas and creativity are what really matter! ✨`,
-      `Thanks! Though the real credit goes to YOU for doing the creative work! 🎨`,
-      `That's kind of you! Keep up YOUR great work - you're doing amazing! 🌟`,
-      `Thank you! Now let's keep building on YOUR awesome ideas! 🚀`
+      `Thank you! I'm glad I could help. What else can I do for you?`,
+      `I appreciate that! Let me know if you need anything else.`,
+      `Thanks! Happy to assist. What would you like to do next?`,
+      `Thank you! Is there anything else I can help you with?`,
+      `I'm glad to help! What else would you like to work on?`
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }
   
   // Negative feedback
   if (/you (suck|are bad|are stupid|are dumb|don't work|aren't helpful)/i.test(lower)) {
-    return `I'm sorry I'm not meeting your expectations. 😔 Let me try to help better. What specifically can I do for you?`;
+    return `I'm sorry I'm not meeting your expectations. What specifically can I help you with? I'll do my best to assist.`;
   }
   
   // Questions about AI/existence
   if (/are you (real|human|alive|sentient|conscious|a robot|an ai)/i.test(lower)) {
-    return `I'm an AI assistant - not human, but I'm here to help! 🤖 I can chat, search information, and assist with various tasks. What would you like to know?`;
+    return `I'm an AI assistant. I'm not human or conscious, but I'm here to help you with information, questions, and ideas. What would you like to know?`;
   }
   
   // Boredom
   if (/i'm bored|im bored|bored|entertain me|something to do/i.test(lower)) {
-    return `Let's fix that! 😊 I can:\n• Tell you a joke (type JOKE)\n• Share an interesting fact (type FACT)\n• Give you a quote (type QUOTE)\n• Search Wikipedia for something interesting\n\nWhat sounds fun?`;
+    return `I can help with that! Would you like:\n• A random joke (type JOKE)\n• An interesting fact (type FACT)\n• An inspirational quote (type QUOTE)\n• To learn about something on Wikipedia\n\nWhat interests you?`;
   }
   
   // Small talk - jokes (expanded)
@@ -1859,39 +2122,72 @@ function processNaturalLanguage(input, inputUpper) {
   
   // Asking for recommendations
   if (/recommend|suggest|what should i|any ideas|give me something/i.test(lower)) {
-    return `I'd be happy to help! I can:\n• Search Wikipedia for topics you're interested in\n• Share random facts or quotes\n• Tell you jokes\n• Look up word definitions\n\nWhat kind of thing are you looking for?`;
+    return `What topic interests you? I can search for information, share random facts/quotes/jokes, or help you explore specific subjects. What sounds interesting?`;
   }
   
   // Conversation starters
   if (/let's talk|can we talk|want to chat|let's chat/i.test(lower)) {
-    return `Of course! I'd love to chat with you! 😊 What's on your mind? We can talk about anything you'd like!`;
+    return `Sure! What would you like to talk about?`;
+  }
+  
+  // Learning/information requests
+  if (/\b(teach me|learn about|want to know|curious about|interested in)\b/i.test(lower)) {
+    const match = lower.match(/\b(?:teach me|learn about|want to know|curious about|interested in)\s+(.+?)(\?|$)/i);
+    if (match && match[1]) {
+      const topic = match[1].trim();
+      setTimeout(async () => {
+        addTerminalLine(`I'll find information about "${topic}" for you...`, '#ffff99');
+        const result = await searchWikipedia(topic);
+        addTerminalLine(result, '#00ff00');
+        saveToJournal(input, result);
+      }, 100);
+      return 'Searching...';
+    } else {
+      return `What would you like to learn about? I can search for information on any topic!`;
+    }
+  }
+  
+  // Comparison questions
+  if (/\b(difference between|compare|versus|vs|better)\b/i.test(lower)) {
+    setTimeout(async () => {
+      addTerminalLine(`Let me search for information to help answer that...`, '#ffff99');
+      const result = await searchWikipedia(input);
+      addTerminalLine(result, '#00ff00');
+      saveToJournal(input, result);
+    }, 100);
+    return 'Searching...';
+  }
+  
+  // Information about self-referential topics
+  if (/about (me|my|myself)/i.test(lower) && !/tell me about/i.test(lower)) {
+    return `Tell me about yourself! I'd love to learn more. What would you like to share?`;
   }
   
   // Opinion requests
   if (/what do you think|your opinion|do you believe|do you like/i.test(lower)) {
     const topics = [
-      `That's an interesting question! I'd love to hear your thoughts first. What do you think about it?`,
-      `I think that depends on perspective. What's your take on it?`,
-      `That's a thought-provoking topic! Tell me more about what you're thinking.`,
-      `I'm curious about your view on this. What's your opinion?`
+      `I'd be interested to hear your perspective first. What do you think?`,
+      `That depends on how you look at it. What's your view?`,
+      `That's an interesting question. What are your thoughts on it?`,
+      `I'm curious what you think. What's your take?`
     ];
     return topics[Math.floor(Math.random() * topics.length)];
   }
   
   // General questions - Auto-search Wikipedia
-  if (/why|how does|how do|why do|why is|how is|what causes|what makes/i.test(lower) && !lower.includes('you')) {
+  if (/\b(why|how does|how do|why do|why is|how is|what causes|what makes|explain)\b/i.test(lower) && !lower.includes('you')) {
     // Try to extract the topic
     if (lower.length > 10) {
-      const topic = lower.replace(/^(why|how does|how do|why do|why is|how is|what causes|what makes|can you explain)\s+/i, '').replace(/\?/g, '').trim();
+      const topic = lower.replace(/^(why|how does|how do|why do|why is|how is|what causes|what makes|can you explain|explain|please)\s+/i, '').replace(/\?/g, '').trim();
       if (topic.length > 3) {
         // Automatically search Wikipedia
         setTimeout(async () => {
-          addTerminalLine('🔍 Let me search Wikipedia for that...', '#ffff99');
+          addTerminalLine(`Searching for: "${topic}"...`, '#ffff99');
           const result = await searchWikipedia(topic);
           addTerminalLine(result, '#00ff00');
           saveToJournal(input, result);
         }, 100);
-        return '📚 Searching for an answer...';
+        return 'One moment...';
       }
     }
   }
@@ -1899,40 +2195,55 @@ function processNaturalLanguage(input, inputUpper) {
   // Feelings/emotions
   if (/i feel|i'm feeling|feeling (sad|happy|angry|frustrated|excited|nervous|anxious|worried|lonely)/i.test(lower)) {
     if (/sad|down|depressed|lonely|bad|awful/i.test(lower)) {
-      return `I'm sorry you're feeling that way. 😔 Would you like to talk about it? Sometimes sharing helps. I'm here to listen.`;
+      return `I'm sorry to hear that. Would you like to talk about it? I'm here to listen, or I can try to help in other ways.`;
     } else if (/happy|excited|great|wonderful|amazing|good/i.test(lower)) {
-      return `That's wonderful to hear! 😊 What's making you feel so good? I'd love to hear about it!`;
+      return `That's great! What's making you feel so good?`;
     } else if (/angry|frustrated|annoyed|mad/i.test(lower)) {
-      return `I understand that can be tough. Want to talk about what's bothering you? Sometimes it helps to vent.`;
+      return `I understand. Would you like to talk about what's bothering you?`;
     } else {
-      return `Thanks for sharing how you feel. How can I help make your day better?`;
+      return `I hear you. How can I help?`;
     }
   }
   
   // Stories/experiences
   if (/let me tell you|i want to tell you|guess what|you won't believe|story|something happened/i.test(lower)) {
-    return `Ooh, I'm listening! 👂 Tell me all about it! I love hearing stories.`;
+    return `I'm listening! Go ahead, tell me about it.`;
   }
   
   // Random chatting
   if (/random|anything|idk|don't know|dunno|whatever|surprise me/i.test(lower)) {
     const suggestions = [
-      `How about I tell you a random fact? 💡 Type FACT to hear one!`,
-      `Want to hear a joke? 😄 Just type JOKE!`,
-      `I could share an inspirational quote! ✨ Type QUOTE!`,
-      `We could search Wikipedia for something interesting! What topic sounds fun?`,
-      `How about we play around with roleplay mode? Type ROLEPLAY ON to try it! 🎭`
+      `How about a random fact? Type FACT.`,
+      `Want to hear a joke? Type JOKE.`,
+      `I can share an inspirational quote. Type QUOTE.`,
+      `We could search Wikipedia for something interesting. What topic interests you?`,
+      `Would you like to try roleplay mode? Type ROLEPLAY ON.`
     ];
     return suggestions[Math.floor(Math.random() * suggestions.length)];
   }
   
+  // Information lookup - broader pattern
+  if (/\b(information|info|details|facts)\b.*\b(about|on)\b/i.test(lower)) {
+    const match = lower.match(/\b(?:information|info|details|facts)\b.*\b(?:about|on)\b\s+(.+?)(\?|$)/i);
+    if (match && match[1]) {
+      const topic = match[1].trim();
+      setTimeout(async () => {
+        addTerminalLine(`Searching for information about "${topic}"...`, '#ffff99');
+        const result = await searchWikipedia(topic);
+        addTerminalLine(result, '#00ff00');
+        saveToJournal(input, result);
+      }, 100);
+      return 'Searching...';
+    }
+  }
+  
   // Yes/No responses
   if (/^(yes|yeah|yep|yup|sure|okay|ok|fine|alright)(\s|!|$)/i.test(lower)) {
-    return `Great! What would you like to do next?`;
+    return `Alright! What would you like to do?`;
   }
   
   if (/^(no|nope|nah|not really)(\s|!|$)/i.test(lower)) {
-    return `No problem! Is there something else you'd like to do instead?`;
+    return `Okay. What would you like to do instead?`;
   }
   
   // Small talk about time
@@ -1940,17 +2251,17 @@ function processNaturalLanguage(input, inputUpper) {
     const now = new Date();
     const timeStr = now.toLocaleTimeString();
     const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    return `It's currently ${timeStr} on ${dateStr}. 🕐`;
+    return `It's ${timeStr} on ${dateStr}.`;
   }
   
   // Questions about topics
   if (/tell me more|more about|continue|go on|and then|what else/i.test(lower)) {
-    return `I'd love to share more! What specific aspect are you curious about? Or would you like me to search Wikipedia for detailed information?`;
+    return `What specifically would you like to know more about? I can search for more information if you'd like.`;
   }
   
   // Confusion/didn't understand
   if (/what|huh|what do you mean|i don't understand|confused|explain/i.test(lower) && lower.split(' ').length < 4) {
-    return `Let me clarify! What would you like to know more about? Feel free to ask me anything! 😊`;
+    return `I can clarify. What would you like to know more about?`;
   }
   
   // Dictionary definition recognition (auto-detect single word questions)
@@ -1959,12 +2270,12 @@ function processNaturalLanguage(input, inputUpper) {
     if (match && match[2]) {
       const word = match[2].trim();
       setTimeout(async () => {
-        addTerminalLine('📖 Looking up definition...', '#ffff99');
+        addTerminalLine(`Looking up definition of "${word}"...`, '#ffff99');
         const result = await getDefinition(word);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return '📚 Checking dictionary...';
+      return 'Searching...';
     }
   }
   
@@ -1973,12 +2284,12 @@ function processNaturalLanguage(input, inputUpper) {
     const word = lower.replace('?', '').trim();
     if (word.length > 2) {
       setTimeout(async () => {
-        addTerminalLine('📖 Looking up definition...', '#ffff99');
+        addTerminalLine(`Looking up "${word}"...`, '#ffff99');
         const result = await getDefinition(word);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return '📚 Checking dictionary...';
+      return 'Searching...';
     }
   }
   
@@ -1989,14 +2300,14 @@ function processNaturalLanguage(input, inputUpper) {
       const query = match[2].trim();
       // Trigger Wikipedia search asynchronously
       setTimeout(async () => {
-        addTerminalLine('Let me search Wikipedia for that...', '#ffff99');
+        addTerminalLine(`Searching for "${query}"...`, '#ffff99');
         const result = await searchWikipedia(query);
         addTerminalLine(result, '#00ff00');
         if (journalPermission === 'enabled') {
           saveToJournal(input, result);
         }
       }, 100);
-      return '🔍 Searching...';
+      return 'Searching...';
     }
   }
   
@@ -2005,22 +2316,22 @@ function processNaturalLanguage(input, inputUpper) {
     setTimeout(async () => {
       let result;
       if (/fact/i.test(lower)) {
-        addTerminalLine('Getting a random fact...', '#ffff99');
+        addTerminalLine('Finding a random fact for you...', '#ffff99');
         result = await getRandomFact();
       } else if (/joke/i.test(lower)) {
-        addTerminalLine('Getting a joke...', '#ffff99');
+        addTerminalLine('Getting a joke for you...', '#ffff99');
         result = await getDadJoke();
       } else if (/quote/i.test(lower)) {
-        addTerminalLine('Getting a quote...', '#ffff99');
+        addTerminalLine('Finding an inspirational quote...', '#ffff99');
         result = await getRandomQuote();
       } else if (/advice/i.test(lower)) {
-        addTerminalLine('Getting some advice...', '#ffff99');
+        addTerminalLine('Getting some advice for you...', '#ffff99');
         result = await getAdvice();
       }
       addTerminalLine(result, '#00ff00');
       saveToJournal(input, result);
     }, 100);
-    return '⏳ One moment...';
+    return 'One moment...';
   }
   
   // Detect "What is X?" format for both Wikipedia and definitions
@@ -2032,31 +2343,30 @@ function processNaturalLanguage(input, inputUpper) {
       // Check if it's a single word (likely wants definition)
       if (topic.split(' ').length === 1 && topic.length < 15) {
         setTimeout(async () => {
-          addTerminalLine('📖 Checking definition first...', '#ffff99');
+          addTerminalLine(`Looking up "${topic}"...`, '#ffff99');
           const defResult = await getDefinition(topic);
           
           if (!defResult.includes('No definition found')) {
             addTerminalLine(defResult, '#00ff00');
-            addTerminalLine('\nWant more info? I can search Wikipedia too!', '#ffff99');
             saveToJournal(input, defResult);
           } else {
             // Definition not found, try Wikipedia
-            addTerminalLine('Dictionary lookup failed. Searching Wikipedia...', '#ffff99');
+            addTerminalLine(`No dictionary definition. Searching Wikipedia for "${topic}"...`, '#ffff99');
             const wikiResult = await searchWikipedia(topic);
             addTerminalLine(wikiResult, '#00ff00');
             saveToJournal(input, wikiResult);
           }
         }, 100);
-        return '🔍 Looking that up...';
+        return 'Searching...';
       } else {
         // Multiple words - go straight to Wikipedia
         setTimeout(async () => {
-          addTerminalLine('🔍 Searching Wikipedia...', '#ffff99');
+          addTerminalLine(`Searching Wikipedia for "${topic}"...`, '#ffff99');
           const result = await searchWikipedia(topic);
           addTerminalLine(result, '#00ff00');
           saveToJournal(input, result);
         }, 100);
-        return '📚 Finding information...';
+        return 'Searching...';
       }
     }
   }
@@ -2067,12 +2377,12 @@ function processNaturalLanguage(input, inputUpper) {
     if (match && match[2]) {
       const person = match[2].trim();
       setTimeout(async () => {
-        addTerminalLine('🔍 Searching for information about that person...', '#ffff99');
+        addTerminalLine(`Searching for information about "${person}"...`, '#ffff99');
         const result = await searchWikipedia(person);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return '📚 Looking them up...';
+      return 'Searching...';
     }
   }
   
@@ -2082,12 +2392,12 @@ function processNaturalLanguage(input, inputUpper) {
     if (match && match[2]) {
       const topic = match[2].trim();
       setTimeout(async () => {
-        addTerminalLine('🔍 Searching for dates and timeline...', '#ffff99');
+        addTerminalLine(`Searching for "${topic}"...`, '#ffff99');
         const result = await searchWikipedia(topic);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return '📚 Finding that information...';
+      return 'Searching...';
     }
   }
   
@@ -2097,12 +2407,12 @@ function processNaturalLanguage(input, inputUpper) {
     if (match && match[2]) {
       const location = match[2].trim();
       setTimeout(async () => {
-        addTerminalLine('🔍 Searching for location information...', '#ffff99');
+        addTerminalLine(`Searching for "${location}"...`, '#ffff99');
         const result = await searchWikipedia(location);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return '📚 Looking up that location...';
+      return 'Searching...';
     }
   }
   
@@ -2113,6 +2423,7 @@ function processNaturalLanguage(input, inputUpper) {
 function getConversationalFallback(input) {
   const aiName = localStorage.getItem('terminalAIName') || 'AI';
   const lower = input.toLowerCase();
+  const words = lower.split(' ').filter(w => w.length > 0);
   
   // Check if it looks like a question - auto-search
   if (lower.includes('?')) {
@@ -2123,46 +2434,85 @@ function getConversationalFallback(input) {
     if (wordCount <= 2 && !/(what|why|how|who|when|where)/i.test(query)) {
       // Likely asking for definition
       setTimeout(async () => {
-        addTerminalLine('📖 That looks like you want a definition. Searching...', '#ffff99');
+        addTerminalLine('Looking up that definition...', '#ffff99');
         const result = await getDefinition(query);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return '🔍 Looking that up...';
+      return 'Searching...';
     } else {
       // General question - search Wikipedia
       setTimeout(async () => {
-        addTerminalLine('🔍 Let me search Wikipedia for that...', '#ffff99');
+        addTerminalLine('Searching for information...', '#ffff99');
         const result = await searchWikipedia(query);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return '📚 Searching for an answer...';
+      return 'Searching...';
     }
   }
   
-  // Check if it's a statement
-  if (lower.split(' ').length > 3) {
-    const responses = [
-      `I hear you! That's interesting. Tell me more about that! 😊`,
-      `Thanks for sharing! What made you think of that?`,
-      `That's a cool thought! Want to explore that topic more? I can search Wikipedia if you'd like.`,
-      `Interesting! I'm curious - what else do you think about this?`,
-      `I appreciate you sharing that with me. What else is on your mind?`
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+  // Extract key topics from the input for more contextual responses
+  const hasAction = /\b(do|make|create|build|write|help|show|tell|explain|find|get)\b/i.test(lower);
+  const hasQuestion = /\b(can|could|would|should|will|is|are|was|were|does|did|what|how|why|when|where|who)\b/i.test(lower);
+  
+  // User seems to be making a request or asking for help
+  if (hasAction || hasQuestion) {
+    if (words.length > 5) {
+      // Longer request - automatically search for it
+      const searchQuery = input.replace(/^(can you |could you |please |will you |would you |help me |tell me |show me |explain |find )/i, '').replace(/\?$/g, '').trim();
+      
+      setTimeout(async () => {
+        addTerminalLine(`I'll search for information about "${searchQuery.substring(0, 60)}${searchQuery.length > 60 ? '...' : ''}"`, '#ffff99');
+        const result = await searchWikipedia(searchQuery);
+        addTerminalLine(result, '#00ff00');
+        saveToJournal(input, result);
+      }, 100);
+      return 'Searching...';
+    } else if (words.length > 2) {
+      // Medium length - offer to search
+      return `Would you like me to search for information about that? I can look up "${input}" for you. Just say yes or rephrase your question!`;
+    } else {
+      return `Could you provide more details? I can search for information, definitions, or help with specific topics.`;
+    }
   }
   
-  // Short unclear input
-  const responses = [
-    `I'm not quite sure what you mean. Could you tell me more? 🤔`,
-    `Hmm, can you elaborate on that? I want to understand better!`,
-    `I didn't quite catch that. Want to rephrase or tell me more?`,
-    `Could you give me a bit more context? I'm here to chat! 😊`,
-    `I'm all ears! Can you explain what you mean by that?`
-  ];
+  // Check if it's a statement about something specific
+  if (words.length > 3) {
+    // Try to extract the main subject (nouns and important words)
+    const subjects = words.filter(w => 
+      w.length > 4 && 
+      !['that', 'this', 'about', 'really', 'think', 'would', 'could', 'should', 'there', 'their', 'which', 'those', 'these'].includes(w)
+    );
+    
+    if (subjects.length > 0) {
+      const mainSubject = subjects[0];
+      // Proactively search if they mention something specific
+      setTimeout(async () => {
+        addTerminalLine(`You mentioned "${mainSubject}". Let me find information about that...`, '#ffff99');
+        const result = await searchWikipedia(mainSubject);
+        addTerminalLine(result, '#00ff00');
+        saveToJournal(input, result);
+      }, 100);
+      return 'Searching...';
+    } else {
+      return `I see what you're saying. Would you like me to search for more information about anything specific?`;
+    }
+  }
   
+  // Very short unclear input - be more helpful
+  if (words.length <= 3) {
+  const responses = [
+      `I'm here to help! You can ask me questions, search for information, or type HELP to see what I can do.`,
+      `What would you like to know? I can search Wikipedia, define words, or help with various topics.`,
+      `Could you elaborate? I'm ready to help with information, questions, or commands.`,
+      `I can help you with that, but I need a bit more context. What are you interested in?`
+    ];
   return responses[Math.floor(Math.random() * responses.length)];
+  }
+  
+  // Default fallback
+  return `I want to help, but I'm not quite sure what you're looking for. Try asking a specific question, or type HELP to see what I can do!`;
 }
 
 function formatMarkdown(text, isRoleplay = false) {
@@ -2174,17 +2524,17 @@ function formatMarkdown(text, isRoleplay = false) {
     // Keep *actions* as italic descriptions
     
     // Format actions/descriptions: *text* becomes italic
-    formatted = formatted.replace(/\*(.+?)\*/g, '<em style="color: inherit; opacity: 0.9;">$1</em>');
+    formatted = formatted.replace(/\*([^*]+?)\*/g, '<em>$1</em>');
     
     // Format dialogue: "text" stays in quotes but can be styled
-    formatted = formatted.replace(/"(.+?)"/g, '"<span style="font-weight: normal;">$1</span>"');
+    formatted = formatted.replace(/"([^"]+?)"/g, '"<span>$1</span>"');
   } else {
     // Normal mode: markdown formatting
     // Bold-Italic: **text** becomes <strong><em>text</em></strong>
-    formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong><em>$1</em></strong>');
+    formatted = formatted.replace(/\*\*([^*]+?)\*\*/g, '<strong><em>$1</em></strong>');
     
     // Italic: *text* becomes <em>text</em>
-    formatted = formatted.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    formatted = formatted.replace(/\*([^*]+?)\*/g, '<em>$1</em>');
   }
   
   return formatted;
@@ -2196,56 +2546,133 @@ function displayInteractiveHelp() {
   helpDiv.style.marginBottom = '15px';
   
   const aiName = localStorage.getItem('terminalAIName') || 'AI';
+  const currentMode = contentMode || 'SFW';
+  const rpStatus = roleplayMode ? 'ON' : 'OFF';
   
   helpDiv.innerHTML = `
     <div style="display: flex; justify-content: flex-start; margin: 10px 0;">
-      <div style="background: #1a1a1a; color: #c0ffc0; padding: 15px; border-radius: 15px; max-width: 90%; border-left: 3px solid #00ff00; font-family: 'Courier New', monospace;">
-        <div style="color: #00ff00; font-weight: bold; margin-bottom: 10px;">${aiName} - Interactive Help Menu</div>
+      <div style="background: #000; color: #c0ffc0; padding: 20px; border: 3px solid #00ff00; max-width: 95%; font-family: 'Courier New', monospace; box-shadow: 0 0 20px rgba(0,255,0,0.3);">
         
-        <div style="color: #ffff99; font-weight: bold; margin-top: 15px; margin-bottom: 8px;">🌐 WEB ACCESS:</div>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
-          <button onclick="document.getElementById('commandInput').value='WIKI '; document.getElementById('commandInput').focus();" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">WIKI</button>
-          <button onclick="document.getElementById('commandInput').value='DEFINE '; document.getElementById('commandInput').focus();" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">DEFINE</button>
-          <button onclick="executeQuickCommand('FACT')" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">FACT</button>
-          <button onclick="executeQuickCommand('JOKE')" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">JOKE</button>
-          <button onclick="executeQuickCommand('QUOTE')" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">QUOTE</button>
-          <button onclick="executeQuickCommand('ADVICE')" style="background: #1DB954; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">ADVICE</button>
+        <!-- Header with ASCII art -->
+        <pre style="color: #00ff00; margin: 0 0 15px 0; font-size: 10px; line-height: 1.2;">
+╔════════════════════════════════════════════════════════════════╗
+║                    ${aiName.toUpperCase()} COMMAND CENTER                     ║
+║                    Quick Access Menu                           ║
+╚════════════════════════════════════════════════════════════════╝
+        </pre>
+        
+        <!-- Status Bar -->
+        <div style="background: #111; border: 1px solid #00ff00; padding: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+          <div style="color: #00ff00;">
+            <span style="color: #ffff99;">STATUS:</span> <span style="color: #00ff00;">● ONLINE</span>
+          </div>
+          <div style="color: #00ff00;">
+            <span style="color: #ffff99;">MODE:</span> <span style="color: ${currentMode === 'SFW' ? '#00ff00' : '#ff6600'};">${currentMode}</span>
+          </div>
+          <div style="color: #00ff00;">
+            <span style="color: #ffff99;">ROLEPLAY:</span> <span style="color: ${rpStatus === 'ON' ? '#9370DB' : '#666'};">${rpStatus}</span>
+          </div>
         </div>
         
-        <div style="color: #ffff99; font-weight: bold; margin-top: 15px; margin-bottom: 8px;">📁 SESSION:</div>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
-          <button onclick="executeQuickCommand('JOURNAL')" style="background: #4169E1; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">JOURNAL</button>
-          <button onclick="executeQuickCommand('JOURNAL EXPORT')" style="background: #4169E1; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">EXPORT</button>
-          <button onclick="executeQuickCommand('JOURNAL LOAD')" style="background: #4169E1; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">LOAD</button>
-          <button onclick="executeQuickCommand('JOURNAL CLEAR')" style="background: #4169E1; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">CLEAR</button>
+        <!-- Main Command Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 15px;">
+          
+          <!-- Web Access Panel -->
+          <div style="background: #0a0a0a; border: 2px solid #1DB954; padding: 12px;">
+            <div style="color: #1DB954; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #1DB954; padding-bottom: 4px;">
+              🌐 WEB ACCESS
+            </div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Search & Information</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+              <button onclick="document.getElementById('commandInput').value='WIKI '; document.getElementById('commandInput').focus();" style="background: #1DB954; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background='#1DB954'">WIKI</button>
+              <button onclick="document.getElementById('commandInput').value='DEFINE '; document.getElementById('commandInput').focus();" style="background: #1DB954; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background='#1DB954'">DEFINE</button>
+              <button onclick="executeQuickCommand('FACT')" style="background: #1DB954; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background='#1DB954'">FACT</button>
+              <button onclick="executeQuickCommand('JOKE')" style="background: #1DB954; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background='#1DB954'">JOKE</button>
+              <button onclick="executeQuickCommand('QUOTE')" style="background: #1DB954; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background='#1DB954'">QUOTE</button>
+              <button onclick="executeQuickCommand('ADVICE')" style="background: #1DB954; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background='#1DB954'">ADVICE</button>
+            </div>
         </div>
         
-        <div style="color: #ffff99; font-weight: bold; margin-top: 15px; margin-bottom: 8px;">🎭 MODES:</div>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
-          <button onclick="executeQuickCommand('MODE SFW')" style="background: #00ff00; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">SFW</button>
-          <button onclick="executeQuickCommand('MODE NSFW')" style="background: #ff6600; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">NSFW</button>
-          <button onclick="executeQuickCommand('ROLEPLAY ON')" style="background: #9370DB; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">RP ON</button>
-          <button onclick="executeQuickCommand('ROLEPLAY OFF')" style="background: #9370DB; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">RP OFF</button>
+          <!-- Session Panel -->
+          <div style="background: #0a0a0a; border: 2px solid #4169E1; padding: 12px;">
+            <div style="color: #4169E1; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #4169E1; padding-bottom: 4px;">
+              📁 SESSION CONTROL
+            </div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Save & Load Conversations</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+              <button onclick="executeQuickCommand('JOURNAL')" style="background: #4169E1; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5179f1'" onmouseout="this.style.background='#4169E1'">VIEW</button>
+              <button onclick="executeQuickCommand('JOURNAL EXPORT')" style="background: #4169E1; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5179f1'" onmouseout="this.style.background='#4169E1'">EXPORT</button>
+              <button onclick="executeQuickCommand('JOURNAL LOAD')" style="background: #4169E1; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5179f1'" onmouseout="this.style.background='#4169E1'">LOAD</button>
+              <button onclick="executeQuickCommand('JOURNAL CLEAR')" style="background: #4169E1; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5179f1'" onmouseout="this.style.background='#4169E1'">CLEAR</button>
+            </div>
         </div>
         
-        <div style="color: #ffff99; font-weight: bold; margin-top: 15px; margin-bottom: 8px;">🧠 MEMORY:</div>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
-          <button onclick="executeQuickCommand('MEMORY')" style="background: #FFD700; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">SHOW MEMORY</button>
-          <button onclick="executeQuickCommand('FORGET ME')" style="background: #FFD700; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">FORGET ME</button>
+          <!-- Mode Control Panel -->
+          <div style="background: #0a0a0a; border: 2px solid #9370DB; padding: 12px;">
+            <div style="color: #9370DB; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #9370DB; padding-bottom: 4px;">
+              🎭 MODE CONTROL
+            </div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Content & Roleplay Settings</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+              <button onclick="executeQuickCommand('MODE SFW')" style="background: ${currentMode === 'SFW' ? '#00ff00' : '#006600'}; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">SFW</button>
+              <button onclick="executeQuickCommand('MODE NSFW')" style="background: ${currentMode === 'NSFW' ? '#ff6600' : '#663300'}; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">NSFW</button>
+              <button onclick="executeQuickCommand('ROLEPLAY ON')" style="background: ${rpStatus === 'ON' ? '#9370DB' : '#4a3869'}; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">RP ON</button>
+              <button onclick="executeQuickCommand('ROLEPLAY OFF')" style="background: ${rpStatus === 'OFF' ? '#9370DB' : '#4a3869'}; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">RP OFF</button>
+            </div>
         </div>
         
-        <div style="color: #ffff99; font-weight: bold; margin-top: 15px; margin-bottom: 8px;">⚙️ SETTINGS:</div>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
-          <button onclick="executeQuickCommand('SPELL CHECK ON')" style="background: #666; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">SPELL ON</button>
-          <button onclick="executeQuickCommand('SPELL CHECK OFF')" style="background: #666; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">SPELL OFF</button>
-          <button onclick="executeQuickCommand('CLEAR')" style="background: #666; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">CLEAR</button>
-          <button onclick="executeQuickCommand('LOGOUT')" style="background: #ff0000; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px;">LOGOUT</button>
+          <!-- Memory Panel -->
+          <div style="background: #0a0a0a; border: 2px solid #FFD700; padding: 12px;">
+            <div style="color: #FFD700; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #FFD700; padding-bottom: 4px;">
+              🧠 MEMORY BANK
+            </div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">AI Learning & Recall</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+              <button onclick="executeQuickCommand('MEMORY')" style="background: #FFD700; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#ffe740'" onmouseout="this.style.background='#FFD700'">SHOW</button>
+              <button onclick="executeQuickCommand('FORGET ME')" style="background: #FFD700; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#ffe740'" onmouseout="this.style.background='#FFD700'">CLEAR</button>
+            </div>
         </div>
         
-        <div style="color: #c0ffc0; font-size: 12px; margin-top: 15px; font-style: italic;">
-          💡 Click any button to execute that command instantly!<br>
-          Or type naturally - I understand questions and conversations!
+          <!-- Profile Panel -->
+          <div style="background: #0a0a0a; border: 2px solid #00BFFF; padding: 12px;">
+            <div style="color: #00BFFF; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #00BFFF; padding-bottom: 4px;">
+              🖼️ AVATARS
         </div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Profile Pictures</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+              <button onclick="executeQuickCommand('CHANGE BOT PICTURE')" style="background: #00BFFF; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1fcfff'" onmouseout="this.style.background='#00BFFF'">BOT</button>
+              <button onclick="executeQuickCommand('CHANGE MY PICTURE')" style="background: #00BFFF; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1fcfff'" onmouseout="this.style.background='#00BFFF'">USER</button>
+              <button onclick="executeQuickCommand('RESET BOT PICTURE')" style="background: #00BFFF; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1fcfff'" onmouseout="this.style.background='#00BFFF'">↻ BOT</button>
+              <button onclick="executeQuickCommand('RESET MY PICTURE')" style="background: #00BFFF; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1fcfff'" onmouseout="this.style.background='#00BFFF'">↻ USER</button>
+            </div>
+          </div>
+          
+          <!-- System Panel -->
+          <div style="background: #0a0a0a; border: 2px solid #888; padding: 12px;">
+            <div style="color: #888; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #888; padding-bottom: 4px;">
+              ⚙️ SYSTEM
+            </div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Settings & Controls</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+              <button onclick="executeQuickCommand('SPELL CHECK ON')" style="background: #666; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#777'" onmouseout="this.style.background='#666'">SPELL ✓</button>
+              <button onclick="executeQuickCommand('SPELL CHECK OFF')" style="background: #666; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#777'" onmouseout="this.style.background='#666'">SPELL ✗</button>
+              <button onclick="executeQuickCommand('CLEAR')" style="background: #666; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#777'" onmouseout="this.style.background='#666'">CLEAR</button>
+              <button onclick="executeQuickCommand('LOGOUT')" style="background: #ff0000; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#ff3333'" onmouseout="this.style.background='#ff0000'">LOGOUT</button>
+            </div>
+          </div>
+          
+        </div>
+        
+        <!-- Footer Tips -->
+        <div style="background: #111; border: 1px solid #00ff00; padding: 10px; text-align: center;">
+          <div style="color: #00ff00; font-size: 11px; margin-bottom: 5px;">
+            <span style="color: #ffff99;">TIP:</span> Click any button for instant commands, or type naturally!
+          </div>
+          <div style="color: #888; font-size: 10px;">
+            Type "ABOUT", "PROJECTS", or ask questions naturally • All conversations can be saved
+          </div>
+        </div>
+        
       </div>
     </div>`;
   
@@ -2270,16 +2697,31 @@ function addTerminalLine(text, color = '#00ff00', isCommand = false) {
   const formattedText = formatMarkdown(text, roleplayMode);
   
   if (isCommand) {
-    // User message - right-aligned bubble style
+    // User message - right-aligned bubble style with optional profile picture
+    const userPic = getUserProfilePicture();
+    
+    if (userPic) {
+      // User has a custom profile picture
+      line.innerHTML = `
+        <div style="display: flex; justify-content: flex-end; margin: 10px 0; align-items: flex-start; gap: 10px;">
+          <div style="background: #00ff00; color: #000; padding: 10px 15px; border-radius: 15px 15px 0 15px; max-width: 80%; word-wrap: break-word;">
+            <strong>You:</strong> ${formattedText}
+          </div>
+          <img src="${userPic}" alt="Your Profile" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #00ff00; flex-shrink: 0; margin-top: 5px; object-fit: cover;">
+        </div>`;
+    } else {
+      // No custom picture - original style
     line.innerHTML = `
       <div style="display: flex; justify-content: flex-end; margin: 10px 0;">
         <div style="background: #00ff00; color: #000; padding: 10px 15px; border-radius: 15px 15px 0 15px; max-width: 80%; word-wrap: break-word;">
           <strong>You:</strong> ${formattedText}
         </div>
       </div>`;
+    }
   } else {
     // AI response - left-aligned with better readability
     const aiName = localStorage.getItem('terminalAIName') || 'AI';
+    const botPic = getBotProfilePicture();
     
     // Use different colors based on type
     let textColor = '#c0ffc0'; // Light green for better readability
@@ -2288,7 +2730,7 @@ function addTerminalLine(text, color = '#00ff00', isCommand = false) {
     
     line.innerHTML = `
       <div style="display: flex; justify-content: flex-start; margin: 10px 0; align-items: flex-start; gap: 10px;">
-        <img src="TestBot/test.png" alt="AI Profile" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #00ff00; flex-shrink: 0; margin-top: 5px;">
+        <img src="${botPic}" alt="AI Profile" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #00ff00; flex-shrink: 0; margin-top: 5px; object-fit: cover;">
         <div style="background: #1a1a1a; color: ${textColor}; padding: 10px 15px; border-radius: 15px 15px 15px 0; max-width: 80%; word-wrap: break-word; border-left: 3px solid #00ff00;">
           <div style="color: #00ff00; font-weight: bold; margin-bottom: 5px;">${aiName}</div>
           <div style="margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; color: ${textColor};">${formattedText}</div>
@@ -2417,18 +2859,59 @@ function executeCommand() {
   if (commandUpper === 'LOGOUT') {
     addTerminalLine('Saving your data and logging out...', '#ffff00');
     
-    // Save user data before logout
+    // Save user data before logout (if not admin)
+    if (!isAdmin) {
     saveUserData();
+    }
     
     setTimeout(() => {
       document.getElementById('chatContainer').style.display = 'none';
+      
+      // Return to appropriate login screen
+      if (isAdmin) {
+        document.getElementById('adminLoginScreen').style.display = 'flex';
+        document.getElementById('adminPassword').value = '';
+        document.getElementById('adminPassword').focus();
+      } else {
       document.getElementById('passwordScreen').style.display = 'flex';
       document.getElementById('chatUsername').value = '';
       document.getElementById('chatPassword').value = '';
       document.getElementById('chatUsername').focus();
-      sessionStorage.removeItem('currentUser');
+      }
+      
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('isAdmin');
       currentUser = null;
+      isAdmin = false;
     }, 500);
+    return;
+  }
+  
+  // Profile picture commands
+  if (commandUpper === 'CHANGE BOT PICTURE' || commandUpper === 'CHANGE BOT PFP') {
+    document.getElementById('botPictureInput').click();
+    addTerminalLine('Select an image file for the bot\'s profile picture...', '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'CHANGE MY PICTURE' || commandUpper === 'CHANGE MY PFP') {
+    document.getElementById('userPictureInput').click();
+    addTerminalLine('Select an image file for your profile picture...', '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'RESET BOT PICTURE') {
+    localStorage.removeItem('botProfilePicture');
+    addTerminalLine('Bot profile picture reset to default.', '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'RESET MY PICTURE') {
+    if (currentUser) {
+      const userDataKey = `userPic_${currentUser}`;
+      localStorage.removeItem(userDataKey);
+      addTerminalLine('Your profile picture has been reset.', '#00ff00');
+    }
     return;
   }
   
@@ -2729,12 +3212,15 @@ function executeCommand() {
     return;
   }
   
-  // Try natural language matching with commands
+  // Try exact command matching with partial matches (only for specific keywords)
   const lowerCommand = command.toLowerCase();
   let found = false;
   
+  // Only match if the command is the main focus (not just a word in a sentence)
   for (const [key, value] of Object.entries(commands)) {
-    if (lowerCommand.includes(key.toLowerCase())) {
+    const keyLower = key.toLowerCase();
+    // Only match if it's at the start or is the whole command
+    if (lowerCommand === keyLower || lowerCommand.startsWith(keyLower + ' ')) {
       response = value;
       addTerminalLine(response, '#00ff00');
       saveToJournal(command, response);
@@ -2772,7 +3258,7 @@ function checkFirstTimeUser() {
   } else {
     // Returning user - update header with AI name
     header.textContent = `[ ${aiName.toUpperCase()} TERMINAL SYSTEM ]`;
-    const username = currentUser || sessionStorage.getItem('currentUser') || 'User';
+    const username = currentUser || localStorage.getItem('currentUser') || 'User';
     addTerminalLine(`Welcome back, ${username}! I'm ${aiName}. 👋`, '#00ff00');
     
     // Check if journal is loaded
