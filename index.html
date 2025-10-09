@@ -1067,6 +1067,13 @@ async function getRandomSpotifyTrack() {
   btn.style.opacity = '0.5';
   
   try {
+    // Check if SpotifyAPI is loaded
+    if (typeof SpotifyAPI === 'undefined') {
+      display.innerHTML = '<p style="color: #ff6b6b; margin: 0; text-align: center; font-size: 11px;">❌ Spotify API not loaded. Check console (F12)</p>';
+      btn.style.opacity = '1';
+      return;
+    }
+    
     const track = await SpotifyAPI.getRandomTrack();
     
     if (track) {
@@ -1084,11 +1091,11 @@ async function getRandomSpotifyTrack() {
         </div>
       `;
     } else {
-      display.innerHTML = '<p style="color: #ff6b6b; margin: 0; text-align: center; font-size: 12px;">Failed to get track</p>';
+      display.innerHTML = '<p style="color: #ff6b6b; margin: 0; text-align: center; font-size: 11px;">❌ API Error. Press F12 and check Console tab for details</p>';
     }
   } catch (error) {
-    console.error('Error:', error);
-    display.innerHTML = '<p style="color: #ff6b6b; margin: 0; text-align: center; font-size: 12px;">Error loading track</p>';
+    console.error('❌ Spotify Error:', error);
+    display.innerHTML = `<p style="color: #ff6b6b; margin: 0; text-align: center; font-size: 11px;">❌ Error: ${error.message}<br>Press F12 for details</p>`;
   }
   
   btn.style.opacity = '1';
