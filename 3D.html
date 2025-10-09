@@ -11,13 +11,18 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self'; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data:; frame-src https://open.spotify.com; font-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net https://unpkg.com; connect-src 'self'; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data:; frame-src https://open.spotify.com; font-src 'self' data:;">
   
   <!-- Bootstrap CSS & JS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <!-- Three.js for 3D Model Viewing -->
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.160.0/examples/js/loaders/OBJLoader.js"></script>
+  <script src="https://unpkg.com/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
   
   <!-- Cursor follower script -->
   <script>
@@ -238,29 +243,88 @@
       
       <!-- Magazine-Style Gallery -->
       <div class="row">
-        <!-- Placeholder for 3D Art -->
+        <!-- Featured 3D Model -->
         <div class="col-12 mb-4">
-          <div class="card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.1); padding: 30px; text-align: center;">
-            <h4 style="color: #b82b2f;">No 3D art uploaded yet</h4>
-            <p>This gallery will showcase 3D models, sculptures, and digital 3D artwork.</p>
-            <small class="text-muted">Check back soon for updates!</small>
+          <div class="card magazine-featured" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+            <div class="row no-gutters">
+              <div class="col-md-6">
+                <img src="3D/finalpic.png" class="card-img" alt="Final Picture" style="height: 400px; object-fit: cover; object-position: center; cursor: pointer;" onclick="openModal(this, 'Final Picture', '')">
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <div class="card-body text-center">
+                  <h4 class="card-title" style="color: #b82b2f; font-weight: bold;">Featured Model</h4>
+                  <h5 class="card-title">Final Picture</h5>
+                  <p class="card-text">WIP</p>
+                  <small class="text-muted">3D Art • Digital Sculpture</small>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      
-      <!-- Example placeholder cards for future content -->
-      <!-- Uncomment and add 3D renders as needed:
-        <div class="col-md-6 col-lg-4 mb-4">
+        
+        <!-- 3D Gallery -->
+        <div class="col-md-6 mb-4">
           <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
-            <img src="3D/example.png" class="card-img-top" alt="Model Name" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Model Name', 'Description')">
+            <img src="3D/folami.png" class="card-img-top" alt="Folami" style="height: 300px; object-fit: cover; object-position: center; cursor: pointer;" onclick="openModal(this, 'Folami', '')">
             <div class="card-body text-center">
-              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Model Name</h6>
-              <p class="card-text small">Description</p>
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Folami</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">3D Model</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="3D/sillyrender.png" class="card-img-top" alt="Silly Render" style="height: 300px; object-fit: cover; object-position: center; cursor: pointer;" onclick="openModal(this, 'Silly Render', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Silly Render</h6>
+              <p class="card-text small">WIP</p>
               <small class="text-muted">3D Art</small>
             </div>
           </div>
         </div>
-      -->
+      </div>
       
+      <!-- 3D Model Viewer Section -->
+      <div class="row mt-5">
+        <div class="col-12 mb-4">
+          <h3 style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Interactive 3D Models</h3>
+          <p style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Click and drag to rotate • Scroll to zoom • Right-click and drag to pan</p>
+        </div>
+        
+        <!-- Clown Boy Model -->
+        <div class="col-lg-6 mb-4">
+          <div class="card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.1); border-radius: 15px; overflow: hidden;">
+            <div class="card-body">
+              <h5 class="card-title text-center" style="color: #b82b2f; font-weight: bold; margin-bottom: 15px;">Clown Boy</h5>
+              <div id="viewer-clownboy" style="width: 100%; height: 400px; background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 10px; position: relative;">
+                <div class="loading-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 18px;">Loading model...</div>
+              </div>
+              <div class="text-center mt-3">
+                <button onclick="resetCamera('clownboy')" style="background-color: #b82b2f; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; margin-right: 10px;">Reset View</button>
+                <button onclick="toggleWireframe('clownboy')" style="background-color: #b82b2f; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Toggle Wireframe</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Depression Clown Model -->
+        <div class="col-lg-6 mb-4">
+          <div class="card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.1); border-radius: 15px; overflow: hidden;">
+            <div class="card-body">
+              <h5 class="card-title text-center" style="color: #b82b2f; font-weight: bold; margin-bottom: 15px;">Depression Clown</h5>
+              <div id="viewer-depressionclown" style="width: 100%; height: 400px; background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 10px; position: relative;">
+                <div class="loading-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 18px;">Loading model...</div>
+              </div>
+              <div class="text-center mt-3">
+                <button onclick="resetCamera('depressionclown')" style="background-color: #b82b2f; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; margin-right: 10px;">Reset View</button>
+                <button onclick="toggleWireframe('depressionclown')" style="background-color: #b82b2f; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Toggle Wireframe</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -318,6 +382,11 @@ h1 {
 
 .magazine-card:hover {
   transform: translateY(-5px);
+}
+
+.magazine-featured {
+  border-radius: 15px;
+  overflow: hidden;
 }
 </style>
 
@@ -479,6 +548,223 @@ function toggleSpotify3D() {
     spotify3DWidget.style.width = '200px';
   }
 }
+</script>
+
+<!-- 3D Model Viewer Script -->
+<script>
+// Wait for Three.js to load
+window.addEventListener('load', function() {
+  // Store viewers data
+  const viewers = {};
+
+  // Shared material for better performance
+  const sharedMaterial = new THREE.MeshPhongMaterial({
+    color: 0xb82b2f,
+    shininess: 30,
+    flatShading: false
+  });
+
+  // Initialize 3D viewer for a model
+  function init3DViewer(modelName, objPath) {
+    const container = document.getElementById(`viewer-${modelName}`);
+    if (!container) {
+      console.error('Container not found:', modelName);
+      return;
+    }
+    
+    // Check if THREE is loaded
+    if (typeof THREE === 'undefined') {
+      console.error('THREE.js not loaded');
+      const loadingText = container.querySelector('.loading-text');
+      if (loadingText) {
+        loadingText.textContent = 'Error: THREE.js not loaded';
+        loadingText.style.color = '#ff6b6b';
+      }
+      return;
+    }
+    
+    // Create scene
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1a1a2e);
+    
+    // Create camera
+    const camera = new THREE.PerspectiveCamera(
+      45,
+      container.clientWidth / container.clientHeight,
+      0.1,
+      1000
+    );
+    camera.position.set(0, 0, 5);
+    
+    // Create renderer with optimized settings
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: true, 
+      alpha: false,
+      powerPreference: "high-performance"
+    });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Reduced for performance
+    container.appendChild(renderer.domElement);
+    
+    // Add lights (optimized - fewer lights)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    directionalLight.position.set(5, 5, 5);
+    scene.add(directionalLight);
+    
+    // Add orbit controls
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.1; // Increased for snappier feel
+    controls.minDistance = 2;
+    controls.maxDistance = 20;
+    
+    // Load OBJ model with optimizations
+    const loader = new THREE.OBJLoader();
+    let model = null;
+    let animationId = null;
+    
+    loader.load(
+      objPath,
+      function(object) {
+        // Remove loading text
+        const loadingText = container.querySelector('.loading-text');
+        if (loadingText) loadingText.remove();
+        
+        model = object;
+        
+        // Apply shared material to all meshes for better performance
+        object.traverse(function(child) {
+          if (child instanceof THREE.Mesh) {
+            child.material = sharedMaterial;
+            // Disable shadows for better performance
+            child.castShadow = false;
+            child.receiveShadow = false;
+            // Optimize geometry
+            if (child.geometry) {
+              child.geometry.computeBoundingBox();
+              child.geometry.computeBoundingSphere();
+            }
+          }
+        });
+        
+        // Center and scale model (optimized)
+        const box = new THREE.Box3().setFromObject(object);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale = 3 / maxDim;
+        object.scale.setScalar(scale); // More efficient than multiplyScalar
+        
+        // Recalculate after scaling
+        box.setFromObject(object);
+        box.getCenter(center);
+        object.position.sub(center);
+        
+        scene.add(object);
+        
+        // Start animation only after model is loaded
+        startAnimation();
+      },
+      function(xhr) {
+        // Progress callback (simplified)
+        if (xhr.lengthComputable) {
+          const percentComplete = Math.round((xhr.loaded / xhr.total) * 100);
+          const loadingText = container.querySelector('.loading-text');
+          if (loadingText) {
+            loadingText.textContent = `${percentComplete}%`;
+          }
+        }
+      },
+      function(error) {
+        console.error('Error loading model:', error);
+        const loadingText = container.querySelector('.loading-text');
+        if (loadingText) {
+          loadingText.textContent = 'Failed to load';
+          loadingText.style.color = '#ff6b6b';
+        }
+      }
+    );
+    
+    // Store viewer data
+    viewers[modelName] = {
+      scene,
+      camera,
+      renderer,
+      controls,
+      model: () => model,
+      initialCameraPosition: camera.position.clone(),
+      wireframeMode: false,
+      isAnimating: false
+    };
+    
+    // Optimized animation loop - only renders when needed
+    function startAnimation() {
+      if (viewers[modelName].isAnimating) return;
+      viewers[modelName].isAnimating = true;
+      
+      function animate() {
+        if (!viewers[modelName].isAnimating) return;
+        
+        animationId = requestAnimationFrame(animate);
+        
+        // Only render if controls are being used or damping is active
+        if (controls.update()) {
+          renderer.render(scene, camera);
+        }
+      }
+      animate();
+    }
+    
+    // Handle window resize (debounced for performance)
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (container.clientWidth > 0) {
+          camera.aspect = container.clientWidth / container.clientHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(container.clientWidth, container.clientHeight);
+          renderer.render(scene, camera);
+        }
+      }, 100);
+    });
+  }
+
+  // Reset camera to initial position
+  window.resetCamera = function(modelName) {
+    const viewer = viewers[modelName];
+    if (!viewer) return;
+    
+    viewer.camera.position.copy(viewer.initialCameraPosition);
+    viewer.controls.reset();
+  }
+
+  // Toggle wireframe mode
+  window.toggleWireframe = function(modelName) {
+    const viewer = viewers[modelName];
+    if (!viewer) return;
+    
+    const model = viewer.model();
+    if (!model) return;
+    
+    viewer.wireframeMode = !viewer.wireframeMode;
+    
+    model.traverse(function(child) {
+      if (child instanceof THREE.Mesh) {
+        child.material.wireframe = viewer.wireframeMode;
+      }
+    });
+  }
+
+  // Initialize viewers immediately (models load in parallel)
+  console.log('Initializing 3D viewers...');
+  init3DViewer('clownboy', '3D/clownboy.obj');
+  init3DViewer('depressionclown', '3D/depressionclown.obj');
+});
 </script>
 
 </body>

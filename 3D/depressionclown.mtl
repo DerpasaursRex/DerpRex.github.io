@@ -1,0 +1,42 @@
+# Blender 4.5.3 LTS MTL File: 'depressionclown.blend'
+# www.blender.org
+
+newmtl 10227_Folding_Chair_metal_v2
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd C:/Users/Catherine/Desktop/Art Stuff/Blender/10227_Folding_Chair_metal_v2_L3.123c18958c08-c782-47c6-840d-913ada3581db/10227_Folding_Chair_metal_v2_Diffuse.jpg
+
+newmtl 10227_Folding_Chair_metal_v2.001
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd C:/Users/Catherine/Desktop/Art Stuff/Blender/10227_Folding_Chair_metal_v2_L3.123c18958c08-c782-47c6-840d-913ada3581db/10227_Folding_Chair_metal_v2_Diffuse.jpg
+
+newmtl DefaultMaterial
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd C:/Users/Catherine/Desktop/Art Stuff/Blender/daclown/DefaultMaterial_Base_color.png
+
+newmtl DefaultMaterial.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd C:/Users/Catherine/Desktop/Art Stuff/Blender/daclown/DefaultMaterial_Base_color.png

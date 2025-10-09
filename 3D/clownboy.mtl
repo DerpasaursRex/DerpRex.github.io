@@ -1,0 +1,104 @@
+# Blender 4.5.3 LTS MTL File: 'clownboy.blend'
+# www.blender.org
+
+newmtl DefaultMaterial
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd D:/CLOWN_TEX/clownboynakey_DefaultMaterial_BaseColor.png
+map_Ns D:/CLOWN_TEX/clownboynakey_DefaultMaterial_Roughness.png
+map_refl D:/CLOWN_TEX/clownboynakey_DefaultMaterial_Metallic.png
+map_Bump -bm 1.000000 D:/CLOWN_TEX/clownboynakey_DefaultMaterial_Normal.png
+
+newmtl DefaultMaterial.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd C:/Users/Catherine/Desktop/Art Stuff/Blender/void2.0/void2_DefaultMaterial_BaseColor.png
+
+newmtl DefaultMaterial.003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd C:/Users/Catherine/Desktop/Art Stuff/Blender/staff/staff_DefaultMaterial_BaseColor.png
+
+newmtl Material.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.157584 0.157584 0.157584
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Material.003
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.105740
+illum 9
+
+newmtl Material.004
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/Catherine/Desktop/Art Stuff/Blender/da box/prison_DefaultMaterial_BaseColor.png
+
+newmtl Material.005
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/Catherine/Desktop/Art Stuff/Blender/framepng/frame_DefaultMaterial_BaseColor.png
+
+newmtl Material.006
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/Catherine/Desktop/Art Stuff/Blender/clock/yellow/clock_DefaultMaterial_BaseColor.png
+
+newmtl Material.007
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/Catherine/Desktop/Art Stuff/Blender/clock/blue/clock_DefaultMaterial_BaseColor.png
+
+newmtl Material.008
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/Catherine/Desktop/Art Stuff/Blender/clock/red/clock_DefaultMaterial_BaseColor.png
