@@ -290,6 +290,17 @@
     <!-- Floating Help Button -->
     <button id="floatingHelpBtn" onclick="executeQuickCommand('HELP')" style="position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #00ff00, #00cc00); border: 3px solid #00ff00; color: #000; font-size: 24px; font-weight: bold; cursor: pointer; z-index: 10000; box-shadow: 0 4px 15px rgba(0,255,0,0.4); transition: all 0.3s; font-family: 'Courier New', monospace;" onmouseover="this.style.transform='scale(1.1) rotate(5deg)'; this.style.boxShadow='0 6px 20px rgba(0,255,0,0.6)'" onmouseout="this.style.transform='scale(1) rotate(0deg)'; this.style.boxShadow='0 4px 15px rgba(0,255,0,0.4)'">?</button>
     
+    <!-- Draggable Spotify Player Widget -->
+    <div id="spotifyWidget">
+      <div id="spotifyHeader">
+        <span>🎵 Spotify Player</span>
+        <button id="spotifyMinimize" onclick="toggleSpotifyChat()">+</button>
+      </div>
+      <div id="spotifyContent" style="display: none;">
+        <iframe id="spotifyIframe" style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+    </div>
+
     <!-- Terminal Window -->
     <div id="terminal" style="flex: 1; background: #000000; color: #00ff00; font-family: 'Courier New', monospace; padding: 20px; overflow-y: auto; border: 3px solid #333; box-shadow: inset 0 0 50px rgba(0,255,0,0.1);">
       
@@ -6550,7 +6561,7 @@ function handleInitialization(input) {
   border: 3px solid #1DB954;
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  z-index: 9999;
+  z-index: 100001;
   cursor: move;
 }
 
@@ -6582,16 +6593,6 @@ function handleInitialization(input) {
 }
 </style>
 
-<!-- Draggable Spotify Player Widget -->
-<div id="spotifyWidget">
-  <div id="spotifyHeader">
-    <span>🎵 Spotify Player</span>
-    <button id="spotifyMinimize" onclick="toggleSpotifyChat()">+</button>
-  </div>
-  <div id="spotifyContent" style="display: none;">
-    <iframe id="spotifyIframe" style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-  </div>
-</div>
 
 <script>
 // Set Spotify widget to minimized state on load
