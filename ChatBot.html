@@ -2287,7 +2287,8 @@ function addTerminalLine(text, color = '#00ff00', isCommand = false) {
     if (color === '#ff0000') textColor = '#ff6666'; // Light red
     
     line.innerHTML = `
-      <div style="display: flex; justify-content: flex-start; margin: 10px 0;">
+      <div style="display: flex; justify-content: flex-start; margin: 10px 0; align-items: flex-start; gap: 10px;">
+        <img src="TestBot/test.png" alt="AI Profile" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #00ff00; flex-shrink: 0; margin-top: 5px;">
         <div style="background: #1a1a1a; color: ${textColor}; padding: 10px 15px; border-radius: 15px 15px 15px 0; max-width: 80%; word-wrap: break-word; border-left: 3px solid #00ff00;">
           <div style="color: #00ff00; font-weight: bold; margin-bottom: 5px;">${aiName}</div>
           <div style="margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; color: ${textColor};">${formattedText}</div>
