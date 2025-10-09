@@ -390,8 +390,9 @@ h1 {
 /* Spotify Player Widget */
 #spotifyWidget {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 300px;
   background: #000;
   border: 3px solid #1DB954;
@@ -433,12 +434,22 @@ h1 {
 <div id="spotifyWidget">
   <div id="spotifyHeader">
     <span>🎵 Spotify Player</span>
-    <button id="spotifyMinimize" onclick="toggleSpotifyOutdated()">−</button>
+    <button id="spotifyMinimize" onclick="toggleSpotifyOutdated()">+</button>
   </div>
-  <div id="spotifyContent">
+  <div id="spotifyContent" style="display: none;">
     <iframe id="spotifyIframe" style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
   </div>
 </div>
+
+<script>
+// Set Spotify widget to minimized state on load
+document.addEventListener('DOMContentLoaded', function() {
+  const spotifyWidget = document.getElementById('spotifyWidget');
+  if (spotifyWidget) {
+    spotifyWidget.style.width = '200px';
+  }
+});
+</script>
 
 <script>
 // Draggable Spotify Widget
