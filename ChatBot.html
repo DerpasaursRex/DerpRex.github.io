@@ -25,9 +25,9 @@
 <body>
 
 <!-- Terminal-style Navigation Bar -->
-    <nav style="background: #000; border-bottom: 3px solid #00ff00; padding: 10px 20px; font-family: 'Courier New', monospace;">
+    <nav style="background: #000; border-bottom: 3px solid #00ff00; padding: 10px 20px; font-family: 'Courier New', monospace; position: sticky; top: 0; z-index: 100000;">
       <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-        <div id="terminalHeader" style="color: #00ff00; font-size: 18px; font-weight: bold; margin-bottom: 5px;">
+        <div id="terminalNavHeader" style="color: #00ff00; font-size: 18px; font-weight: bold; margin-bottom: 5px;">
           [ TERMINAL SYSTEM ]
         </div>
     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
@@ -37,7 +37,7 @@
 </nav>
 
 <!-- Language Selection Screen -->
-<div id="languageScreen" class="container-fluid" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: flex; justify-content: center; align-items: center; background: #000;">
+<div id="languageScreen" class="container-fluid" style="margin-top:0; padding: 20px 0; min-height: calc(100vh - 56px); display: flex; justify-content: center; align-items: center; background: #000;">
   <div style="max-width: 700px; width: 90%; background: #000; border: 3px solid #00ff00; padding: 40px; box-shadow: 0 0 30px rgba(0,255,0,0.3);">
     <div style="border-bottom: 2px solid #00ff00; padding-bottom: 15px; margin-bottom: 30px; text-align: center;">
       <pre style="color: #00ff00; margin: 0; font-size: 12px;">
@@ -94,7 +94,7 @@
 </div>
 
 <!-- Registration Screen (First Time Users) -->
-<div id="registrationScreen" class="container-fluid" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: none; justify-content: center; align-items: center; background: #000;">
+<div id="registrationScreen" class="container-fluid" style="margin-top:0; padding: 20px 0; min-height: calc(100vh - 56px); display: none; justify-content: center; align-items: center; background: #000;">
   <div style="max-width: 600px; width: 90%; background: #000; border: 3px solid #00ff00; padding: 40px; box-shadow: 0 0 30px rgba(0,255,0,0.3);">
     <div style="border-bottom: 2px solid #00ff00; padding-bottom: 15px; margin-bottom: 30px; text-align: center;">
       <pre style="color: #00ff00; margin: 0; font-size: 12px;">
@@ -171,7 +171,7 @@
 </div>
 
 <!-- Login Screen (Returning Users) -->
-<div id="passwordScreen" class="container-fluid" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: none; justify-content: center; align-items: center; background: #000;">
+<div id="passwordScreen" class="container-fluid" style="margin-top:0; padding: 20px 0; min-height: calc(100vh - 56px); display: none; justify-content: center; align-items: center; background: #000;">
   <div style="max-width: 600px; width: 90%; background: #000; border: 3px solid #00ff00; padding: 40px; box-shadow: 0 0 30px rgba(0,255,0,0.3);">
     <div style="border-bottom: 2px solid #00ff00; padding-bottom: 15px; margin-bottom: 30px; text-align: center;">
       <pre style="color: #00ff00; margin: 0; font-size: 12px;">
@@ -235,7 +235,7 @@
 </div>
 
 <!-- Admin Login Screen -->
-<div id="adminLoginScreen" class="container-fluid" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: none; justify-content: center; align-items: center; background: #000;">
+<div id="adminLoginScreen" class="container-fluid" style="margin-top:0; padding: 20px 0; min-height: calc(100vh - 56px); display: none; justify-content: center; align-items: center; background: #000;">
   <div style="max-width: 600px; width: 90%; background: #000; border: 3px solid #ff6600; padding: 40px; box-shadow: 0 0 30px rgba(255,102,0,0.3);">
     <div style="border-bottom: 2px solid #ff6600; padding-bottom: 15px; margin-bottom: 30px; text-align: center;">
       <pre style="color: #ff6600; margin: 0; font-size: 12px;">
@@ -284,7 +284,7 @@
   </div>
 </div>
 
-<div class="container-fluid" id="chatContainer" style="margin-top:0; padding: 0; height: calc(100vh - 56px); display: none;">
+<div class="container-fluid" id="chatContainer" style="margin-top:0; padding: 0; min-height: calc(100vh - 56px); display: none;">
   <div style="height: 100%; display: flex; flex-direction: column; position: relative;">
     
     <!-- Floating Help Button -->
@@ -295,7 +295,7 @@
       
       <!-- Terminal Header -->
       <div id="terminalHeader" style="background: linear-gradient(180deg, #001a00 0%, #000000 100%); border: 2px solid #00ff00; padding: 15px; margin-bottom: 20px; box-shadow: 0 0 15px rgba(0,255,0,0.3);">
-        <pre style="color: #00ff00; margin: 0; text-shadow: 0 0 5px rgba(0,255,0,0.5);">
+        <pre style="color: #00ff00; margin: 0; text-shadow: 0 0 5px rgba(0,255,0,0.5); overflow-x: auto;">
 ╔═══════════════════════════════════════════════════════════════╗
 ║  ADVENTURE QUEST GENERATOR v2.0                               ║
 ║  Text-Based RPG Creator & Story Engine                        ║
@@ -491,7 +491,8 @@ body {
   font-family: 'Courier New', monospace;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 @keyframes shake {
@@ -1320,9 +1321,15 @@ const NSFW_ROLEPLAY_ALLOWED = [
 function checkContentFilter(text) {
   const lower = text.toLowerCase();
   
+  // Helper function to check for whole word matches only
+  function containsWholeWord(text, word) {
+    const regex = new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+    return regex.test(text);
+  }
+  
   // Always check for prohibited content
   for (const word of ALWAYS_BLOCKED_WORDS) {
-    if (lower.includes(word)) {
+    if (containsWholeWord(lower, word)) {
       return {
         allowed: false,
         reason: 'PROHIBITED CONTENT',
@@ -1343,7 +1350,7 @@ function checkContentFilter(text) {
     // Allow most mature content except extreme stuff
     const extremeWords = ['rape', 'molest', 'torture'];
     for (const word of extremeWords) {
-      if (lower.includes(word)) {
+      if (containsWholeWord(lower, word)) {
         return {
           allowed: false,
           reason: 'EXTREME CONTENT',
@@ -1357,7 +1364,7 @@ function checkContentFilter(text) {
   // Check SFW restrictions if in SFW mode
   if (contentMode === 'SFW') {
     for (const word of SFW_BLOCKED_WORDS) {
-      if (lower.includes(word)) {
+      if (containsWholeWord(lower, word)) {
         return {
           allowed: false,
           reason: 'SFW MODE VIOLATION',
@@ -2065,6 +2072,7 @@ HELP         - Show this menu
 CLEAR        - Clear screen
 EXIT         - Return to main site
 LOGOUT       - End session
+DELETE ACCOUNT - Permanently delete your account & data
 ═══════════════════════════════════════
 Type actions naturally: "I open the door" "Attack the goblin" etc.`,
 
@@ -2634,29 +2642,35 @@ let conversationContext = {
 function analyzeSentiment(text) {
   const lower = text.toLowerCase();
   
+  // Helper function to check for whole word matches
+  function containsWholeWord(text, word) {
+    const regex = new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+    return regex.test(text);
+  }
+  
   // Detect specific negative emotions first (more detailed)
   const sadnessWords = ['sad', 'depressed', 'down', 'lonely', 'crying', 'cry', 'heartbroken', 'miserable', 'unhappy', 'hurt', 'broken', 'empty', 'hopeless'];
   const angerWords = ['angry', 'mad', 'furious', 'pissed', 'irritated', 'rage', 'hate', 'annoyed', 'frustrated', 'infuriated'];
   const anxietyWords = ['anxious', 'worried', 'nervous', 'scared', 'afraid', 'panic', 'stress', 'stressed', 'overwhelmed', 'terrified', 'fear'];
   const disappointmentWords = ['disappointed', 'let down', 'failed', 'failure', 'worthless', 'useless', 'terrible', 'awful', 'worst'];
   
-  // Count specific emotions
-  const sadnessCount = sadnessWords.filter(word => lower.includes(word)).length;
-  const angerCount = angerWords.filter(word => lower.includes(word)).length;
-  const anxietyCount = anxietyWords.filter(word => lower.includes(word)).length;
-  const disappointmentCount = disappointmentWords.filter(word => lower.includes(word)).length;
+  // Count specific emotions using whole word matching
+  const sadnessCount = sadnessWords.filter(word => containsWholeWord(lower, word)).length;
+  const angerCount = angerWords.filter(word => containsWholeWord(lower, word)).length;
+  const anxietyCount = anxietyWords.filter(word => containsWholeWord(lower, word)).length;
+  const disappointmentCount = disappointmentWords.filter(word => containsWholeWord(lower, word)).length;
   
   // Detect emotional intensity markers
   const intensifiers = ['very', 'really', 'so', 'extremely', 'super', 'too'];
-  const hasIntensifier = intensifiers.some(word => lower.includes(word));
+  const hasIntensifier = intensifiers.some(word => containsWholeWord(lower, word));
   
   // Positive indicators
   const positiveWords = ['love', 'great', 'awesome', 'amazing', 'wonderful', 'happy', 'excited', 'good', 'excellent', 'fantastic', 'perfect', 'best', 'enjoy', 'fun', 'joy', 'glad', 'blessed'];
-  const positiveCount = positiveWords.filter(word => lower.includes(word)).length;
+  const positiveCount = positiveWords.filter(word => containsWholeWord(lower, word)).length;
   
   // General negative indicators
   const negativeWords = ['bad', 'sucks', 'boring', 'annoying', 'dumb', 'stupid'];
-  const negativeCount = negativeWords.filter(word => lower.includes(word)).length;
+  const negativeCount = negativeWords.filter(word => containsWholeWord(lower, word)).length;
   
   // Question indicators
   const isQuestion = text.includes('?') || /^(what|who|when|where|why|how|can|could|would|should|is|are|do|does)/i.test(text);
@@ -4449,7 +4463,8 @@ function displayInteractiveHelp() {
               <button onclick="executeQuickCommand('SPELL CHECK ON')" style="background: #666; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#777'" onmouseout="this.style.background='#666'">SPELL ✓</button>
               <button onclick="executeQuickCommand('SPELL CHECK OFF')" style="background: #666; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#777'" onmouseout="this.style.background='#666'">SPELL ✗</button>
               <button onclick="executeQuickCommand('CLEAR')" style="background: #666; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#777'" onmouseout="this.style.background='#666'">CLEAR</button>
-              <button onclick="executeQuickCommand('LOGOUT')" style="background: #ff0000; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#ff3333'" onmouseout="this.style.background='#ff0000'">LOGOUT</button>
+              <button onclick="executeQuickCommand('LOGOUT')" style="background: #ff6600; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#ff7733'" onmouseout="this.style.background='#ff6600'">LOGOUT</button>
+              <button onclick="executeQuickCommand('DELETE ACCOUNT')" style="background: #ff0000; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 10px; font-weight: bold; transition: all 0.2s; grid-column: 1 / -1;" onmouseover="this.style.background='#ff3333'" onmouseout="this.style.background='#ff0000'">🗑️ DELETE ACCOUNT</button>
             </div>
           </div>
           
@@ -5376,6 +5391,107 @@ function executeCommand() {
     return;
   }
   
+  if (commandUpper === 'DELETE ACCOUNT') {
+    if (isAdmin) {
+      addTerminalLine('❌ Cannot delete admin account.', '#ff6666');
+      return;
+    }
+    
+    if (!currentUser) {
+      addTerminalLine('❌ No user logged in.', '#ff6666');
+      return;
+    }
+    
+    addTerminalLine('⚠️ DELETE ACCOUNT', '#ff6600');
+    addTerminalLine('═══════════════════════════════════════', '#ff6600');
+    addTerminalLine('This will permanently delete:', '#ffff99');
+    addTerminalLine('• Your username and password', '#ffff99');
+    addTerminalLine('• All saved conversations and journal', '#ffff99');
+    addTerminalLine('• Character data and game progress', '#ffff99');
+    addTerminalLine('• Personal memories and preferences', '#ffff99');
+    addTerminalLine('• Profile pictures and settings', '#ffff99');
+    addTerminalLine('• Personality configurations', '#ffff99');
+    addTerminalLine('\n⚠️ THIS CANNOT BE UNDONE!', '#ff0000');
+    addTerminalLine('\nType CONFIRM DELETE to proceed, or anything else to cancel.', '#ffff00');
+    
+    window.awaitingAccountDeletion = true;
+    return;
+  }
+  
+  if (window.awaitingAccountDeletion) {
+    window.awaitingAccountDeletion = false;
+    
+    if (commandUpper === 'CONFIRM DELETE') {
+      addTerminalLine('🗑️ Deleting account...', '#ff6600');
+      
+      setTimeout(() => {
+        const username = currentUser;
+        
+        // 1. Remove from user database
+        const userDB = getUserDatabase();
+        delete userDB[username];
+        saveUserDatabase(userDB);
+        
+        // 2. Remove all user-specific data
+        const keysToRemove = [
+          `user_${username}`,           // User settings
+          `memory_${username}`,          // User memory
+          `game_${username}`,            // Game state
+          `personality_${username}`,     // Bot personality
+          `narrator_${username}`,        // Narrator settings
+          `userPic_${username}`          // Profile picture
+        ];
+        
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+        
+        // 3. Clear current session data
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('isAdmin');
+        localStorage.removeItem('terminalJournal');
+        localStorage.removeItem('terminalAIName');
+        localStorage.removeItem('terminalJournalPermission');
+        localStorage.removeItem('ageVerified');
+        localStorage.removeItem('contentMode');
+        localStorage.removeItem('roleplayMode');
+        
+        addTerminalLine('✅ ACCOUNT DELETED SUCCESSFULLY', '#00ff00');
+        addTerminalLine('═══════════════════════════════════════', '#00ff00');
+        addTerminalLine(`All data for user "${username}" has been permanently removed.`, '#c0ffc0');
+        addTerminalLine('Your information has been completely wiped from the system.', '#c0ffc0');
+        addTerminalLine('\nReturning to registration screen...', '#ffff99');
+        
+        // Reset globals
+        currentUser = null;
+        isAdmin = false;
+        userMemory = {};
+        gameState = {
+          inGame: false,
+          currentScene: null,
+          character: null,
+          inventory: [],
+          questLog: [],
+          worldState: {},
+          choices: [],
+          stats: { health: 100, mana: 100, gold: 0, experience: 0, level: 1 }
+        };
+        
+        setTimeout(() => {
+          document.getElementById('chatContainer').style.display = 'none';
+          document.getElementById('registrationScreen').style.display = 'flex';
+          document.getElementById('regUsername').value = '';
+          document.getElementById('regPassword').value = '';
+          document.getElementById('regPasswordConfirm').value = '';
+          document.getElementById('regUsername').focus();
+        }, 2000);
+        
+      }, 500);
+      return;
+    } else {
+      addTerminalLine('Account deletion cancelled. No changes made.', '#00ff00');
+      return;
+    }
+  }
+  
   if (commandUpper === 'LOGOUT') {
     addTerminalLine('Saving your data and logging out...', '#ffff00');
     
@@ -6147,14 +6263,18 @@ function checkFirstTimeUser() {
     initStep = aiName ? 2 : 1;
   } else {
     // Returning user - update header
-    header.innerHTML = `<pre style="color: #00ff00; margin: 0; text-shadow: 0 0 5px rgba(0,255,0,0.5);">
+    const username = currentUser || localStorage.getItem('currentUser') || 'Adventurer';
+    // Limit username length to ensure proper box alignment (max 49 chars to fit in "Welcome back, " + "!")
+    const limitedUsername = username.length > 49 ? username.substring(0, 49) + '...' : username;
+    // Pad username line to match box width (62 chars total to account for spaces around content)
+    const usernameLine = `Welcome back, ${limitedUsername}!`;
+    const paddedUsernameLine = usernameLine + ' '.repeat(Math.max(0, 62 - usernameLine.length));
+    header.innerHTML = `<pre style="color: #00ff00; margin: 0; text-shadow: 0 0 5px rgba(0,255,0,0.5); overflow-x: auto;">
 ╔═══════════════════════════════════════════════════════════════╗
-║  ADVENTURE QUEST GENERATOR v2.0                               ║
-║  Welcome back, ${aiName || 'Adventurer'}!                     ║
+║ ${paddedUsernameLine}║
 ╚═══════════════════════════════════════════════════════════════╝
     </pre>`;
     
-    const username = currentUser || localStorage.getItem('currentUser') || 'Adventurer';
     addTerminalLine(`⚔️ Welcome back, ${username}!`, '#00ff00');
     
     // Check if game is loaded
@@ -6361,16 +6481,21 @@ function handleInitialization(input) {
     
     localStorage.setItem('terminalAIName', aiName);
     
-    // Update the header
-    header.innerHTML = `<pre style="color: #00ff00; margin: 0; text-shadow: 0 0 5px rgba(0,255,0,0.5);">
+    // Update the header with the user's actual username
+    const username = currentUser || 'Adventurer';
+    // Limit username length to ensure proper box alignment (max 53 chars to fit in "Welcome, " + "!")
+    const limitedUsername = username.length > 53 ? username.substring(0, 53) + '...' : username;
+    // Pad username line to match box width (62 chars total to account for spaces around content)
+    const usernameLine = `Welcome, ${limitedUsername}!`;
+    const paddedUsernameLine = usernameLine + ' '.repeat(Math.max(0, 62 - usernameLine.length));
+    header.innerHTML = `<pre style="color: #00ff00; margin: 0; text-shadow: 0 0 5px rgba(0,255,0,0.5); overflow-x: auto;">
 ╔═══════════════════════════════════════════════════════════════╗
-║  ADVENTURE QUEST GENERATOR v2.0                               ║
-║  Welcome, ${aiName}!                                          ║
+║ ${paddedUsernameLine}║
 ╚═══════════════════════════════════════════════════════════════╝
     </pre>`;
     
     addTerminalLine(input, '#00ff00', true);
-    addTerminalLine(`Welcome, ${aiName}! Your adventure awaits. ⚔️`, '#00ff00');
+    addTerminalLine(`Great! I'll be ${aiName}. Your adventure awaits, ${username}! ⚔️`, '#00ff00');
     
     // Ask about journal permission
     addTerminalLine(`\nWould you like me to save your adventures? 💾`, '#00ff00');
