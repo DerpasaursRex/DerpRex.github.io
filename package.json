@@ -1,0 +1,14 @@
+{
+  "name": "portfolio-spotify-api",
+  "version": "1.0.0",
+  "description": "Serverless Spotify API functions for portfolio site",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "keywords": ["spotify", "api", "vercel", "serverless"],
+  "author": "Catherine Ann MacDonald",
+  "license": "MIT"
+}
+
