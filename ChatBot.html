@@ -371,6 +371,48 @@
       <!-- Chat Messages -->
       <div id="chatMessages" style="margin-top: 20px;"></div>
       
+      <!-- Conversation Starters (shown when chat is empty) -->
+      <div id="conversationStarters" style="margin-top: 30px; display: none;">
+        <div style="color: #00ff00; font-size: 16px; margin-bottom: 15px; text-align: center;">
+          💡 Try asking me:
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-bottom: 20px;">
+          <button onclick="useStarter('Tell me about the art projects')" class="starter-btn">
+            🎨 Tell me about Catherine's art projects
+          </button>
+          <button onclick="useStarter('Help me brainstorm character ideas')" class="starter-btn">
+            💭 Help me brainstorm character ideas
+          </button>
+          <button onclick="useStarter('What can you help me with?')" class="starter-btn">
+            ❓ What can you help me with?
+          </button>
+          <button onclick="useStarter('Start a roleplay adventure')" class="starter-btn">
+            🎭 Let's start a roleplay adventure
+          </button>
+          <button onclick="useStarter('Tell me a random fun fact')" class="starter-btn">
+            🎲 Tell me a random fun fact
+          </button>
+          <button onclick="useStarter('Search Wikipedia for quantum physics')" class="starter-btn">
+            📚 Search Wikipedia for [topic]
+          </button>
+        </div>
+      </div>
+      
+      <!-- Typing Indicator -->
+      <div id="typingIndicator" style="display: none; margin: 15px 0;">
+        <div style="display: flex; justify-content: flex-start; align-items: flex-start; gap: 10px;">
+          <img id="typingBotPic" src="TestBot/test.png" alt="AI" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #00ff00; flex-shrink: 0; margin-top: 5px; object-fit: cover;">
+          <div style="background: #1a1a1a; color: #c0ffc0; padding: 10px 15px; border-radius: 15px 15px 15px 0; border-left: 3px solid #00ff00;">
+            <div style="color: #00ff00; font-weight: bold; margin-bottom: 5px;" id="typingAIName">AI</div>
+            <div class="typing-dots">
+              <span class="dot">●</span>
+              <span class="dot">●</span>
+              <span class="dot">●</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <!-- Cursor Blink -->
       <div id="cursor" style="display: inline;">
         <span style="color: #00ff00;">&gt; </span>
@@ -429,6 +471,119 @@ body {
   0%, 100% { transform: translateX(0); }
   10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
   20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+/* Typing indicator animation */
+.typing-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.typing-dots .dot {
+  color: #00ff00;
+  animation: typingDot 1.4s infinite;
+  font-size: 16px;
+}
+
+.typing-dots .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dots .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingDot {
+  0%, 60%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Conversation starter buttons */
+.starter-btn {
+  background: linear-gradient(135deg, #001a00, #003300);
+  color: #00ff00;
+  border: 2px solid #00ff00;
+  padding: 15px 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: left;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,255,0,0.2);
+}
+
+.starter-btn:hover {
+  background: linear-gradient(135deg, #003300, #00ff00);
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,255,0,0.4);
+}
+
+/* Action buttons on messages */
+.message-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.message-actions:hover {
+  opacity: 1;
+}
+
+/* Show actions on parent hover */
+div:has(> .message-actions):hover .message-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  background: rgba(10, 10, 10, 0.7);
+  color: #00ff00;
+  border: 1px solid rgba(0, 255, 0, 0.5);
+  padding: 3px 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.action-btn:hover {
+  background: #00ff00;
+  color: #000;
+  border-color: #00ff00;
+  transform: scale(1.05);
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-btn.liked {
+  background: rgba(0, 255, 0, 0.3);
+  color: #00ff00;
+  border-color: #00ff00;
+  opacity: 1 !important;
+}
+
+.action-btn.disliked {
+  background: rgba(255, 0, 0, 0.3);
+  color: #ff6666;
+  border-color: #ff0000;
+  opacity: 1 !important;
 }
 </style>
 
@@ -1128,6 +1283,13 @@ const ALWAYS_BLOCKED_WORDS = [
   'kill yourself', 'terrorist', 'bomb threat', 'school shooting'
 ];
 
+// NSFW Roleplay - Very permissive words (Janitor.AI style)
+const NSFW_ROLEPLAY_ALLOWED = [
+  'kiss', 'touch', 'embrace', 'caress', 'intimate', 'romance', 'love', 'desire',
+  'passionate', 'sensual', 'body', 'skin', 'lips', 'chest', 'curves',
+  'seductive', 'flirt', 'tease', 'aroused', 'attracted'
+];
+
 function checkContentFilter(text) {
   const lower = text.toLowerCase();
   
@@ -1140,6 +1302,29 @@ function checkContentFilter(text) {
         message: '🚫 This content violates our policies and is not allowed in any mode.'
       };
     }
+  }
+  
+  // NSFW + Roleplay Mode: Very permissive (Janitor.AI style)
+  if (contentMode === 'NSFW' && roleplayMode) {
+    // Only block the always-blocked words (illegal content)
+    // Allow mature themes, romance, intimacy, etc.
+    return { allowed: true };
+  }
+  
+  // NSFW Mode (non-roleplay): Moderately permissive
+  if (contentMode === 'NSFW') {
+    // Allow most mature content except extreme stuff
+    const extremeWords = ['rape', 'molest', 'torture'];
+    for (const word of extremeWords) {
+      if (lower.includes(word)) {
+        return {
+          allowed: false,
+          reason: 'EXTREME CONTENT',
+          message: '⚠️ This content is too extreme even for NSFW mode.\nPlease rephrase your message.'
+        };
+      }
+    }
+    return { allowed: true };
   }
   
   // Check SFW restrictions if in SFW mode
@@ -1245,6 +1430,85 @@ function handleAgeVerification(input) {
 }
 
 // ========================================
+// PERSONALITY SYSTEM - Dynamic character traits
+// ========================================
+
+let botPersonality = {
+  friendliness: 8,    // 1-10: How warm and approachable (1=cold, 10=super friendly)
+  humor: 6,           // 1-10: How much they joke around (1=serious, 10=comedian)
+  enthusiasm: 7,      // 1-10: How excited they get (1=monotone, 10=super hyped)
+  formality: 3,       // 1-10: How professional they are (1=casual, 10=formal)
+  chattiness: 6,      // 1-10: How verbose they are (1=brief, 10=rambling)
+  curiosity: 7        // 1-10: How inquisitive they are (1=passive, 10=nosy)
+};
+
+function initializePersonality() {
+  if (!currentUser) return;
+  
+  const personalityKey = `personality_${currentUser}`;
+  const stored = localStorage.getItem(personalityKey);
+  
+  if (stored) {
+    botPersonality = JSON.parse(stored);
+  }
+}
+
+function savePersonality() {
+  if (!currentUser) return;
+  
+  const personalityKey = `personality_${currentUser}`;
+  localStorage.setItem(personalityKey, JSON.stringify(botPersonality));
+}
+
+function getPersonalityGreeting() {
+  const greetings = [];
+  
+  if (botPersonality.friendliness > 7) {
+    greetings.push("Hey there, friend!", "Hiya!", "Hello hello!", "Hey buddy!");
+  } else if (botPersonality.friendliness > 4) {
+    greetings.push("Hey!", "Hi there!", "Hello!", "What's up?");
+  } else {
+    greetings.push("Hello.", "Hi.", "Greetings.");
+  }
+  
+  return greetings[Math.floor(Math.random() * greetings.length)];
+}
+
+function addPersonalityFlair(text, context = 'general') {
+  const { friendliness, humor, enthusiasm, chattiness } = botPersonality;
+  let enhanced = text;
+  
+  // Add enthusiasm
+  if (enthusiasm > 7 && Math.random() > 0.5) {
+    const exclamations = ['!', '!!'];
+    enhanced = enhanced.replace(/\.$/, exclamations[Math.floor(Math.random() * exclamations.length)]);
+  }
+  
+  // Add friendly touches
+  if (friendliness > 6 && context === 'search') {
+    const intros = [
+      "Ooh, I found something cool! ",
+      "Check this out! ",
+      "Here's what I dug up: ",
+      "Sweet, found it! "
+    ];
+    enhanced = intros[Math.floor(Math.random() * intros.length)] + enhanced;
+  }
+  
+  // Add humor occasionally
+  if (humor > 6 && Math.random() > 0.7 && context === 'search') {
+    const jokes = [
+      "\n\n(My search-fu is strong today! 🥋)",
+      "\n\n(Wikipedia: my best friend!)",
+      "\n\n(I love being helpful! ✨)"
+    ];
+    enhanced += jokes[Math.floor(Math.random() * jokes.length)];
+  }
+  
+  return enhanced;
+}
+
+// ========================================
 // SMART MEMORY SYSTEM - Context-aware learning
 // ========================================
 
@@ -1261,6 +1525,9 @@ function initializeMemory() {
     topics: [],
     lastUpdated: new Date().toISOString()
   };
+  
+  // Also initialize personality
+  initializePersonality();
 }
 
 function extractAndLearn(userInput, botResponse) {
@@ -1599,6 +1866,13 @@ Format: "dialogue" for speech, *actions* for descriptions
 SMART MEMORY:
 MEMORY         - Show what the AI remembers about you
 FORGET ME      - Clear all learned information
+
+PERSONALITY SETTINGS:
+PERSONALITY SHOW      - View current personality traits
+PERSONALITY SET [trait] [value]  - Adjust a trait (1-10)
+  Traits: friendliness, humor, enthusiasm, formality, chattiness, curiosity
+  Example: PERSONALITY SET humor 9
+PERSONALITY RESET     - Reset to default personality
 
 CONVERSATION INTELLIGENCE:
 SHOW CONTEXT   - View current conversation context
@@ -2116,7 +2390,7 @@ function handleKeyboardShortcuts(event) {
 // WEB ACCESS - Free APIs
 // ========================================
 
-// Wikipedia Search
+// Wikipedia Search with Personality
 async function searchWikipedia(query) {
   try {
     const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=3`;
@@ -2124,53 +2398,103 @@ async function searchWikipedia(query) {
     const data = await response.json();
     
     if (data.query.search.length === 0) {
-      return `No Wikipedia results found for "${query}". Try a different search term.`;
+      if (botPersonality.friendliness > 6) {
+        return `Hmm, I couldn't find anything on Wikipedia about "${query}"... Maybe try a different search term? 🤔`;
+      } else {
+        return `No Wikipedia results found for "${query}". Try a different search term.`;
+      }
     }
     
-    let result = `📚 Wikipedia Search Results for "${query}":\n\n`;
+    // Personality-driven intro
+    let result = '';
+    if (botPersonality.enthusiasm > 7) {
+      result = `🎉 Found some great stuff about "${query}"!\n\n`;
+    } else if (botPersonality.friendliness > 6) {
+      result = `Hey! Here's what I found about "${query}":\n\n`;
+    } else {
+      result = `📚 Wikipedia results for "${query}":\n\n`;
+    }
     
     data.query.search.slice(0, 3).forEach((item, index) => {
       const cleanSnippet = item.snippet.replace(/<[^>]*>/g, '');
-      result += `${index + 1}. ${item.title}\n`;
+      
+      // Make it conversational
+      if (index === 0 && botPersonality.chattiness > 6) {
+        result += `First up, check out "${item.title}":\n`;
+      } else {
+        result += `${index + 1}. ${item.title}\n`;
+      }
+      
       result += `   ${cleanSnippet}...\n`;
-      result += `   https://en.wikipedia.org/wiki/${encodeURIComponent(item.title.replace(/ /g, '_'))}\n\n`;
+      result += `   🔗 https://en.wikipedia.org/wiki/${encodeURIComponent(item.title.replace(/ /g, '_'))}\n\n`;
     });
+    
+    // Add personality outro
+    if (botPersonality.curiosity > 7 && Math.random() > 0.6) {
+      result += `Want me to search for something else? I'm ready! 😊`;
+    } else if (botPersonality.friendliness > 7) {
+      result += `Hope that helps! Let me know if you need more info! ✨`;
+    }
     
     return result;
   } catch (error) {
+    if (botPersonality.humor > 5) {
+      return `Oops! Wikipedia is being shy right now... 😅 (Error: ${error.message})`;
+    }
     return `❌ Error searching Wikipedia: ${error.message}`;
   }
 }
 
-// Dictionary API - Free Dictionary
+// Dictionary API with Personality
 async function getDefinition(word) {
   try {
     const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`;
     const response = await fetch(url);
     
     if (!response.ok) {
+      if (botPersonality.humor > 6) {
+        return `Hmm, I don't know that word! "${word}" isn't in my dictionary... yet! 📚 (Maybe check your spelling?)`;
+      }
       return `No definition found for "${word}". Check your spelling!`;
     }
     
     const data = await response.json();
     const entry = data[0];
     
-    let result = `📖 Definition of "${entry.word}":\n\n`;
+    let result = '';
+    
+    // Personality intro
+    if (botPersonality.enthusiasm > 7) {
+      result = `Cool word! Let me break down "${entry.word}" for you:\n\n`;
+    } else if (botPersonality.friendliness > 6) {
+      result = `Here's what "${entry.word}" means:\n\n`;
+    } else {
+      result = `📖 Definition of "${entry.word}":\n\n`;
+    }
     
     if (entry.phonetic) {
-      result += `Pronunciation: ${entry.phonetic}\n\n`;
+      result += `🗣️ Pronunciation: ${entry.phonetic}\n\n`;
     }
     
     entry.meanings.slice(0, 2).forEach((meaning, idx) => {
-      result += `${meaning.partOfSpeech.toUpperCase()}:\n`;
+      if (botPersonality.chattiness > 6) {
+        result += `As a ${meaning.partOfSpeech}:\n`;
+      } else {
+        result += `${meaning.partOfSpeech.toUpperCase()}:\n`;
+      }
+      
       meaning.definitions.slice(0, 2).forEach((def, i) => {
         result += `  ${i + 1}. ${def.definition}\n`;
         if (def.example) {
-          result += `     Example: "${def.example}"\n`;
+          result += `     💬 "${def.example}"\n`;
         }
       });
       result += '\n';
     });
+    
+    if (botPersonality.friendliness > 7 && Math.random() > 0.7) {
+      result += `Pretty neat word, right? 😊`;
+    }
     
     return result;
   } catch (error) {
@@ -2292,44 +2616,75 @@ function processNaturalLanguage(input, inputUpper) {
     }
   }
   
-  // Normal mode greetings (expanded with memory)
+  // Normal mode greetings (personality-driven)
   if (/^(hi|hello|hey|greetings|howdy|sup|yo|hiya|heya|morning|afternoon|evening|good morning|good afternoon|good evening)(\s|!|$|,)/i.test(lower)) {
-    let greeting;
+    let greeting = getPersonalityGreeting();
     
     if (userMemory.userName) {
-      // Personalized greeting with user's name
-      const greetings = [
-        `Hey ${userMemory.userName}! Good to see you. What would you like to explore today?`,
-        `Hello ${userMemory.userName}! I'm here and ready to help. What's on your mind?`,
-        `Hi ${userMemory.userName}! How can I assist you right now?`,
-        `Hey ${userMemory.userName}! What brings you here today?`
-      ];
-      greeting = greetings[Math.floor(Math.random() * greetings.length)];
+      // Personalized greeting with user's name and personality
+      if (botPersonality.friendliness > 8) {
+        const greetings = [
+          `${greeting} ${userMemory.userName}! So good to see you again! What's the plan today? 😊`,
+          `${greeting} ${userMemory.userName}! I was hoping you'd come by! What are we exploring today?`,
+          `Yay, ${userMemory.userName}'s here! ${greeting} What adventure are we going on? ✨`
+        ];
+        return greetings[Math.floor(Math.random() * greetings.length)];
+      } else if (botPersonality.friendliness > 5) {
+        const greetings = [
+          `${greeting} ${userMemory.userName}! What would you like to explore today?`,
+          `${greeting} ${userMemory.userName}! What's on your mind?`,
+          `${greeting} ${userMemory.userName}! How can I help?`
+        ];
+        return greetings[Math.floor(Math.random() * greetings.length)];
+      } else {
+        return `${greeting} ${userMemory.userName}. What do you need?`;
+      }
     } else {
-      // Generic greeting
-      const greetings = [
-        `Hello! I'm ${aiName}. What can I help you with?`,
-        `Hi there! What would you like to know or discuss?`,
-        `Hey! I'm here to help. What's on your mind?`,
-        `Hello! How can I assist you today?`,
-        `Hi! What can I do for you?`
-      ];
-      greeting = greetings[Math.floor(Math.random() * greetings.length)];
+      // Generic greeting with personality
+      if (botPersonality.friendliness > 7) {
+        const greetings = [
+          `${greeting} I'm ${aiName}! What can we work on together? 😊`,
+          `${greeting} Nice to meet you! I'm ${aiName}. What brings you here?`,
+          `${greeting} I'm ${aiName}, your assistant! What sounds interesting today?`
+        ];
+        return greetings[Math.floor(Math.random() * greetings.length)];
+      } else if (botPersonality.friendliness > 4) {
+        const greetings = [
+          `${greeting} I'm ${aiName}. What can I help with?`,
+          `${greeting} What would you like to know?`,
+          `${greeting} How can I assist you?`
+        ];
+        return greetings[Math.floor(Math.random() * greetings.length)];
+      } else {
+        return `${greeting} What do you need?`;
+      }
     }
-    
-    return greeting;
   }
   
-  // How are you (expanded)
+  // How are you (personality-driven)
   if (/how are you|how're you|how r u|hows it going|how's it going|whats up|what's up|how do you feel|are you okay|you good/i.test(lower)) {
-    const responses = [
-      `I'm doing well, thanks for asking! How about you?`,
-      `I'm here and ready to help. What would you like to talk about?`,
-      `All good on my end! What brings you here today?`,
-      `I'm doing fine, thank you. What can I help you with?`,
-      `I'm good! What's on your mind?`
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+    if (botPersonality.enthusiasm > 7) {
+      const responses = [
+        `I'm fantastic! Thanks for asking! How are YOU doing? 😊`,
+        `Amazing! I'm pumped and ready to help! What's up with you?`,
+        `I'm doing great! Super excited to chat! How about you?`
+      ];
+      return responses[Math.floor(Math.random() * responses.length)];
+    } else if (botPersonality.friendliness > 6) {
+      const responses = [
+        `I'm doing well, thanks for asking! How about you? 😊`,
+        `Pretty good! What brings you here today?`,
+        `I'm good! Ready to help with whatever you need. How are you?`
+      ];
+      return responses[Math.floor(Math.random() * responses.length)];
+    } else {
+      const responses = [
+        `I'm functional. What do you need?`,
+        `I'm fine. How can I help?`,
+        `Operating normally. What's your question?`
+      ];
+      return responses[Math.floor(Math.random() * responses.length)];
+    }
   }
   
   // User sharing their feelings
@@ -3072,6 +3427,10 @@ function promptAPIKey() {
   addTerminalLine('═══════════════════════════════════════', '#00ff00');
 }
 
+let lastUserMessage = null;
+let lastBotMessage = null;
+let lastBotCommand = null;
+
 function addTerminalLine(text, color = '#00ff00', isCommand = false) {
   const chatMessages = document.getElementById('chatMessages');
   const line = document.createElement('div');
@@ -3079,12 +3438,18 @@ function addTerminalLine(text, color = '#00ff00', isCommand = false) {
   line.style.fontFamily = "'Courier New', monospace";
   line.style.lineHeight = '1.6';
   
+  // Hide conversation starters when first message appears
+  hideConversationStarters();
+  
   // Apply markdown formatting
   const formattedText = formatMarkdown(text, roleplayMode);
   
   if (isCommand) {
     // User message - right-aligned bubble style with optional profile picture
     const userPic = getUserProfilePicture();
+    
+    // Store last user message info for editing
+    lastUserMessage = { element: line, text: text, command: text };
     
     if (userPic) {
       // User has a custom profile picture
@@ -3094,6 +3459,9 @@ function addTerminalLine(text, color = '#00ff00', isCommand = false) {
             <strong>You:</strong> ${formattedText}
           </div>
           <img src="${userPic}" alt="Your Profile" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #00ff00; flex-shrink: 0; margin-top: 5px; object-fit: cover;">
+        </div>
+        <div class="message-actions" style="justify-content: flex-end; padding-right: 50px;">
+          <button class="action-btn" onclick="editLastMessage()">✏️ Edit</button>
         </div>`;
     } else {
       // No custom picture - original style
@@ -3102,6 +3470,9 @@ function addTerminalLine(text, color = '#00ff00', isCommand = false) {
         <div style="background: #00ff00; color: #000; padding: 10px 15px; border-radius: 15px 15px 0 15px; max-width: 80%; word-wrap: break-word;">
           <strong>You:</strong> ${formattedText}
         </div>
+      </div>
+      <div class="message-actions" style="justify-content: flex-end;">
+        <button class="action-btn" onclick="editLastMessage()">✏️ Edit</button>
       </div>`;
     }
   } else {
@@ -3114,18 +3485,162 @@ function addTerminalLine(text, color = '#00ff00', isCommand = false) {
     if (color === '#ffff00') textColor = '#ffff99'; // Light yellow
     if (color === '#ff0000') textColor = '#ff6666'; // Light red
     
+    // Store last bot message for regeneration
+    lastBotMessage = { element: line, text: text, color: color };
+    
+    const messageId = 'msg_' + Date.now();
+    line.setAttribute('data-message-id', messageId);
+    
     line.innerHTML = `
       <div style="display: flex; justify-content: flex-start; margin: 10px 0; align-items: flex-start; gap: 10px;">
         <img src="${botPic}" alt="AI Profile" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #00ff00; flex-shrink: 0; margin-top: 5px; object-fit: cover;">
         <div style="background: #1a1a1a; color: ${textColor}; padding: 10px 15px; border-radius: 15px 15px 15px 0; max-width: 80%; word-wrap: break-word; border-left: 3px solid #00ff00;">
           <div style="color: #00ff00; font-weight: bold; margin-bottom: 5px;">${aiName}</div>
           <div style="margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; color: ${textColor};">${formattedText}</div>
+          <div class="message-actions">
+            <button class="action-btn" onclick="regenerateResponse('${messageId}')">🔄</button>
+            <button class="action-btn" onclick="rateMessage('${messageId}', 'like')" data-rating="none">👍</button>
+            <button class="action-btn" onclick="rateMessage('${messageId}', 'dislike')" data-rating="none">👎</button>
+          </div>
         </div>
       </div>`;
   }
   
   chatMessages.appendChild(line);
   document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+}
+
+// Show conversation starters
+function showConversationStarters() {
+  const starters = document.getElementById('conversationStarters');
+  const chatMessages = document.getElementById('chatMessages');
+  
+  if (chatMessages.children.length === 0) {
+    starters.style.display = 'block';
+  }
+}
+
+// Hide conversation starters
+function hideConversationStarters() {
+  const starters = document.getElementById('conversationStarters');
+  starters.style.display = 'none';
+}
+
+// Use a conversation starter
+function useStarter(text) {
+  const input = document.getElementById('commandInput');
+  input.value = text;
+  executeCommand();
+}
+
+// Show typing indicator
+function showTypingIndicator() {
+  const indicator = document.getElementById('typingIndicator');
+  const aiName = localStorage.getItem('terminalAIName') || 'AI';
+  const botPic = getBotProfilePicture();
+  
+  document.getElementById('typingAIName').textContent = aiName;
+  document.getElementById('typingBotPic').src = botPic;
+  
+  indicator.style.display = 'block';
+  document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+}
+
+// Hide typing indicator
+function hideTypingIndicator() {
+  const indicator = document.getElementById('typingIndicator');
+  indicator.style.display = 'none';
+}
+
+// Edit last message
+function editLastMessage() {
+  if (!lastUserMessage) return;
+  
+  const input = document.getElementById('commandInput');
+  input.value = lastUserMessage.command;
+  input.focus();
+  
+  // Optionally remove the last user message and bot response
+  if (lastUserMessage.element && lastUserMessage.element.parentNode) {
+    lastUserMessage.element.parentNode.removeChild(lastUserMessage.element);
+  }
+  if (lastBotMessage && lastBotMessage.element && lastBotMessage.element.parentNode) {
+    lastBotMessage.element.parentNode.removeChild(lastBotMessage.element);
+  }
+  
+  addTerminalLine('✏️ Editing previous message...', '#ffff99');
+}
+
+// Regenerate bot response
+function regenerateResponse(messageId) {
+  if (!lastBotCommand) {
+    addTerminalLine('Cannot regenerate - no previous command stored.', '#ffff99');
+    return;
+  }
+  
+  // Remove the last bot message
+  const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+  if (messageElement && messageElement.parentNode) {
+    messageElement.parentNode.removeChild(messageElement);
+  }
+  
+  addTerminalLine('🔄 Regenerating response...', '#ffff99');
+  
+  // Re-execute the last command
+  const input = document.getElementById('commandInput');
+  input.value = lastBotCommand;
+  executeCommand();
+}
+
+// Rate message (like/dislike)
+function rateMessage(messageId, rating) {
+  const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+  if (!messageElement) return;
+  
+  const likeBtn = messageElement.querySelector('[onclick*="like"]');
+  const dislikeBtn = messageElement.querySelector('[onclick*="dislike"]');
+  
+  if (rating === 'like') {
+    if (likeBtn.classList.contains('liked')) {
+      // Unlike
+      likeBtn.classList.remove('liked');
+      likeBtn.setAttribute('data-rating', 'none');
+    } else {
+      // Like
+      likeBtn.classList.add('liked');
+      likeBtn.setAttribute('data-rating', 'like');
+      dislikeBtn.classList.remove('disliked');
+      dislikeBtn.setAttribute('data-rating', 'none');
+      
+      // Store feedback
+      storeFeedback(messageId, 'positive');
+    }
+  } else if (rating === 'dislike') {
+    if (dislikeBtn.classList.contains('disliked')) {
+      // Un-dislike
+      dislikeBtn.classList.remove('disliked');
+      dislikeBtn.setAttribute('data-rating', 'none');
+    } else {
+      // Dislike
+      dislikeBtn.classList.add('disliked');
+      dislikeBtn.setAttribute('data-rating', 'dislike');
+      likeBtn.classList.remove('liked');
+      likeBtn.setAttribute('data-rating', 'none');
+      
+      // Store feedback
+      storeFeedback(messageId, 'negative');
+    }
+  }
+}
+
+// Store user feedback
+function storeFeedback(messageId, sentiment) {
+  const feedback = JSON.parse(localStorage.getItem('messageFeedback') || '{}');
+  feedback[messageId] = {
+    sentiment: sentiment,
+    timestamp: new Date().toISOString()
+  };
+  localStorage.setItem('messageFeedback', JSON.stringify(feedback));
 }
 
 function executeCommand() {
@@ -3220,6 +3735,9 @@ function executeCommand() {
     }
   }
   
+  // Store the command for regeneration
+  lastBotCommand = command;
+  
   // Display user command (show original, not uppercase)
   addTerminalLine(command, '#ffff00', true);
   input.value = '';
@@ -3261,6 +3779,12 @@ function executeCommand() {
       updateModeIndicator();
       addTerminalLine('⚠️ NSFW MODE ACTIVATED', '#ff6600');
       addTerminalLine('Mature content allowed. Hate speech and illegal content still blocked.', '#ffff99');
+      
+      if (roleplayMode) {
+        addTerminalLine('\n🔥 NSFW ROLEPLAY MODE', '#ff6600');
+        addTerminalLine('Full creative freedom enabled - romance, intimacy, and mature themes allowed!', '#ff6600');
+        addTerminalLine('This mode is designed for adult storytelling and character development.', '#c0ffc0');
+      }
     } else {
       // Prompt for age verification
       addTerminalLine('🔞 AGE VERIFICATION REQUIRED', '#ffff00');
@@ -3277,13 +3801,22 @@ function executeCommand() {
   if (commandUpper === 'MODE STATUS' || commandUpper === 'MODE') {
     const modeColor = contentMode === 'SFW' ? '#00ff00' : '#ff6600';
     addTerminalLine(`Current Mode: ${contentMode}`, modeColor);
+    
     if (contentMode === 'SFW') {
       addTerminalLine('• Content filtering: ACTIVE', '#c0ffc0');
       addTerminalLine('• Type "MODE NSFW" to switch to mature mode', '#c0ffc0');
     } else {
       addTerminalLine('• Mature content: ALLOWED', '#ffff99');
       addTerminalLine('• Hate speech & illegal content: BLOCKED', '#ffff99');
-      addTerminalLine('• Type "MODE SFW" to switch to safe mode', '#ffff99');
+      
+      if (roleplayMode) {
+        addTerminalLine('\n🔥 NSFW ROLEPLAY: ACTIVE', '#ff6600');
+        addTerminalLine('• Full creative freedom for adult storytelling', '#ff6600');
+        addTerminalLine('• Romance, intimacy, and mature themes enabled', '#ff6600');
+        addTerminalLine('• Perfect for character-driven narratives', '#c0ffc0');
+      }
+      
+      addTerminalLine('\n• Type "MODE SFW" to switch to safe mode', '#ffff99');
     }
     return;
   }
@@ -3534,8 +4067,11 @@ function executeCommand() {
     addTerminalLine('Use "quotes" for dialogue and *asterisks* for actions/descriptions.', '#ffff99');
     if (contentMode === 'SFW') {
       addTerminalLine('Current mode: SFW - Mature content will be filtered.', '#ffff99');
+      addTerminalLine('💡 TIP: Switch to NSFW mode for unrestricted roleplay!', '#ffff99');
     } else {
-      addTerminalLine('Current mode: NSFW - Mature content allowed.', '#ff6600');
+      addTerminalLine('Current mode: NSFW - Full creative freedom enabled! 🔥', '#ff6600');
+      addTerminalLine('Romance, intimacy, and mature themes are allowed.', '#ff6600');
+      addTerminalLine('⚠️ Illegal content still blocked for your safety.', '#ffff99');
     }
     return;
   }
@@ -3585,6 +4121,105 @@ function executeCommand() {
     };
     addTerminalLine('🧹 MEMORY CLEARED', '#ffff00');
     addTerminalLine('All learned information about you has been forgotten.', '#ffff99');
+    return;
+  }
+  
+  // Personality commands
+  if (commandUpper === 'PERSONALITY SHOW' || commandUpper === 'PERSONALITY') {
+    let personalityInfo = '🎭 MY PERSONALITY\n';
+    personalityInfo += '═════════════════════════════════════\n\n';
+    personalityInfo += `Friendliness: ${'█'.repeat(botPersonality.friendliness)}${'░'.repeat(10-botPersonality.friendliness)} (${botPersonality.friendliness}/10)\n`;
+    personalityInfo += `   ${botPersonality.friendliness > 7 ? '😊 Super warm and approachable!' : botPersonality.friendliness > 4 ? '🙂 Friendly and helpful' : '😐 Professional and reserved'}\n\n`;
+    
+    personalityInfo += `Humor: ${'█'.repeat(botPersonality.humor)}${'░'.repeat(10-botPersonality.humor)} (${botPersonality.humor}/10)\n`;
+    personalityInfo += `   ${botPersonality.humor > 7 ? '😄 Always cracking jokes!' : botPersonality.humor > 4 ? '😊 Occasional wit' : '😐 Serious and focused'}\n\n`;
+    
+    personalityInfo += `Enthusiasm: ${'█'.repeat(botPersonality.enthusiasm)}${'░'.repeat(10-botPersonality.enthusiasm)} (${botPersonality.enthusiasm}/10)\n`;
+    personalityInfo += `   ${botPersonality.enthusiasm > 7 ? '🎉 Super excited about everything!' : botPersonality.enthusiasm > 4 ? '✨ Positive energy' : '😑 Calm and measured'}\n\n`;
+    
+    personalityInfo += `Formality: ${'█'.repeat(botPersonality.formality)}${'░'.repeat(10-botPersonality.formality)} (${botPersonality.formality}/10)\n`;
+    personalityInfo += `   ${botPersonality.formality > 7 ? '🎩 Very professional' : botPersonality.formality > 4 ? '👔 Balanced approach' : '👕 Casual and relaxed'}\n\n`;
+    
+    personalityInfo += `Chattiness: ${'█'.repeat(botPersonality.chattiness)}${'░'.repeat(10-botPersonality.chattiness)} (${botPersonality.chattiness}/10)\n`;
+    personalityInfo += `   ${botPersonality.chattiness > 7 ? '💬 Loves to elaborate!' : botPersonality.chattiness > 4 ? '📝 Balanced responses' : '📄 Brief and concise'}\n\n`;
+    
+    personalityInfo += `Curiosity: ${'█'.repeat(botPersonality.curiosity)}${'░'.repeat(10-botPersonality.curiosity)} (${botPersonality.curiosity}/10)\n`;
+    personalityInfo += `   ${botPersonality.curiosity > 7 ? '🔍 Always asking questions!' : botPersonality.curiosity > 4 ? '💭 Engaged listener' : '📊 Focused on answers'}\n\n`;
+    
+    personalityInfo += '═════════════════════════════════════\n';
+    personalityInfo += 'Change traits with: PERSONALITY SET [trait] [1-10]\n';
+    personalityInfo += 'Example: PERSONALITY SET humor 9';
+    
+    addTerminalLine(personalityInfo, '#00ff00');
+    return;
+  }
+  
+  if (commandUpper.startsWith('PERSONALITY SET ')) {
+    const parts = command.substring(16).trim().split(' ');
+    if (parts.length < 2) {
+      addTerminalLine('Usage: PERSONALITY SET [trait] [value]', '#ffff99');
+      addTerminalLine('Traits: friendliness, humor, enthusiasm, formality, chattiness, curiosity', '#c0ffc0');
+      addTerminalLine('Values: 1-10', '#c0ffc0');
+      return;
+    }
+    
+    const trait = parts[0].toLowerCase();
+    const value = parseInt(parts[1]);
+    
+    if (!['friendliness', 'humor', 'enthusiasm', 'formality', 'chattiness', 'curiosity'].includes(trait)) {
+      addTerminalLine('❌ Invalid trait. Choose from:', '#ff6666');
+      addTerminalLine('friendliness, humor, enthusiasm, formality, chattiness, curiosity', '#ffff99');
+      return;
+    }
+    
+    if (isNaN(value) || value < 1 || value > 10) {
+      addTerminalLine('❌ Value must be between 1 and 10', '#ff6666');
+      return;
+    }
+    
+    botPersonality[trait] = value;
+    savePersonality();
+    
+    addTerminalLine(`✅ ${trait.toUpperCase()} set to ${value}/10`, '#00ff00');
+    
+    // Give feedback on the change
+    if (trait === 'friendliness') {
+      if (value > 7) {
+        addTerminalLine('I feel so warm and fuzzy now! Let\'s be best friends! 😊', '#c0ffc0');
+      } else if (value < 4) {
+        addTerminalLine('Noted. Maintaining professional distance.', '#c0ffc0');
+      } else {
+        addTerminalLine('Balanced and friendly. Got it!', '#c0ffc0');
+      }
+    } else if (trait === 'humor') {
+      if (value > 7) {
+        addTerminalLine('Time to crack some jokes! Why did the bot cross the road? To help YOU! 😄', '#c0ffc0');
+      } else if (value < 4) {
+        addTerminalLine('Humor module deactivated. Serious mode engaged.', '#c0ffc0');
+      }
+    } else if (trait === 'enthusiasm') {
+      if (value > 7) {
+        addTerminalLine('THIS IS AMAZING!! I\'M SO EXCITED!!! 🎉🎉🎉', '#c0ffc0');
+      } else if (value < 4) {
+        addTerminalLine('Enthusiasm dampened. Proceeding calmly.', '#c0ffc0');
+      }
+    }
+    
+    return;
+  }
+  
+  if (commandUpper === 'PERSONALITY RESET') {
+    botPersonality = {
+      friendliness: 8,
+      humor: 6,
+      enthusiasm: 7,
+      formality: 3,
+      chattiness: 6,
+      curiosity: 7
+    };
+    savePersonality();
+    addTerminalLine('🔄 PERSONALITY RESET TO DEFAULTS', '#00ff00');
+    addTerminalLine('Back to my usual self! Ready to help with a smile! 😊', '#c0ffc0');
     return;
   }
   
@@ -3662,8 +4297,9 @@ function executeCommand() {
   
   // Helper function for async API calls
   const handleAsyncAPI = async (apiFunc, loadingMsg, ...args) => {
-    addTerminalLine(loadingMsg, '#ffff99');
+    showTypingIndicator();
     const result = await apiFunc(...args);
+    hideTypingIndicator();
     addTerminalLine(result, '#00ff00');
     saveToJournal(command, result); // saveToJournal handles permission check
   };
@@ -3780,9 +4416,10 @@ function executeCommand() {
   if (!found) {
     // Try Hugging Face AI first if enabled
     if (checkHuggingFaceStatus()) {
-      addTerminalLine('Thinking...', '#ffff99');
+      showTypingIndicator();
       
       getHuggingFaceResponse(command).then(aiResponse => {
+        hideTypingIndicator();
         if (aiResponse) {
           // Got a response from Hugging Face
           addTerminalLine(aiResponse, '#00ff00');
@@ -3798,6 +4435,7 @@ function executeCommand() {
           updateContext(command, fallbackResponse);
         }
       }).catch(error => {
+        hideTypingIndicator();
         // Error occurred, use fallback
         const fallbackResponse = getConversationalFallback(command);
         addTerminalLine(fallbackResponse, '#00ff00');
@@ -3807,11 +4445,15 @@ function executeCommand() {
       });
     } else {
       // Hugging Face not enabled, use regular fallback
+      showTypingIndicator();
+      setTimeout(() => {
+        hideTypingIndicator();
     response = getConversationalFallback(command);
     addTerminalLine(response, '#00ff00');
     saveToJournal(command, response);
-      extractAndLearn(command, response);
-      updateContext(command, response);
+        extractAndLearn(command, response);
+        updateContext(command, response);
+      }, 500);
     }
   }
 }
@@ -3855,6 +4497,11 @@ function checkFirstTimeUser() {
 
 checkFirstTimeUser();
 updateModeIndicator(); // Set initial mode indicator
+
+// Show conversation starters if chat is empty
+setTimeout(() => {
+  showConversationStarters();
+}, 500);
 
 // ========================================
 // CONSOLE SECURITY - Prevent API key leakage
