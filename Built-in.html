@@ -488,7 +488,7 @@
     <div class="col-lg-6 col-md-12 mb-4">
       <div class="gallery-item">
         <h4 style="color: #b82b2f; margin-bottom: 15px;">Interactive Image Switcher</h4>
-        <p style="margin-bottom: 15px;">Click and hold to switch images. Text moves across the screen.</p>
+        <p style="margin-bottom: 15px;">Click and hold to switch between iamfargeild.png and joebiben.png. Text moves across the screen.</p>
         <canvas id="exercise2Canvas" width="400" height="300" style="border: 2px solid #b82b2f; border-radius: 8px; background: #000; display: block; margin: 0 auto;"></canvas>
         <div style="text-align: center; margin-top: 10px;">
           <small>Click and hold to switch images</small>
@@ -762,10 +762,25 @@ function toggleExercise1() {
        // Exercise 2: Interactive Image Switcher
        let exercise2MousePressed = false;
        let exercise2TextCounter = 0;
+       let exercise2Image1 = null;
+       let exercise2Image2 = null;
+       let exercise2ImagesLoaded = false;
 
        function initExercise2() {
          const canvas = document.getElementById('exercise2Canvas');
          const ctx = canvas.getContext('2d');
+         
+         // Load the images
+         exercise2Image1 = new Image();
+         exercise2Image2 = new Image();
+         
+         exercise2Image1.onload = function() {
+           exercise2Image2.onload = function() {
+             exercise2ImagesLoaded = true;
+           };
+           exercise2Image2.src = 'Oldcode/joebiben.png';
+         };
+         exercise2Image1.src = 'Oldcode/iamfargeild.png';
          
          canvas.addEventListener('mousedown', () => exercise2MousePressed = true);
          canvas.addEventListener('mouseup', () => exercise2MousePressed = false);
@@ -775,27 +790,22 @@ function toggleExercise1() {
            ctx.fillStyle = '#000000';
            ctx.fillRect(0, 0, 400, 300);
            
-           // Draw placeholder for images (since we don't have the original images)
-           if (!exercise2MousePressed) {
-             // First "image" - simple pattern
-             ctx.fillStyle = '#444444';
-             ctx.fillRect(0, 0, 400, 300);
-             ctx.fillStyle = '#888888';
-             for (let i = 0; i < 400; i += 20) {
-               for (let j = 0; j < 300; j += 20) {
-                 ctx.fillRect(i, j, 10, 10);
-               }
+           // Draw the actual images when loaded
+           if (exercise2ImagesLoaded) {
+             if (!exercise2MousePressed) {
+               // First image - iamfargeild.png
+               ctx.drawImage(exercise2Image1, 0, 0, 400, 300);
+             } else {
+               // Second image - joebiben.png
+               ctx.drawImage(exercise2Image2, 0, 0, 400, 300);
              }
            } else {
-             // Second "image" - different pattern
-             ctx.fillStyle = '#222222';
+             // Loading placeholder
+             ctx.fillStyle = '#444444';
              ctx.fillRect(0, 0, 400, 300);
-             ctx.fillStyle = '#666666';
-             for (let i = 10; i < 400; i += 20) {
-               for (let j = 10; j < 300; j += 20) {
-                 ctx.fillRect(i, j, 10, 10);
-               }
-             }
+             ctx.fillStyle = '#ffffff';
+             ctx.font = '20px Arial';
+             ctx.fillText('Loading images...', 150, 150);
            }
            
            // Draw moving text
