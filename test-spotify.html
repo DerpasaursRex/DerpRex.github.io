@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotify API Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #1a1a2e;
+      color: white;
+    }
+    button {
+      background: #1DB954;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    button:hover {
+      background: #1ed760;
+    }
+    #console {
+      background: #000;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-family: monospace;
+      font-size: 12px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .log { color: #888; }
+    .success { color: #1DB954; }
+    .error { color: #ff6b6b; }
+    .info { color: #6495ED; }
+  </style>
+</head>
+<body>
+  <h1>🔧 Spotify API Diagnostic Test</h1>
+  
+  <div>
+    <button onclick="testAPI()">Test API Connection</button>
+    <button onclick="testRandom()">Test Random Track</button>
+    <button onclick="clearConsole()">Clear Console</button>
+  </div>
+
+  <div id="console"></div>
+
+  <script src="js/spotify-integration.js"></script>
+  <script>
+    const consoleDiv = document.getElementById('console');
+    
+    // Intercept console.log
+    const originalLog = console.log;
+    const originalError = console.error;
+    
+    console.log = function(...args) {
+      originalLog.apply(console, args);
+      logToPage('log', args.join(' '));
+    };
+    
+    console.error = function(...args) {
+      originalError.apply(console, args);
+      logToPage('error', args.join(' '));
+    };
+    
+    function logToPage(type, message) {
+      const line = document.createElement('div');
+      line.className = type;
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      consoleDiv.appendChild(line);
+      consoleDiv.scrollTop = consoleDiv.scrollHeight;
+    }
+    
+    function clearConsole() {
+      consoleDiv.innerHTML = '';
+    }
+    
+    async function testAPI() {
+      logToPage('info', '=== Testing API Connection ===');
+      logToPage('info', 'API Base: ' + 'https://derp-rex-github-io-git-main-derpasaursrexs-projects.vercel.app');
+      
+      try {
+        logToPage('info', 'Attempting to get token...');
+        const token = await SpotifyAPI.getToken();
+        
+        if (token) {
+          logToPage('success', '✅ SUCCESS! Token received: ' + token.substring(0, 20) + '...');
+        } else {
+          logToPage('error', '❌ FAILED! No token received');
+        }
+      } catch (error) {
+        logToPage('error', '❌ ERROR: ' + error.message);
+      }
+    }
+    
+    async function testRandom() {
+      logToPage('info', '=== Testing Random Track ===');
+      
+      try {
+        logToPage('info', 'Attempting to get random track...');
+        const track = await SpotifyAPI.getRandomTrack();
+        
+        if (track) {
+          logToPage('success', '✅ SUCCESS!');
+          logToPage('success', '  Track: ' + track.name);
+          logToPage('success', '  Artist: ' + track.artists[0].name);
+          logToPage('success', '  Album: ' + track.album.name);
+          logToPage('success', '  URL: ' + track.external_urls.spotify);
+        } else {
+          logToPage('error', '❌ FAILED! No track received');
+        }
+      } catch (error) {
+        logToPage('error', '❌ ERROR: ' + error.message);
+      }
+    }
+    
+    // Auto-run test on load
+    window.addEventListener('load', () => {
+      logToPage('info', '🚀 Page loaded. Click "Test API Connection" to start.');
+    });
+  </script>
+</body>
+</html>
+
