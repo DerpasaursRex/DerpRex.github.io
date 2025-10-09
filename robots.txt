@@ -1,0 +1,14 @@
+# Robots.txt for DerpRex.github.io
+# Security Configuration
+
+User-agent: *
+Allow: /
+Disallow: /TestBot/
+Disallow: /.well-known/
+
+# Crawl delay to prevent DoS
+Crawl-delay: 1
+
+# Sitemap (if you create one in the future)
+# Sitemap: https://derprex.github.io/sitemap.xml
+

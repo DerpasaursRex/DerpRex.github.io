@@ -1,0 +1,19 @@
+Contact: mailto:catiemac2014@gmail.com
+Preferred-Languages: en
+Canonical: https://derprex.github.io/.well-known/security.txt
+Expires: 2026-10-09T00:00:00.000Z
+
+# Security Policy
+# If you discover a security vulnerability, please report it to the email above.
+# We take security seriously and will respond within 48 hours.
+#
+# This site implements:
+# - Content Security Policy (CSP)
+# - XSS Protection
+# - Clickjacking Protection
+# - Input Sanitization
+# - Rate Limiting
+# - Privacy Protection (automatic PII redaction)
+#
+# All data is client-side only. No user data is transmitted to servers.
+

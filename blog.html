@@ -11,6 +11,14 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <!-- Cache busting version: 2025-10-07 -->
+  
+  <!-- Security Headers -->
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self'; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data:; frame-src https://open.spotify.com; font-src 'self' data:;">
+  
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -194,7 +202,7 @@
   <h1>Catherine Ann MacDonald</h1>
  <p style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;"> Writer-Artist</p>
  <a href="ChatBot.html" style="text-decoration: none; transition: transform 0.2s ease; display: inline-block; position: relative;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
-  <img src="TestBot/noise.gif" alt="noise" style="width: 32px; height: 32px; position: absolute; top: 0; left: 0;">
+  <img src="TestBot/noise.gif" alt="noise" style="width: 22px; height: 15px; position: absolute; top: 5px; left: 5px;">
   <img src="TestBot/test.png" alt="computer" style="width: 32px; height: 32px; position: relative;">
  </a>
 </div>
@@ -341,6 +349,32 @@
 
 <script>
 // ========================================
+// BLOG SECURITY SYSTEM
+// ========================================
+
+// Input sanitization to prevent XSS attacks
+function sanitizeBlogInput(text) {
+  if (!text) return '';
+  
+  // Create a temporary div to use browser's HTML parser
+  const div = document.createElement('div');
+  div.textContent = text;
+  let sanitized = div.innerHTML;
+  
+  // Remove any remaining dangerous patterns
+  sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  sanitized = sanitized.replace(/javascript:/gi, '');
+  sanitized = sanitized.replace(/on\w+\s*=/gi, '');
+  
+  // Limit length
+  if (sanitized.length > 10000) {
+    sanitized = sanitized.substring(0, 10000);
+  }
+  
+  return sanitized;
+}
+
+// ========================================
 // SIMPLIFIED BLOG SYSTEM WITH PASSWORD PROTECTION
 // ========================================
 
@@ -455,6 +489,12 @@ function displayPosts() {
       postDiv.className = 'card mb-4';
       postDiv.style.cssText = 'background-image: url("whitepaper.jpg"); background-size: cover; background-position: center;';
       
+      // SECURITY: Sanitize all post data before display
+      const safeTitle = sanitizeBlogInput(post.title || '');
+      const safeContent = sanitizeBlogInput(post.content || '');
+      const safeAuthor = sanitizeBlogInput(post.author || 'Unknown');
+      const safeDate = sanitizeBlogInput(post.date || '');
+      
       const pinIcon = post.pinned ? '📌 ' : '';
       const pinBtn = post.pinned ? 
         `<button class="btn btn-sm btn-outline-warning" onclick="togglePin(${post.id})">Unpin</button>` :
@@ -462,10 +502,10 @@ function displayPosts() {
       
       postDiv.innerHTML = `
         <div class="card-body">
-          <h4>${pinIcon}${post.title}</h4>
-          <p><small class="text-muted">By ${post.author} on ${post.date}</small></p>
-          ${post.image ? `<img src="${post.image}" class="img-fluid mb-3" style="max-height:400px">` : ''}
-          <p>${post.content.replace(/\n/g, '<br>')}</p>
+          <h4>${pinIcon}${safeTitle}</h4>
+          <p><small class="text-muted">By ${safeAuthor} on ${safeDate}</small></p>
+          ${post.image ? `<img src="${post.image}" class="img-fluid mb-3" style="max-height:400px" alt="Post image">` : ''}
+          <p>${safeContent.replace(/\n/g, '<br>')}</p>
           ${pinBtn}
           <button class="btn btn-sm btn-outline-danger ml-2" onclick="deletePost(${post.id})">Delete</button>
         </div>
@@ -540,14 +580,26 @@ document.addEventListener('DOMContentLoaded', function() {
   blogForm.addEventListener('submit', function(e) {
     e.preventDefault();
     
-    const title = document.getElementById('postTitle').value.trim();
-    const content = document.getElementById('postContent').value.trim();
-    const author = document.getElementById('postAuthor').value.trim();
+    // SECURITY: Sanitize all inputs
+    const title = sanitizeBlogInput(document.getElementById('postTitle').value.trim());
+    const content = sanitizeBlogInput(document.getElementById('postContent').value.trim());
+    const author = sanitizeBlogInput(document.getElementById('postAuthor').value.trim());
     const isPinned = document.getElementById('pinPost').checked;
     const imageFile = document.getElementById('postImage').files[0];
     
     if (!title || !content) {
       showAlert('Please enter title and content!', 'danger');
+      return;
+    }
+    
+    // SECURITY: Validate input lengths
+    if (title.length > 200) {
+      showAlert('Title is too long! Maximum 200 characters.', 'danger');
+      return;
+    }
+    
+    if (content.length > 10000) {
+      showAlert('Content is too long! Maximum 10,000 characters.', 'danger');
       return;
     }
     
@@ -569,7 +621,7 @@ document.addEventListener('DOMContentLoaded', function() {
         blogForm.reset();
         document.getElementById('postAuthor').value = 'Catherine Ann MacDonald';
         displayPosts();
-        showAlert('Post published!', 'success');
+        showAlert('Post published securely!', 'success');
       }
     };
     
