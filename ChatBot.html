@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Catherine Ann MacDonald - ChatBot</title>
+  <title>Catherine Ann MacDonald - Adventure Generator</title>
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -297,18 +297,21 @@
       <div id="terminalHeader" style="background: linear-gradient(180deg, #001a00 0%, #000000 100%); border: 2px solid #00ff00; padding: 15px; margin-bottom: 20px; box-shadow: 0 0 15px rgba(0,255,0,0.3);">
         <pre style="color: #00ff00; margin: 0; text-shadow: 0 0 5px rgba(0,255,0,0.5);">
 ╔═══════════════════════════════════════════════════════════════╗
-║  CATHERINE MACDONALD INTERACTIVE SYSTEM v1.0                  ║
-║  Copyright (c) 2025 - All Rights Reserved                     ║
+║  ADVENTURE QUEST GENERATOR v2.0                               ║
+║  Text-Based RPG Creator & Story Engine                        ║
 ║                                                                ║
-║  Press '?' or type 'HELP' for quick access menu               ║
+║  Press '?' or type 'HELP' for quest commands                  ║
 ╚═══════════════════════════════════════════════════════════════╝
         </pre>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 10px;">
+          <div id="gameStatus" style="color: #00ff00; font-size: 12px;">
+            <span style="color: #ffff99;">STATUS:</span> <span id="statusText" style="font-weight: bold;">READY</span> <span style="color: #00ff00;">●</span>
+          </div>
           <div id="modeIndicator" style="color: #00ff00; font-size: 12px;">
-            <span style="color: #ffff99;">MODE:</span> <span id="modeText" style="font-weight: bold;">SFW</span> <span style="color: #00ff00;">●</span>
+            <span style="color: #ffff99;">MODE:</span> <span id="modeText" style="font-weight: bold;">SFW</span>
           </div>
           <div style="color: #888; font-size: 11px;">
-            <span style="color: #ffff99;">TIP:</span> Click the <span style="color: #00ff00;">?</span> button for commands
+            <span style="color: #ffff99;">TIP:</span> Type 'START' to begin your adventure
           </div>
         </div>
       </div>
@@ -325,13 +328,13 @@
       <!-- Initialization Prompts -->
       <div id="initPrompts" style="margin-top: 20px; display: none;">
         <div style="color: #c0ffc0; margin-bottom: 10px; font-size: 16px; line-height: 1.6;">
-          👋 Hello! I'm your AI assistant. This looks like your first time here.
+          ⚔️ Welcome, Adventurer! This is your first quest.
         </div>
         <div style="color: #c0ffc0; margin-bottom: 15px; font-size: 16px; line-height: 1.6;">
-          Do you have a saved session from before?
+          Do you have a saved adventure from before?
         </div>
         <div style="color: #ffff99; margin-bottom: 15px; font-size: 14px;">
-          Type <strong>UPLOAD</strong> if you have a saved file, or <strong>SKIP</strong> to start fresh.
+          Type <strong>LOAD GAME</strong> if you have a saved file, or <strong>NEW GAME</strong> to start fresh.
         </div>
       </div>
       
@@ -396,23 +399,23 @@
           💡 Try asking me:
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-bottom: 20px;">
-          <button onclick="useStarter('Tell me about the art projects')" class="starter-btn">
-            🎨 Tell me about Catherine's art projects
+          <button onclick="useStarter('START NEW ADVENTURE')" class="starter-btn">
+            ⚔️ Start a New Adventure
           </button>
-          <button onclick="useStarter('Help me brainstorm character ideas')" class="starter-btn">
-            💭 Help me brainstorm character ideas
+          <button onclick="useStarter('CONTINUE ADVENTURE')" class="starter-btn">
+            📜 Continue Last Adventure
           </button>
-          <button onclick="useStarter('What can you help me with?')" class="starter-btn">
-            ❓ What can you help me with?
+          <button onclick="useStarter('CREATE CHARACTER')" class="starter-btn">
+            👤 Create a Character
           </button>
-          <button onclick="useStarter('Start a roleplay adventure')" class="starter-btn">
-            🎭 Let's start a roleplay adventure
+          <button onclick="useStarter('GENERATE QUEST')" class="starter-btn">
+            🗺️ Generate a Quest
           </button>
-          <button onclick="useStarter('Tell me a random fun fact')" class="starter-btn">
-            🎲 Tell me a random fun fact
+          <button onclick="useStarter('RANDOM ENCOUNTER')" class="starter-btn">
+            🎲 Random Encounter
           </button>
-          <button onclick="useStarter('Search Wikipedia for quantum physics')" class="starter-btn">
-            📚 Search Wikipedia for [topic]
+          <button onclick="useStarter('GAME HELP')" class="starter-btn">
+            ❓ Adventure Commands
           </button>
         </div>
       </div>
@@ -466,7 +469,7 @@
                 title="Upload Image">📷</button>
         <input type="text" id="commandInput" 
                style="flex: 1; background: #000; color: #00ff00; border: 2px solid #00ff00; padding: 12px; font-family: 'Courier New', monospace; font-size: 16px; outline: none;"
-               placeholder="Type your message or command... (Press ? for help)"
+               placeholder="Enter your action or command... (Type ? for quest help)"
                onkeypress="if(event.key==='Enter') checkSpellingBeforeSend()"
                onkeydown="handleKeyboardShortcuts(event)"
                oninput="hideSpellSuggestions()"
@@ -1454,16 +1457,82 @@ function handleAgeVerification(input) {
 }
 
 // ========================================
-// PERSONALITY SYSTEM - Dynamic character traits
+// GAME STATE & CHARACTER SYSTEM
+// ========================================
+
+let gameState = {
+  inGame: false,
+  currentScene: null,
+  character: null,
+  inventory: [],
+  questLog: [],
+  worldState: {},
+  choices: [],
+  stats: {
+    health: 100,
+    mana: 100,
+    gold: 0,
+    experience: 0,
+    level: 1
+  }
+};
+
+let narratorPersonality = {
+  drama: 7,          // 1-10: How dramatic the narration (1=plain, 10=theatrical)
+  humor: 6,          // 1-10: How much humor in descriptions (1=serious, 10=comedy)
+  darkness: 5,       // 1-10: How dark the themes (1=light, 10=grim)
+  detail: 6,         // 1-10: Description verbosity (1=brief, 10=elaborate)
+  difficulty: 5,     // 1-10: Challenge level (1=easy, 10=brutal)
+  chaos: 5           // 1-10: How unpredictable (1=linear, 10=random)
+};
+
+function initializeGameState() {
+  if (!currentUser) return;
+  
+  const gameKey = `game_${currentUser}`;
+  const stored = localStorage.getItem(gameKey);
+  
+  if (stored) {
+    gameState = JSON.parse(stored);
+  }
+}
+
+function saveGameState() {
+  if (!currentUser) return;
+  
+  const gameKey = `game_${currentUser}`;
+  localStorage.setItem(gameKey, JSON.stringify(gameState));
+}
+
+function initializeNarratorPersonality() {
+  if (!currentUser) return;
+  
+  const narratorKey = `narrator_${currentUser}`;
+  const stored = localStorage.getItem(narratorKey);
+  
+  if (stored) {
+    narratorPersonality = JSON.parse(stored);
+  }
+}
+
+function saveNarratorPersonality() {
+  if (!currentUser) return;
+  
+  const narratorKey = `narrator_${currentUser}`;
+  localStorage.setItem(narratorKey, JSON.stringify(narratorPersonality));
+}
+
+// ========================================
+// PERSONALITY SYSTEM - For API conversations (legacy)
 // ========================================
 
 let botPersonality = {
-  friendliness: 8,    // 1-10: How warm and approachable (1=cold, 10=super friendly)
-  humor: 6,           // 1-10: How much they joke around (1=serious, 10=comedian)
-  enthusiasm: 7,      // 1-10: How excited they get (1=monotone, 10=super hyped)
-  formality: 3,       // 1-10: How professional they are (1=casual, 10=formal)
-  chattiness: 6,      // 1-10: How verbose they are (1=brief, 10=rambling)
-  curiosity: 7        // 1-10: How inquisitive they are (1=passive, 10=nosy)
+  friendliness: 8,
+  humor: 6,
+  enthusiasm: 7,
+  formality: 3,
+  chattiness: 6,
+  curiosity: 7
 };
 
 function initializePersonality() {
@@ -1550,8 +1619,10 @@ function initializeMemory() {
     lastUpdated: new Date().toISOString()
   };
   
-  // Also initialize personality
+  // Initialize game systems
   initializePersonality();
+  initializeGameState();
+  initializeNarratorPersonality();
 }
 
 function extractAndLearn(userInput, botResponse) {
@@ -1925,242 +1996,481 @@ setInterval(() => {
   if (cursor) cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
 }, 500);
 
+// Adventure game generator system
+const adventureScenarios = {
+  fantasy: ['ancient forest', 'mystical castle', 'dragon lair', 'enchanted village', 'dark dungeon', 'floating islands', 'crystal caves'],
+  scifi: ['space station', 'alien planet', 'cyberpunk city', 'abandoned ship', 'research facility', 'time rift', 'robot factory'],
+  horror: ['haunted mansion', 'abandoned hospital', 'cursed graveyard', 'foggy town', 'dark woods', 'old asylum', 'possessed house'],
+  mystery: ['murder scene', 'detective office', 'secret society', 'locked room', 'museum heist', 'conspiracy', 'hidden treasure'],
+  apocalypse: ['wasteland', 'ruined city', 'survivor camp', 'radioactive zone', 'underground bunker', 'infected hospital', 'last safe haven']
+};
+
+const characterArchetypes = [
+  { name: 'Warrior', stats: { health: 120, mana: 60, strength: 9 }, skills: ['Sword Strike', 'Shield Bash', 'Battle Cry'] },
+  { name: 'Mage', stats: { health: 80, mana: 140, intelligence: 9 }, skills: ['Fireball', 'Frost Nova', 'Arcane Shield'] },
+  { name: 'Rogue', stats: { health: 90, mana: 80, dexterity: 9 }, skills: ['Backstab', 'Stealth', 'Poison Blade'] },
+  { name: 'Cleric', stats: { health: 100, mana: 120, wisdom: 9 }, skills: ['Heal', 'Divine Light', 'Holy Shield'] },
+  { name: 'Ranger', stats: { health: 95, mana: 85, dexterity: 8 }, skills: ['Arrow Shot', 'Animal Companion', 'Track'] },
+  { name: 'Bard', stats: { health: 85, mana: 100, charisma: 9 }, skills: ['Inspire', 'Song of Sleep', 'Charm'] }
+];
+
 // Command responses
 const commands = {
   'HELP': `
-Available Commands:
-------------------
-HELP         - Display this help menu
+⚔️ ADVENTURE QUEST GENERATOR - Commands
+═══════════════════════════════════════
+
+🎮 GAME COMMANDS:
+START           - Begin a new adventure
+CONTINUE        - Resume your current quest  
+STATUS          - View character stats & inventory
+INVENTORY       - Check your items
+QUESTS          - View active quests
+SAVE GAME       - Save your progress
+LOAD GAME       - Load a saved adventure
+
+🎭 CHARACTER:
+CREATE CHARACTER - Design your hero
+CHARACTER SHEET  - View full character details
+LEVEL UP        - Spend experience points
+
+🗺️ WORLD INTERACTION:
+LOOK            - Examine your surroundings
+EXPLORE         - Search the area
+TAKE [item]     - Pick up an item
+USE [item]      - Use an item from inventory
+TALK            - Speak with NPCs
+FIGHT           - Enter combat
+RUN             - Flee from danger
+
+🎲 GENERATION:
+GENERATE QUEST  - Create a new quest
+RANDOM ENCOUNTER- Generate random event
+NEW SCENARIO    - Create new adventure setting
+PLOT TWIST      - Add unexpected turn
+
+⚙️ NARRATOR SETTINGS:
+NARRATOR SHOW   - View narrator personality
+NARRATOR SET [trait] [1-10] - Adjust narration style
+  Traits: drama, humor, darkness, detail, difficulty, chaos
+  Example: NARRATOR SET drama 9
+
+📋 ABOUT:
 ABOUT        - Information about Catherine MacDonald
-ART          - View Catherine's art information
-PROJECTS     - List all projects
-CONTACT      - Get contact information
-SPECTRUM     - Information about Spectrum project
-PARTY        - Information about Party project
-CODING       - View coding projects
-VIDEOS       - Information about video content
-BLOG         - Access blog information
-NAVIGATE     - Site navigation guide
+PROJECTS     - Catherine's creative work
+CONTACT      - Get in touch
 
-WEB ACCESS (Free APIs):
-WIKI [topic]   - Search Wikipedia for information
-               Example: WIKI artificial intelligence
-DEFINE [word]  - Get word definition with examples
-               Example: DEFINE serendipity
-FACT           - Get a random fun fact
-ADVICE         - Get random advice
-JOKE           - Get a dad joke
-QUOTE          - Get an inspirational quote
-GITHUB [user]  - Look up GitHub user profile
-               Example: GITHUB torvalds
-
-Natural language works too:
-"What is quantum physics?" "Define happiness" etc.
-
-SESSION MANAGEMENT:
-JOURNAL LOAD   - Load journal file to continue previous session
-JOURNAL EXPORT - Save current session to file
-JOURNAL        - View chat history (last 10 entries)
-JOURNAL FULL   - View complete chat history
-JOURNAL CLEAR  - Delete all chat history
-JOURNAL ENABLE - Enable conversation saving
-JOURNAL DISABLE- Disable conversation saving
-
-CONTENT MODES:
-MODE SFW     - Activate safe-for-work mode (default)
-MODE NSFW    - Activate mature content mode
-MODE STATUS  - Check current mode
-
-ROLEPLAY MODE:
-ROLEPLAY ON  - Activate roleplay mode (respects SFW/NSFW)
-ROLEPLAY OFF - Deactivate roleplay mode
-RP STATUS    - Check roleplay status
-Format: "dialogue" for speech, *actions* for descriptions
-
-SMART MEMORY:
-MEMORY         - Show what the AI remembers about you
-FORGET ME      - Clear all learned information
-
-PERSONALITY SETTINGS:
-PERSONALITY SHOW      - View current personality traits
-PERSONALITY SET [trait] [value]  - Adjust a trait (1-10)
-  Traits: friendliness, humor, enthusiasm, formality, chattiness, curiosity
-  Example: PERSONALITY SET humor 9
-PERSONALITY RESET     - Reset to default personality
-
-MEMORY MANAGEMENT:
-MEMORY STATS          - View memory usage and storage info
-MEMORY CLEANUP        - Manually clean up old low-priority data
-MEMORY AUTO           - Toggle automatic memory optimization (default: ON)
-
-CONVERSATION INTELLIGENCE:
-SHOW CONTEXT   - View current conversation context
-CLEAR CONTEXT  - Reset conversation tracking
-
-EMOTIONAL SUPPORT:
-The bot automatically detects emotions like sadness, anger, anxiety, 
-and responds with appropriate empathy based on personality settings.
-Recognized emotions: sad, angry, anxious, stressed, lonely, disappointed
-
-PROFILE PICTURES:
-CHANGE BOT PICTURE  - Upload a custom bot profile picture
-CHANGE MY PICTURE   - Upload your own profile picture
-RESET BOT PICTURE   - Reset bot picture to default
-RESET MY PICTURE    - Reset your picture to default
-
-IMAGE SHARING:
-📷 Button         - Click the camera button to upload and share images
-                    I can analyze images and describe what I see!
-                    Requires Hugging Face API key for full recognition
-
-AI ENHANCEMENT (Hugging Face):
-SET API KEY [key]   - Enable advanced AI responses (FREE)
-API STATUS          - Check AI enhancement status
-REMOVE API KEY      - Disable AI enhancement
-Get free key: https://huggingface.co/settings/tokens
-
-SECURITY & PRIVACY:
-SECURITY STATUS     - View all active protections
-Note: All personal info is automatically detected and blocked
-
-SPELL CHECK ON - Enable automatic spell checking
-SPELL CHECK OFF- Disable spell checking
-CLEAR          - Clear terminal screen
-CONTINUE       - Continue session (dismiss clear prompt)
-LOGOUT         - Return to password screen
-RESET NAME     - Reset AI name (for testing)
-CHANGE LANGUAGE- Change interface language
-EXIT           - Return to main site
-------------------
-Type any command or ask a question naturally.
-I can search Wikipedia for you - just ask!
-IMPORTANT: Export your journal before leaving to save your session!
-
-Current Mode: Use 'MODE STATUS' to check`,
+🔧 SYSTEM:
+HELP         - Show this menu
+CLEAR        - Clear screen
+EXIT         - Return to main site
+LOGOUT       - End session
+═══════════════════════════════════════
+Type actions naturally: "I open the door" "Attack the goblin" etc.`,
 
   'ABOUT': `
 CATHERINE ANN MACDONALD
 -----------------------
 Role: Writer-Artist
 Specialty: Digital Art, Character Design, Interactive Experiences
-Status: Active - Continuously evolving art style
+Status: Active - Creating immersive story experiences
 Location: Portfolio available at DerpRex.github.io
 -----------------------
 Catherine creates story ideas and character designs, with a focus
 on digital art and web-based interactive experiences.`,
 
-  'ART': `
-ART PORTFOLIO STATUS
---------------------
-Current Work: Available in "Current Portfolio" section
-Projects: Spectrum, Party (character collections)
-Early Work: Foundation pieces in Archive
-Style: Evolving digital art and character design
-Commissions: AVAILABLE - Contact for details
---------------------`,
-
   'PROJECTS': `
-PROJECT INDEX
--------------
-[1] SPECTRUM        - Character project collection
-[2] PARTY           - Character design showcase
-[3] CODING          - Interactive web experiences
-                      • Rat Kingdom Academy
-                      • Ein Story
-                      • Portrait Site
-[4] VIDEOS          - Animation & video content
--------------
-Type project name for more information.`,
+CATHERINE'S CREATIVE WORK
+-------------------------
+🎨 Art Portfolio: Current Work, Spectrum, Party
+📝 Interactive Stories: Ein Story, Rat Kingdom Academy
+🎮 Adventure Generator: This system!
+🎬 Videos: Animation & creative content
+📖 Blog: Narrator's Log
+
+Type project names for details, or type EXIT to visit the main site.`,
 
   'CONTACT': `
 CONTACT INFORMATION
 -------------------
 Email: catiemac2014@gmail.com
 Instagram: @derpasaurs_16
-         : https://www.instagram.com/derpasaurs_16/
 Contact Form: Available on Home page
 -------------------
-Response Time: Typically within 24-48 hours
 Commissions: OPEN - Email for inquiries`,
-
-  'SPECTRUM': `
-PROJECT: SPECTRUM
------------------
-Type: Character Project
-Status: Active
-Content: Unique character designs
-Access: Projects > Spectrum
-Description: Character project featuring creative designs
------------------`,
-
-  'PARTY': `
-PROJECT: PARTY
---------------
-Type: Character Collection
-Status: Active
-Content: Character design showcase
-Access: Projects > Party
-Description: Collection of character designs
---------------`,
-
-  'CODING': `
-CODING PROJECTS
----------------
-[1] Rat Kingdom Academy
-    URL: https://derpasaursrex.github.io/RatKingdomAcademy.github.io/
-    Type: Interactive web academy
-
-[2] Ein Story
-    URL: https://catiemac16.github.io/EinJourney.github.io/
-    Type: Interactive narrative website
-
-[3] Portrait Site
-    URL: https://catiemac16.github.io/Chronic.github.io/
-    Type: Interactive portrait gallery
----------------
-Access: Projects > Coding`,
-
-  'VIDEOS': `
-VIDEO CONTENT
--------------
-Type: Animation & Video
-Count: 8 videos available
-Access: Projects > Videos
-Format: Embedded YouTube content
-Features: Spiral animated gallery
--------------`,
-
-  'BLOG': `
-NARRATOR'S LOG (BLOG)
----------------------
-Status: Active
-Access: Main menu > Blog
-Features: Password-protected posting
-Content: Updates, thoughts, and posts
-Author Controls: Pin, Delete, Data Management
----------------------`,
-
-  'NAVIGATE': `
-SITE NAVIGATION MAP
--------------------
-HOME              - Main page with about & contact
-CURRENT PORTFOLIO - Latest artwork
-BLOG              - Narrator's Log
-PROJECTS          - Active creative work
-  > Spectrum
-  > Party
-  > Coding
-  > Videos
-ARCHIVE           - Historical work
-  > Early Work
-  > Outdated Designs
--------------------
-Click menu items to navigate.`,
 
   'CLEAR': 'CLEAR_SCREEN',
   'CLS': 'CLEAR_SCREEN',
   'EXIT': 'EXIT_TERMINAL'
 };
+
+// ========================================
+// ADVENTURE GENERATION ENGINE
+// ========================================
+
+function generateAdventure(genre = null, customPrompt = null) {
+  if (!genre) {
+    const genres = Object.keys(adventureScenarios);
+    genre = genres[Math.floor(Math.random() * genres.length)];
+  }
+  
+  const locations = adventureScenarios[genre] || adventureScenarios.fantasy;
+  const location = locations[Math.floor(Math.random() * locations.length)];
+  
+  const userName = userMemory.userName || gameState.character?.name || 'Adventurer';
+  
+  // Generate based on narrator personality and content mode
+  let adventure = '';
+  
+  if (narratorPersonality.drama > 7) {
+    adventure += `═══════════════════════════════════════════════════════════════\n`;
+    adventure += `🎭 A NEW TALE BEGINS...\n`;
+    adventure += `═══════════════════════════════════════════════════════════════\n\n`;
+  }
+  
+  // Opening description
+  if (narratorPersonality.detail > 7) {
+    adventure += `*The world materializes around you, ${userName}. `;
+  } else {
+    adventure += `*You find yourself in `;
+  }
+  
+  // Location with content mode awareness
+  if (contentMode === 'NSFW' && narratorPersonality.darkness > 6) {
+    const darkDescriptors = ['blood-stained', 'ominous', 'forsaken', 'corrupted', 'nightmare-twisted'];
+    const descriptor = darkDescriptors[Math.floor(Math.random() * darkDescriptors.length)];
+    adventure += `a ${descriptor} ${location}`;
+  } else {
+    adventure += `a mysterious ${location}`;
+  }
+  
+  adventure += `. `;
+  
+  // Atmospheric details
+  if (narratorPersonality.detail > 6) {
+    const atmospheres = [
+      'The air is thick with tension.',
+      'Strange sounds echo in the distance.',
+      'An eerie silence hangs heavy.',
+      'Shadows dance at the edges of your vision.',
+      'You sense something watching you.'
+    ];
+    adventure += atmospheres[Math.floor(Math.random() * atmospheres.length)] + ' ';
+  }
+  
+  adventure += `*\n\n`;
+  
+  // Present choices
+  const choices = generateChoices(genre);
+  gameState.currentScene = { location, genre, choices };
+  gameState.choices = choices;
+  
+  adventure += `What do you do?\n\n`;
+  choices.forEach((choice, i) => {
+    adventure += `${i + 1}. ${choice}\n`;
+  });
+  
+  if (narratorPersonality.chaos > 7) {
+    adventure += `\n💡 Or describe your own action!`;
+  }
+  
+  saveGameState();
+  return adventure;
+}
+
+function generateChoices(genre) {
+  const baseChoices = [
+    'Explore the area carefully',
+    'Look for clues or items',
+    'Call out to see if anyone is here',
+    'Stay quiet and observe'
+  ];
+  
+  if (genre === 'fantasy') {
+    return ['Draw your weapon and advance', 'Search for magical artifacts', 'Call upon your powers', 'Seek shelter'];
+  } else if (genre === 'horror') {
+    return ['Investigate the strange noise', 'Try to find a way out', 'Hide and wait', 'Turn on your flashlight'];
+  } else if (genre === 'scifi') {
+    return ['Scan the area with your device', 'Check your equipment', 'Attempt communication', 'Access the terminal'];
+  } else if (genre === 'mystery') {
+    return ['Examine the evidence', 'Question witnesses', 'Search for clues', 'Review your notes'];
+  }
+  
+  return baseChoices;
+}
+
+function createCharacter(customName = null) {
+  const userName = customName || userMemory.userName || 'Hero';
+  
+  let output = '⚔️ CHARACTER CREATION\n';
+  output += '═══════════════════════════════════════\n\n';
+  output += 'Choose your class (type the number):\n\n';
+  
+  characterArchetypes.forEach((archetype, i) => {
+    output += `${i + 1}. ${archetype.name}\n`;
+    output += `   HP: ${archetype.stats.health} | MP: ${archetype.stats.mana}\n`;
+    output += `   Skills: ${archetype.skills.join(', ')}\n\n`;
+  });
+  
+  window.awaitingCharacterSelection = true;
+  
+  return output;
+}
+
+function selectCharacterClass(classNumber) {
+  const classIndex = parseInt(classNumber) - 1;
+  
+  if (classIndex < 0 || classIndex >= characterArchetypes.length) {
+    return '❌ Invalid class. Choose 1-' + characterArchetypes.length;
+  }
+  
+  const archetype = characterArchetypes[classIndex];
+  const userName = userMemory.userName || 'Hero';
+  
+  gameState.character = {
+    name: userName,
+    class: archetype.name,
+    level: 1,
+    health: archetype.stats.health,
+    maxHealth: archetype.stats.health,
+    mana: archetype.stats.mana,
+    maxMana: archetype.stats.mana,
+    skills: [...archetype.skills],
+    experience: 0
+  };
+  
+  gameState.inventory = ['Rusty Sword', 'Healing Potion', 'Torch'];
+  gameState.stats = archetype.stats;
+  
+  saveGameState();
+  window.awaitingCharacterSelection = false;
+  
+  let output = '✅ CHARACTER CREATED!\n';
+  output += '═══════════════════════════════════════\n\n';
+  output += `Name: ${gameState.character.name}\n`;
+  output += `Class: ${gameState.character.class}\n`;
+  output += `Level: ${gameState.character.level}\n`;
+  output += `HP: ${gameState.character.health}/${gameState.character.maxHealth}\n`;
+  output += `MP: ${gameState.character.mana}/${gameState.character.maxMana}\n\n`;
+  output += `Skills: ${gameState.character.skills.join(', ')}\n`;
+  output += `Starting Inventory: ${gameState.inventory.join(', ')}\n\n`;
+  output += `═══════════════════════════════════════\n`;
+  output += `Type START to begin your adventure! ⚔️`;
+  
+  return output;
+}
+
+function showStatus() {
+  if (!gameState.character) {
+    return '❌ No active character. Type CREATE CHARACTER to begin.';
+  }
+  
+  let output = '📊 CHARACTER STATUS\n';
+  output += '═══════════════════════════════════════\n\n';
+  output += `👤 ${gameState.character.name} - Level ${gameState.character.level} ${gameState.character.class}\n\n`;
+  output += `❤️ Health: ${gameState.character.health}/${gameState.character.maxHealth}\n`;
+  output += `💙 Mana: ${gameState.character.mana}/${gameState.character.maxMana}\n`;
+  output += `⭐ Experience: ${gameState.character.experience}\n`;
+  output += `💰 Gold: ${gameState.stats.gold}\n\n`;
+  
+  if (gameState.inventory.length > 0) {
+    output += `🎒 Inventory (${gameState.inventory.length} items):\n`;
+    gameState.inventory.forEach((item, i) => {
+      output += `  ${i + 1}. ${item}\n`;
+    });
+  } else {
+    output += `🎒 Inventory: Empty\n`;
+  }
+  
+  if (gameState.questLog.length > 0) {
+    output += `\n📜 Active Quests: ${gameState.questLog.length}\n`;
+    gameState.questLog.forEach((quest, i) => {
+      output += `  ${i + 1}. ${quest.title} (${quest.status})\n`;
+    });
+  }
+  
+  output += '\n═══════════════════════════════════════';
+  
+  return output;
+}
+
+function generateQuest() {
+  const questTypes = ['retrieve', 'rescue', 'defeat', 'discover', 'protect'];
+  const questType = questTypes[Math.floor(Math.random() * questTypes.length)];
+  
+  let quest = {
+    id: Date.now(),
+    type: questType,
+    title: '',
+    description: '',
+    status: 'active',
+    reward: { gold: Math.floor(Math.random() * 100) + 50, xp: Math.floor(Math.random() * 200) + 100 }
+  };
+  
+  if (questType === 'retrieve') {
+    const items = ['ancient artifact', 'stolen crown', 'magical tome', 'sacred relic', 'lost sword'];
+    const item = items[Math.floor(Math.random() * items.length)];
+    quest.title = `Retrieve the ${item}`;
+    quest.description = `Find and return the ${item} that was lost in the depths.`;
+  } else if (questType === 'rescue') {
+    const npcs = ['village elder', 'princess', 'merchant', 'fellow adventurer', 'child'];
+    const npc = npcs[Math.floor(Math.random() * npcs.length)];
+    quest.title = `Rescue the ${npc}`;
+    quest.description = `The ${npc} has been captured! Save them before it's too late.`;
+  } else if (questType === 'defeat') {
+    const enemies = ['dark wizard', 'dragon', 'bandit leader', 'corrupted beast', 'demon lord'];
+    const enemy = enemies[Math.floor(Math.random() * enemies.length)];
+    quest.title = `Defeat the ${enemy}`;
+    quest.description = `The ${enemy} threatens the land. Stop them!`;
+  } else if (questType === 'discover') {
+    const secrets = ['hidden temple', 'lost city', 'ancient secret', 'forbidden knowledge', 'treasure vault'];
+    const secret = secrets[Math.floor(Math.random() * secrets.length)];
+    quest.title = `Discover the ${secret}`;
+    quest.description = `Uncover the truth about the ${secret}.`;
+  } else {
+    quest.title = 'Protect the village';
+    quest.description = 'Defend against the incoming threat.';
+  }
+  
+  gameState.questLog.push(quest);
+  saveGameState();
+  
+  let output = '📜 NEW QUEST RECEIVED!\n';
+  output += '═══════════════════════════════════════\n\n';
+  output += `⭐ ${quest.title}\n\n`;
+  output += `${quest.description}\n\n`;
+  output += `Rewards:\n`;
+  output += `  💰 ${quest.reward.gold} Gold\n`;
+  output += `  ⭐ ${quest.reward.xp} Experience\n\n`;
+  output += '═══════════════════════════════════════';
+  
+  return output;
+}
+
+function randomEncounter() {
+  const encounters = [];
+  
+  if (contentMode === 'NSFW' && narratorPersonality.darkness > 6) {
+    encounters.push(
+      '🩸 You stumble upon a gruesome scene. Bodies lie scattered, still warm. Something deadly is nearby.',
+      '👤 A mysterious figure emerges from shadows, their intentions unclear and potentially dangerous.',
+      '⚔️ Bandits surround you, weapons drawn. Their leader grins menacingly.',
+      '🔮 Dark magic crackles in the air. Something ancient and malevolent awakens.'
+    );
+  } else {
+    encounters.push(
+      '🗡️ A group of goblins blocks your path!',
+      '💎 You discover a glittering treasure chest!',
+      '🧙 A wandering wizard offers cryptic advice.',
+      '🐺 A pack of wolves emerges from the trees!',
+      '🏚️ You find an abandoned campsite with supplies.',
+      '🗺️ A mysterious map appears in your possession!'
+    );
+  }
+  
+  const encounter = encounters[Math.floor(Math.random() * encounters.length)];
+  
+  let output = '🎲 RANDOM ENCOUNTER!\n';
+  output += '═══════════════════════════════════════\n\n';
+  output += encounter + '\n\n';
+  output += 'What do you do?\n';
+  output += '1. Engage\n';
+  output += '2. Avoid\n';
+  output += '3. Observe\n';
+  output += '4. Flee\n';
+  
+  return output;
+}
+
+function showNarratorSettings() {
+  let output = '📖 NARRATOR PERSONALITY\n';
+  output += '═══════════════════════════════════════\n\n';
+  output += `Drama: ${'█'.repeat(narratorPersonality.drama)}${'░'.repeat(10-narratorPersonality.drama)} (${narratorPersonality.drama}/10)\n`;
+  output += `   ${narratorPersonality.drama > 7 ? '🎭 Theatrical and epic!' : narratorPersonality.drama > 4 ? '📝 Balanced storytelling' : '📄 Simple narration'}\n\n`;
+  
+  output += `Humor: ${'█'.repeat(narratorPersonality.humor)}${'░'.repeat(10-narratorPersonality.humor)} (${narratorPersonality.humor}/10)\n`;
+  output += `   ${narratorPersonality.humor > 7 ? '😄 Comedy central!' : narratorPersonality.humor > 4 ? '😊 Light humor' : '😐 Dead serious'}\n\n`;
+  
+  output += `Darkness: ${'█'.repeat(narratorPersonality.darkness)}${'░'.repeat(10-narratorPersonality.darkness)} (${narratorPersonality.darkness}/10)\n`;
+  output += `   ${narratorPersonality.darkness > 7 ? '🌑 Grim and brutal' : narratorPersonality.darkness > 4 ? '🌓 Balanced themes' : '☀️ Light and heroic'}\n\n`;
+  
+  output += `Detail: ${'█'.repeat(narratorPersonality.detail)}${'░'.repeat(10-narratorPersonality.detail)} (${narratorPersonality.detail}/10)\n`;
+  output += `   ${narratorPersonality.detail > 7 ? '📚 Very descriptive!' : narratorPersonality.detail > 4 ? '📝 Balanced' : '📄 Brief'}\n\n`;
+  
+  output += `Difficulty: ${'█'.repeat(narratorPersonality.difficulty)}${'░'.repeat(10-narratorPersonality.difficulty)} (${narratorPersonality.difficulty}/10)\n`;
+  output += `   ${narratorPersonality.difficulty > 7 ? '💀 Brutal challenges' : narratorPersonality.difficulty > 4 ? '⚔️ Moderate' : '🛡️ Easy mode'}\n\n`;
+  
+  output += `Chaos: ${'█'.repeat(narratorPersonality.chaos)}${'░'.repeat(10-narratorPersonality.chaos)} (${narratorPersonality.chaos}/10)\n`;
+  output += `   ${narratorPersonality.chaos > 7 ? '🎲 Wildly random!' : narratorPersonality.chaos > 4 ? '🎯 Balanced' : '📋 Linear story'}\n\n`;
+  
+  output += '═══════════════════════════════════════\n';
+  output += 'Adjust with: NARRATOR SET [trait] [1-10]\n';
+  output += 'Content Mode: ' + contentMode + ' (affects themes)';
+  
+  return output;
+}
+
+async function generateWithAI(prompt) {
+  if (!checkHuggingFaceStatus()) {
+    return null;
+  }
+  
+  try {
+    const userName = userMemory.userName || gameState.character?.name || 'Adventurer';
+    const characterInfo = gameState.character ? 
+      `Character: ${gameState.character.name}, Level ${gameState.character.level} ${gameState.character.class}. ` : '';
+    
+    let systemPrompt = `You are a creative adventure game narrator. `;
+    
+    if (narratorPersonality.drama > 7) systemPrompt += 'Write dramatically and theatrically. ';
+    if (narratorPersonality.humor > 6) systemPrompt += 'Include wit and humor. ';
+    if (narratorPersonality.darkness > 7 && contentMode === 'NSFW') systemPrompt += 'Use dark, mature themes. ';
+    if (narratorPersonality.detail > 7) systemPrompt += 'Be very descriptive. ';
+    else if (narratorPersonality.detail < 4) systemPrompt += 'Be brief and concise. ';
+    
+    systemPrompt += `${characterInfo}Create an engaging ${contentMode === 'NSFW' ? 'mature' : 'family-friendly'} adventure scene.`;
+    
+    const fullPrompt = `${systemPrompt}\n\nPlayer action: ${prompt}\n\nNarrator:`;
+    
+    const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${huggingFaceAPIKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        inputs: fullPrompt,
+        parameters: {
+          max_new_tokens: narratorPersonality.detail > 7 ? 400 : 250,
+          temperature: narratorPersonality.chaos > 6 ? 0.9 : 0.75,
+          top_p: 0.95,
+          return_full_text: false
+        }
+      })
+    });
+    
+    if (!response.ok) return null;
+    
+    const data = await response.json();
+    
+    if (data[0] && data[0].generated_text) {
+      let text = data[0].generated_text.trim();
+      text = text.replace(/^(Narrator:|Assistant:)/i, '').trim();
+      
+      // Security check
+      text = sanitizePersonalInfo(text);
+      text = sanitizeInput(text);
+      
+      if (detectHackingAttempt(text)) return null;
+      
+      return text;
+    }
+    
+    return null;
+  } catch (error) {
+    return null;
+  }
+}
 
 function typeWriter(text, element, speed = 10) {
   let i = 0;
@@ -2864,42 +3174,127 @@ async function getGitHubUser(username) {
 
 function processNaturalLanguage(input, inputUpper) {
   const lower = input.toLowerCase();
-  const aiName = localStorage.getItem('terminalAIName') || 'AI';
-  const userName = userMemory.userName || 'friend';
+  const aiName = localStorage.getItem('terminalAIName') || 'Narrator';
+  const userName = gameState.character?.name || userMemory.userName || 'Adventurer';
   
-  // Detect hidden negative emotions in statements
-  const emotion = analyzeSentiment(input);
-  
-  // Catch negative statements that aren't explicitly "I'm feeling X"
-  if (['sad', 'very_sad', 'angry', 'very_angry', 'anxious', 'very_anxious', 'disappointed'].includes(emotion)) {
-    // Check if it's a casual mention vs actual expression of emotion
-    if (!/tell me about|what is|search|find|define/i.test(lower)) {
-      const emotionalResponse = getEmotionalSupport(emotion, input);
-      if (emotionalResponse) {
-        return emotionalResponse;
-      }
+  // Adventure game action detection
+  if (gameState.inGame) {
+    // Combat actions
+    if (/\b(attack|fight|strike|hit|slash|stab|shoot|cast|use spell)\b/i.test(lower)) {
+      showTypingIndicator();
+      setTimeout(async () => {
+        hideTypingIndicator();
+        let response = await generateWithAI(input);
+        
+        if (!response) {
+          const damage = Math.floor(Math.random() * 20) + 10;
+          response = `*You strike with precision! Your attack deals ${damage} damage!*\n\nThe enemy staggers back, wounded but still dangerous.\n\nWhat's your next move?`;
+        }
+        
+        addTerminalLine(response, '#00ff00');
+        saveToJournal(input, response);
+      }, 800);
+      return '⚔️ Engaging in combat...';
+    }
+    
+    // Exploration actions
+    if (/\b(look|examine|search|explore|investigate|inspect)\b/i.test(lower)) {
+      showTypingIndicator();
+      setTimeout(async () => {
+        hideTypingIndicator();
+        let response = await generateWithAI(input);
+        
+        if (!response) {
+          response = `*You carefully examine your surroundings...*\n\n`;
+          if (Math.random() > 0.5) {
+            response += `You notice something interesting - a hidden passage behind the rubble!`;
+          } else {
+            response += `The area seems quiet for now. What do you do next?`;
+          }
+        }
+        
+        addTerminalLine(response, '#00ff00');
+        saveToJournal(input, response);
+      }, 800);
+      return '🔍 Searching the area...';
+    }
+    
+    // Movement actions
+    if (/\b(go|walk|move|enter|leave|run|flee|escape)\b/i.test(lower)) {
+      showTypingIndicator();
+      setTimeout(async () => {
+        hideTypingIndicator();
+        let response = await generateWithAI(input);
+        
+        if (!response) {
+          const newLocation = generateAdventure();
+          response = newLocation;
+        }
+        
+        addTerminalLine(response, '#00ff00');
+        saveToJournal(input, response);
+      }, 800);
+      return '🚶 Moving...';
+    }
+    
+    // Interaction actions
+    if (/\b(talk|speak|say|ask|tell|greet)\b/i.test(lower)) {
+      showTypingIndicator();
+      setTimeout(async () => {
+        hideTypingIndicator();
+        let response = await generateWithAI(input);
+        
+        if (!response) {
+          response = `"${input.replace(/\b(i |me |my )/gi, '')}"\n\nYour words echo in the space. What happens next?`;
+        }
+        
+        addTerminalLine(response, '#00ff00');
+        saveToJournal(input, response);
+      }, 800);
+      return '💬 Communicating...';
+    }
+    
+    // Item actions
+    if (/\b(take|grab|pick up|get|use|drink|eat|equip|wear)\b/i.test(lower)) {
+      showTypingIndicator();
+      setTimeout(async () => {
+        hideTypingIndicator();
+        let response = await generateWithAI(input);
+        
+        if (!response) {
+          response = `*You attempt to ${input.toLowerCase()}...*\n\n`;
+          if (Math.random() > 0.4) {
+            response += `Success! The item glows faintly as you handle it. What will you do next?`;
+          } else {
+            response += `Something doesn't feel right. Perhaps try a different approach?`;
+          }
+        }
+        
+        addTerminalLine(response, '#00ff00');
+        saveToJournal(input, response);
+      }, 800);
+      return '🤲 Interacting with object...';
+    }
+    
+    // Generic "I" action
+    if (/^i /i.test(lower)) {
+      showTypingIndicator();
+      setTimeout(async () => {
+        hideTypingIndicator();
+        let response = await generateWithAI(input);
+        
+        if (!response) {
+          response = `*You ${input.substring(2)}...*\n\nThe world responds to your action. What happens next?`;
+        }
+        
+        addTerminalLine(response, '#00ff00');
+        saveToJournal(input, response);
+      }, 800);
+      return '✨ Processing your action...';
     }
   }
   
-  // Detect venting/complaining
-  if (/this sucks|i hate|everything (is|sucks)|nothing works|why does|why is everything/i.test(lower)) {
-    if (botPersonality.friendliness > 7) {
-      return `${userName}, it sounds like you're having a rough time. 💙 That's really frustrating. Want to vent about it? I'm here to listen, or I can try to help if there's something specific.`;
-    } else {
-      return `I understand your frustration. How can I help?`;
-    }
-  }
-  
-  // Detect defeat/giving up
-  if (/i (can't|cant) do this|too hard|impossible|give up|giving up/i.test(lower) && !/how do i|how to/i.test(lower)) {
-    if (botPersonality.friendliness > 7) {
-      return `Hey ${userName}, I hear you. When things feel impossible, it's really discouraging. 💙 Want to talk about what's challenging you? Sometimes breaking it down helps, or maybe you just need to vent?`;
-    } else {
-      return `That sounds challenging. What specifically is the obstacle?`;
-    }
-  }
-  
-  // Roleplay-specific responses
+  // Non-game mode responses (meta commands)
   if (roleplayMode) {
     // Greetings in roleplay mode
     if (/^(hi|hello|hey|greetings|howdy|sup|yo|hiya|heya|morning|afternoon|evening|good morning|good afternoon|good evening)(\s|!|$|,)/i.test(lower)) {
@@ -3822,7 +4217,7 @@ function displayInteractiveHelp() {
         <!-- Header with ASCII art -->
         <pre style="color: #00ff00; margin: 0 0 15px 0; font-size: 10px; line-height: 1.2;">
 ╔════════════════════════════════════════════════════════════════╗
-║                    ${aiName.toUpperCase()} COMMAND CENTER                     ║
+║               ⚔️ ADVENTURE QUEST GENERATOR ⚔️                 ║
 ║                    Quick Access Menu                           ║
 ╚════════════════════════════════════════════════════════════════╝
         </pre>
@@ -3830,13 +4225,13 @@ function displayInteractiveHelp() {
         <!-- Status Bar -->
         <div style="background: #111; border: 1px solid #00ff00; padding: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
           <div style="color: #00ff00;">
-            <span style="color: #ffff99;">STATUS:</span> <span style="color: #00ff00;">● ONLINE</span>
+            <span style="color: #ffff99;">STATUS:</span> <span style="color: #00ff00;">● ${gameState.inGame ? 'IN QUEST' : 'READY'}</span>
           </div>
           <div style="color: #00ff00;">
             <span style="color: #ffff99;">MODE:</span> <span style="color: ${currentMode === 'SFW' ? '#00ff00' : '#ff6600'};">${currentMode}</span>
           </div>
           <div style="color: #00ff00;">
-            <span style="color: #ffff99;">ROLEPLAY:</span> <span style="color: ${rpStatus === 'ON' ? '#9370DB' : '#666'};">${rpStatus}</span>
+            <span style="color: #ffff99;">CHARACTER:</span> <span style="color: ${gameState.character ? '#00ff00' : '#666'};">${gameState.character ? '✓ CREATED' : 'NONE'}</span>
           </div>
           <div style="color: #00ff00;">
             <span style="color: #ffff99;">AI:</span> <span style="color: ${checkHuggingFaceStatus() ? '#FF1493' : '#666'};">${checkHuggingFaceStatus() ? '✓ ENHANCED' : 'BASIC'}</span>
@@ -3846,47 +4241,56 @@ function displayInteractiveHelp() {
         <!-- Main Command Grid -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 15px;">
           
-          <!-- Web Access Panel -->
-          <div style="background: #0a0a0a; border: 2px solid #1DB954; padding: 12px;">
-            <div style="color: #1DB954; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #1DB954; padding-bottom: 4px;">
-              🌐 WEB ACCESS
+          <!-- Quest Panel -->
+          <div style="background: #0a0a0a; border: 2px solid #FFD700; padding: 12px;">
+            <div style="color: #FFD700; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #FFD700; padding-bottom: 4px;">
+              ⚔️ ADVENTURE
             </div>
-            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Search & Information</div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Quest & Exploration</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-              <button onclick="document.getElementById('commandInput').value='WIKI '; document.getElementById('commandInput').focus();" style="background: #1DB954; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background='#1DB954'">WIKI</button>
-              <button onclick="document.getElementById('commandInput').value='DEFINE '; document.getElementById('commandInput').focus();" style="background: #1DB954; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background='#1DB954'">DEFINE</button>
-              <button onclick="executeQuickCommand('FACT')" style="background: #1DB954; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background='#1DB954'">FACT</button>
-              <button onclick="executeQuickCommand('JOKE')" style="background: #1DB954; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background='#1DB954'">JOKE</button>
-              <button onclick="executeQuickCommand('QUOTE')" style="background: #1DB954; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background='#1DB954'">QUOTE</button>
-              <button onclick="executeQuickCommand('ADVICE')" style="background: #1DB954; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#1ed760'" onmouseout="this.style.background='#1DB954'">ADVICE</button>
+              <button onclick="executeQuickCommand('START')" style="background: #FFD700; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#ffe740'" onmouseout="this.style.background='#FFD700'">START</button>
+              <button onclick="executeQuickCommand('STATUS')" style="background: #FFD700; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#ffe740'" onmouseout="this.style.background='#FFD700'">STATUS</button>
+              <button onclick="executeQuickCommand('GENERATE QUEST')" style="background: #FFD700; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#ffe740'" onmouseout="this.style.background='#FFD700'">QUEST</button>
+              <button onclick="executeQuickCommand('RANDOM ENCOUNTER')" style="background: #FFD700; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#ffe740'" onmouseout="this.style.background='#FFD700'">ENCOUNTER</button>
             </div>
         </div>
         
-          <!-- Session Panel -->
+          <!-- Character Panel -->
           <div style="background: #0a0a0a; border: 2px solid #4169E1; padding: 12px;">
             <div style="color: #4169E1; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #4169E1; padding-bottom: 4px;">
-              📁 SESSION CONTROL
+              👤 CHARACTER
             </div>
-            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Save & Load Conversations</div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Hero Management</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-              <button onclick="executeQuickCommand('JOURNAL')" style="background: #4169E1; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5179f1'" onmouseout="this.style.background='#4169E1'">VIEW</button>
-              <button onclick="executeQuickCommand('JOURNAL EXPORT')" style="background: #4169E1; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5179f1'" onmouseout="this.style.background='#4169E1'">EXPORT</button>
-              <button onclick="executeQuickCommand('JOURNAL LOAD')" style="background: #4169E1; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5179f1'" onmouseout="this.style.background='#4169E1'">LOAD</button>
-              <button onclick="executeQuickCommand('JOURNAL CLEAR')" style="background: #4169E1; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5179f1'" onmouseout="this.style.background='#4169E1'">CLEAR</button>
+              <button onclick="executeQuickCommand('CREATE CHARACTER')" style="background: #4169E1; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5179f1'" onmouseout="this.style.background='#4169E1'">CREATE</button>
+              <button onclick="executeQuickCommand('INVENTORY')" style="background: #4169E1; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5179f1'" onmouseout="this.style.background='#4169E1'">INVENTORY</button>
+              <button onclick="executeQuickCommand('SAVE GAME')" style="background: #4169E1; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5179f1'" onmouseout="this.style.background='#4169E1'">SAVE</button>
+              <button onclick="executeQuickCommand('LOAD GAME')" style="background: #4169E1; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#5179f1'" onmouseout="this.style.background='#4169E1'">LOAD</button>
             </div>
         </div>
         
-          <!-- Mode Control Panel -->
+          <!-- Narrator Panel -->
           <div style="background: #0a0a0a; border: 2px solid #9370DB; padding: 12px;">
             <div style="color: #9370DB; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #9370DB; padding-bottom: 4px;">
-              🎭 MODE CONTROL
+              📖 NARRATOR
             </div>
-            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Content & Roleplay Settings</div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Story Style Settings</div>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 6px;">
+              <button onclick="executeQuickCommand('NARRATOR SHOW')" style="background: #9370DB; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">VIEW STYLE</button>
+              <button onclick="document.getElementById('commandInput').value='NARRATOR SET '; document.getElementById('commandInput').focus();" style="background: #9370DB; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">ADJUST</button>
+            </div>
+        </div>
+        
+          <!-- Content Mode Panel -->
+          <div style="background: #0a0a0a; border: 2px solid #ff6600; padding: 12px;">
+            <div style="color: #ff6600; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #ff6600; padding-bottom: 4px;">
+              🎮 CONTENT MODE
+            </div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Adventure Rating</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
               <button onclick="executeQuickCommand('MODE SFW')" style="background: ${currentMode === 'SFW' ? '#00ff00' : '#006600'}; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">SFW</button>
               <button onclick="executeQuickCommand('MODE NSFW')" style="background: ${currentMode === 'NSFW' ? '#ff6600' : '#663300'}; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">NSFW</button>
-              <button onclick="executeQuickCommand('ROLEPLAY ON')" style="background: ${rpStatus === 'ON' ? '#9370DB' : '#4a3869'}; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">RP ON</button>
-              <button onclick="executeQuickCommand('ROLEPLAY OFF')" style="background: ${rpStatus === 'OFF' ? '#9370DB' : '#4a3869'}; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">RP OFF</button>
+              <button onclick="executeQuickCommand('MODE STATUS')" style="background: #333; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'" colspan="2">INFO</button>
             </div>
         </div>
         
@@ -3894,7 +4298,7 @@ function displayInteractiveHelp() {
           <div style="background: #0a0a0a; border: 2px solid #FFD700; padding: 12px;">
             <div style="color: #FFD700; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #FFD700; padding-bottom: 4px;">
               🧠 MEMORY BANK
-            </div>
+        </div>
             <div style="font-size: 10px; color: #888; margin-bottom: 8px;">AI Learning & Recall</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
               <button onclick="executeQuickCommand('MEMORY')" style="background: #FFD700; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#ffe740'" onmouseout="this.style.background='#FFD700'">SHOW</button>
@@ -3978,10 +4382,10 @@ function displayInteractiveHelp() {
         <!-- Footer Tips -->
         <div style="background: #111; border: 1px solid #00ff00; padding: 10px; text-align: center;">
           <div style="color: #00ff00; font-size: 11px; margin-bottom: 5px;">
-            <span style="color: #ffff99;">TIP:</span> Click any button for instant commands, or type naturally!
+            <span style="color: #ffff99;">TIP:</span> Type actions naturally: "I attack the goblin" "I examine the door"
           </div>
           <div style="color: #888; font-size: 10px;">
-            Type "ABOUT", "PROJECTS", or ask questions naturally • All conversations can be saved
+            Adventures adapt to your choices • TYPE START to begin your quest
           </div>
         </div>
         
@@ -4564,17 +4968,204 @@ function executeCommand() {
   
   let response = '';
   
+  // Check if awaiting character selection
+  if (window.awaitingCharacterSelection) {
+    if (/^[1-6]$/.test(command)) {
+      const result = selectCharacterClass(command);
+      addTerminalLine(result, '#00ff00');
+      window.awaitingCharacterSelection = false;
+      return;
+    }
+  }
+  
   // Handle special commands
   if (commandUpper === 'CLEAR' || commandUpper === 'CLS') {
     document.getElementById('chatMessages').innerHTML = '';
     document.getElementById('bootSequence').style.display = 'none';
-    addTerminalLine('Screen cleared.', '#00ff00');
+    showConversationStarters();
+    addTerminalLine('Screen cleared. Ready for adventure!', '#00ff00');
     return;
   }
   
-  if (commandUpper === 'CONTINUE') {
-    addTerminalLine('Continuing current session...', '#00ff00');
-    addTerminalLine('Session will continue until next milestone.', '#00ff00');
+  // Adventure game commands
+  if (commandUpper === 'START' || commandUpper === 'START NEW ADVENTURE' || commandUpper === 'NEW GAME') {
+    if (!gameState.character) {
+      addTerminalLine('First, let\'s create your character!', '#ffff99');
+      setTimeout(() => {
+        const result = createCharacter();
+        addTerminalLine(result, '#00ff00');
+      }, 300);
+      return;
+    }
+    
+    gameState.inGame = true;
+    document.getElementById('statusText').textContent = 'IN QUEST';
+    saveGameState();
+    
+    const adventure = generateAdventure();
+    setTimeout(() => {
+      addTerminalLine(adventure, '#00ff00');
+    }, 300);
+    return;
+  }
+  
+  if (commandUpper === 'CONTINUE' || commandUpper === 'CONTINUE ADVENTURE') {
+    if (!gameState.character) {
+      addTerminalLine('❌ No character found. Type CREATE CHARACTER to begin.', '#ff6666');
+      return;
+    }
+    
+    if (!gameState.inGame || !gameState.currentScene) {
+      addTerminalLine('No adventure in progress. Type START to begin a new quest!', '#ffff99');
+      return;
+    }
+    
+    addTerminalLine('Continuing your adventure...', '#ffff99');
+    setTimeout(() => {
+      const scene = gameState.currentScene;
+      addTerminalLine(`You are in: ${scene.location}\n\nWhat do you do?`, '#00ff00');
+    }, 300);
+    return;
+  }
+  
+  if (commandUpper === 'CREATE CHARACTER') {
+    const result = createCharacter();
+    addTerminalLine(result, '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'STATUS' || commandUpper === 'CHARACTER SHEET') {
+    const result = showStatus();
+    addTerminalLine(result, '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'INVENTORY' || commandUpper === 'INV') {
+    if (!gameState.character) {
+      addTerminalLine('❌ No character. Create one with CREATE CHARACTER', '#ff6666');
+      return;
+    }
+    
+    let inv = '🎒 INVENTORY\n';
+    inv += '═══════════════════════════════════════\n\n';
+    if (gameState.inventory.length > 0) {
+      gameState.inventory.forEach((item, i) => {
+        inv += `${i + 1}. ${item}\n`;
+      });
+    } else {
+      inv += 'Your inventory is empty.\n';
+    }
+    inv += '\n═══════════════════════════════════════';
+    addTerminalLine(inv, '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'QUESTS' || commandUpper === 'QUEST LOG') {
+    let quests = '📜 QUEST LOG\n';
+    quests += '═══════════════════════════════════════\n\n';
+    
+    if (gameState.questLog.length > 0) {
+      gameState.questLog.forEach((quest, i) => {
+        quests += `${i + 1}. ${quest.title}\n`;
+        quests += `   ${quest.description}\n`;
+        quests += `   Status: ${quest.status}\n\n`;
+      });
+    } else {
+      quests += 'No active quests. Type GENERATE QUEST to create one!\n';
+    }
+    
+    quests += '═══════════════════════════════════════';
+    addTerminalLine(quests, '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'GENERATE QUEST') {
+    const quest = generateQuest();
+    addTerminalLine(quest, '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'RANDOM ENCOUNTER') {
+    const encounter = randomEncounter();
+    addTerminalLine(encounter, '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'NEW SCENARIO') {
+    const adventure = generateAdventure();
+    addTerminalLine(adventure, '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'NARRATOR SHOW' || commandUpper === 'NARRATOR') {
+    const settings = showNarratorSettings();
+    addTerminalLine(settings, '#00ff00');
+    return;
+  }
+  
+  if (commandUpper.startsWith('NARRATOR SET ')) {
+    const parts = command.substring(13).trim().split(' ');
+    if (parts.length < 2) {
+      addTerminalLine('Usage: NARRATOR SET [trait] [value]', '#ffff99');
+      addTerminalLine('Traits: drama, humor, darkness, detail, difficulty, chaos', '#c0ffc0');
+      addTerminalLine('Values: 1-10', '#c0ffc0');
+      return;
+    }
+    
+    const trait = parts[0].toLowerCase();
+    const value = parseInt(parts[1]);
+    
+    if (!['drama', 'humor', 'darkness', 'detail', 'difficulty', 'chaos'].includes(trait)) {
+      addTerminalLine('❌ Invalid trait. Choose from:', '#ff6666');
+      addTerminalLine('drama, humor, darkness, detail, difficulty, chaos', '#ffff99');
+      return;
+    }
+    
+    if (isNaN(value) || value < 1 || value > 10) {
+      addTerminalLine('❌ Value must be between 1 and 10', '#ff6666');
+      return;
+    }
+    
+    narratorPersonality[trait] = value;
+    saveNarratorPersonality();
+    
+    addTerminalLine(`✅ NARRATOR ${trait.toUpperCase()} set to ${value}/10`, '#00ff00');
+    
+    if (trait === 'darkness' && value > 7) {
+      addTerminalLine('⚠️ Dark themes enabled. Consider switching to NSFW mode for full effect.', '#ff6600');
+    } else if (trait === 'drama' && value > 8) {
+      addTerminalLine('🎭 Maximum drama! Your adventures will be EPIC!', '#c0ffc0');
+    } else if (trait === 'chaos' && value > 8) {
+      addTerminalLine('🎲 Chaos mode! Expect the unexpected!', '#c0ffc0');
+    }
+    
+    return;
+  }
+  
+  if (commandUpper === 'SAVE GAME') {
+    saveGameState();
+    addTerminalLine('💾 GAME SAVED!', '#00ff00');
+    addTerminalLine('Your adventure progress has been saved.', '#c0ffc0');
+    return;
+  }
+  
+  if (commandUpper === 'LOAD GAME') {
+    initializeGameState();
+    if (gameState.character) {
+      addTerminalLine('✅ GAME LOADED!', '#00ff00');
+      addTerminalLine(`Welcome back, ${gameState.character.name}!`, '#c0ffc0');
+      const status = showStatus();
+      setTimeout(() => {
+        addTerminalLine(status, '#00ff00');
+      }, 300);
+    } else {
+      addTerminalLine('❌ No saved game found. Type CREATE CHARACTER to start!', '#ffff99');
+    }
+    return;
+  }
+  
+  if (commandUpper === 'GAME HELP') {
+    displayInteractiveHelp();
     return;
   }
   
@@ -4582,10 +5173,14 @@ function executeCommand() {
   if (commandUpper === 'MODE SFW') {
     contentMode = 'SFW';
     localStorage.setItem('contentMode', 'SFW');
-    localStorage.removeItem('ageVerified'); // Clear age verification when switching to SFW
+    localStorage.removeItem('ageVerified');
     updateModeIndicator();
-    addTerminalLine('✅ SFW MODE ACTIVATED', '#00ff00');
-    addTerminalLine('Content filtering enabled. Inappropriate content will be blocked.', '#c0ffc0');
+    addTerminalLine('✅ SFW ADVENTURE MODE', '#00ff00');
+    addTerminalLine('═══════════════════════════════════════', '#00ff00');
+    addTerminalLine('⚔️ Family-friendly adventures activated!', '#c0ffc0');
+    addTerminalLine('• Heroic quests and lighthearted themes', '#c0ffc0');
+    addTerminalLine('• Suitable for all ages', '#c0ffc0');
+    addTerminalLine('• Classic fantasy adventure style', '#c0ffc0');
     return;
   }
   
@@ -4597,18 +5192,19 @@ function executeCommand() {
       contentMode = 'NSFW';
       localStorage.setItem('contentMode', 'NSFW');
       updateModeIndicator();
-      addTerminalLine('⚠️ NSFW MODE ACTIVATED', '#ff6600');
-      addTerminalLine('Mature content allowed. Hate speech and illegal content still blocked.', '#ffff99');
-      
-      if (roleplayMode) {
-        addTerminalLine('\n🔥 NSFW ROLEPLAY MODE', '#ff6600');
-        addTerminalLine('Full creative freedom enabled - romance, intimacy, and mature themes allowed!', '#ff6600');
-        addTerminalLine('This mode is designed for adult storytelling and character development.', '#c0ffc0');
-      }
+      addTerminalLine('⚠️ NSFW ADVENTURE MODE', '#ff6600');
+      addTerminalLine('═══════════════════════════════════════', '#ff6600');
+      addTerminalLine('🔥 Mature content enabled!', '#ff6600');
+      addTerminalLine('• Dark themes, horror, and mature storytelling', '#ff6600');
+      addTerminalLine('• Romance and intimate scenarios allowed', '#ff6600');
+      addTerminalLine('• Graphic descriptions and adult content', '#ff6600');
+      addTerminalLine('• Violence and gore (based on narrator settings)', '#ff6600');
+      addTerminalLine('\n⚠️ Hate speech & illegal content still blocked', '#ffff99');
+      addTerminalLine('💡 TIP: Increase narrator darkness for grim adventures!', '#c0ffc0');
     } else {
       // Prompt for age verification
       addTerminalLine('🔞 AGE VERIFICATION REQUIRED', '#ffff00');
-      addTerminalLine('You must be 18 or older to access NSFW mode.', '#ffff99');
+      addTerminalLine('You must be 18 or older to access NSFW adventure mode.', '#ffff99');
       addTerminalLine('Please enter your date of birth in format: MM/DD/YYYY', '#ffff99');
       addTerminalLine('Example: 03/15/2000', '#c0ffc0');
       
@@ -4620,24 +5216,27 @@ function executeCommand() {
   
   if (commandUpper === 'MODE STATUS' || commandUpper === 'MODE') {
     const modeColor = contentMode === 'SFW' ? '#00ff00' : '#ff6600';
-    addTerminalLine(`Current Mode: ${contentMode}`, modeColor);
+    addTerminalLine('🎮 ADVENTURE CONTENT MODE', modeColor);
+    addTerminalLine('═══════════════════════════════════════', modeColor);
+    addTerminalLine(`\nCurrent Mode: ${contentMode}`, modeColor);
     
     if (contentMode === 'SFW') {
-      addTerminalLine('• Content filtering: ACTIVE', '#c0ffc0');
-      addTerminalLine('• Type "MODE NSFW" to switch to mature mode', '#c0ffc0');
+      addTerminalLine('\n⚔️ Family-Friendly Adventures:', '#00ff00');
+      addTerminalLine('• Heroic quests and lighthearted themes', '#c0ffc0');
+      addTerminalLine('• Suitable for all ages', '#c0ffc0');
+      addTerminalLine('• Classic adventure style', '#c0ffc0');
+      addTerminalLine('\n💡 Type "MODE NSFW" for mature adventures', '#ffff99');
     } else {
-      addTerminalLine('• Mature content: ALLOWED', '#ffff99');
-      addTerminalLine('• Hate speech & illegal content: BLOCKED', '#ffff99');
-      
-      if (roleplayMode) {
-        addTerminalLine('\n🔥 NSFW ROLEPLAY: ACTIVE', '#ff6600');
-        addTerminalLine('• Full creative freedom for adult storytelling', '#ff6600');
-        addTerminalLine('• Romance, intimacy, and mature themes enabled', '#ff6600');
-        addTerminalLine('• Perfect for character-driven narratives', '#c0ffc0');
-      }
-      
-      addTerminalLine('\n• Type "MODE SFW" to switch to safe mode', '#ffff99');
+      addTerminalLine('\n🔥 Mature Adventures:', '#ff6600');
+      addTerminalLine('• Dark themes, horror, psychological elements', '#ff6600');
+      addTerminalLine('• Romance and intimate scenarios', '#ff6600');
+      addTerminalLine('• Violence and gore (narrator controlled)', '#ff6600');
+      addTerminalLine('• Complex moral choices', '#ff6600');
+      addTerminalLine('\n⚠️ Illegal content still blocked', '#ffff99');
+      addTerminalLine('💡 Type "MODE SFW" for family-friendly', '#c0ffc0');
     }
+    
+    addTerminalLine('\n═══════════════════════════════════════', modeColor);
     return;
   }
   
@@ -5379,22 +5978,26 @@ function checkFirstTimeUser() {
     initPrompts.style.display = 'block';
     initStep = aiName ? 2 : 1;
   } else {
-    // Returning user - update header with AI name
-    header.textContent = `[ ${aiName.toUpperCase()} TERMINAL SYSTEM ]`;
-    const username = currentUser || localStorage.getItem('currentUser') || 'User';
-    addTerminalLine(`Welcome back, ${username}! I'm ${aiName}. 👋`, '#00ff00');
+    // Returning user - update header
+    header.innerHTML = `<pre style="color: #00ff00; margin: 0; text-shadow: 0 0 5px rgba(0,255,0,0.5);">
+╔═══════════════════════════════════════════════════════════════╗
+║  ADVENTURE QUEST GENERATOR v2.0                               ║
+║  Welcome back, ${aiName || 'Adventurer'}!                     ║
+╚═══════════════════════════════════════════════════════════════╝
+    </pre>`;
     
-    // Check if journal is loaded
-    const localJournal = JSON.parse(localStorage.getItem('terminalJournal')) || [];
-    if (localJournal.length > 0) {
-      setActiveJournal(localJournal);
-      addTerminalLine(`Session restored: ${localJournal.length} messages loaded. ✨`, '#00ff00');
+    const username = currentUser || localStorage.getItem('currentUser') || 'Adventurer';
+    addTerminalLine(`⚔️ Welcome back, ${username}!`, '#00ff00');
+    
+    // Check if game is loaded
+    if (gameState.character) {
+      addTerminalLine(`✅ Character loaded: ${gameState.character.name} the ${gameState.character.class}`, '#00ff00');
+      addTerminalLine(`Type CONTINUE to resume your adventure, or START for a new quest!`, '#c0ffc0');
     } else {
-      addTerminalLine(`Starting fresh! Type JOURNAL LOAD to restore a saved session.`, '#00ff00');
-      setActiveJournal([]);
+      addTerminalLine(`Type CREATE CHARACTER to begin, or START for a quick adventure!`, '#00ff00');
     }
     
-    addTerminalLine(`Ready to brainstorm? Just tell me what you're working on!`, '#00ff00');
+    addTerminalLine(`\n💡 Type HELP or click ? for all commands!`, '#ffff99');
   }
 }
 
@@ -5578,27 +6181,32 @@ function handleInitialization(input) {
   }
   
   if (initStep === 2) {
-    // Step 2: Getting AI name from user - extract just the name
+    // Step 2: Getting name - could be AI name or character name
     aiName = extractName(input);
     
     // Validate name is not empty
     if (!aiName || aiName.length < 1) {
       addTerminalLine(input, '#00ff00', true);
-      addTerminalLine(`Hmm, I didn't catch that. Please give me a name! 😊`, '#00ff00');
+      addTerminalLine(`Hmm, I didn't catch that. What shall I call you, adventurer? ⚔️`, '#00ff00');
       return true;
     }
     
     localStorage.setItem('terminalAIName', aiName);
     
-    // Update the header with the AI's new name
-    header.textContent = `[ ${aiName.toUpperCase()} TERMINAL SYSTEM ]`;
+    // Update the header
+    header.innerHTML = `<pre style="color: #00ff00; margin: 0; text-shadow: 0 0 5px rgba(0,255,0,0.5);">
+╔═══════════════════════════════════════════════════════════════╗
+║  ADVENTURE QUEST GENERATOR v2.0                               ║
+║  Welcome, ${aiName}!                                          ║
+╚═══════════════════════════════════════════════════════════════╝
+    </pre>`;
     
     addTerminalLine(input, '#00ff00', true);
-    addTerminalLine(`Nice to meet you! I'm ${aiName} now. 😊`, '#00ff00');
+    addTerminalLine(`Welcome, ${aiName}! Your adventure awaits. ⚔️`, '#00ff00');
     
     // Ask about journal permission
-    addTerminalLine(`\nWould you like me to remember our conversations? 💾`, '#00ff00');
-    addTerminalLine(`I can save everything we talk about so you can review it later or export it.`, '#00ff00');
+    addTerminalLine(`\nWould you like me to save your adventures? 💾`, '#00ff00');
+    addTerminalLine(`I can remember your quests and progress so you can continue later.`, '#00ff00');
     addTerminalLine(`Type YES to enable, or NO to skip.`, '#00ff00');
     
     initStep = 3;
@@ -5614,18 +6222,19 @@ function handleInitialization(input) {
     if (response === 'YES' || response === 'Y') {
       journalPermission = 'enabled';
       localStorage.setItem('terminalJournalPermission', 'enabled');
-      addTerminalLine(`Perfect! I'll remember our conversations. ✅`, '#00ff00');
-      addTerminalLine(`You can export or review them anytime using JOURNAL commands.`, '#00ff00');
+      addTerminalLine(`Perfect! Your adventures will be saved. ✅`, '#00ff00');
+      addTerminalLine(`You can export or review them anytime.`, '#00ff00');
     } else {
       journalPermission = 'disabled';
       localStorage.setItem('terminalJournalPermission', 'disabled');
-      addTerminalLine(`No problem! I won't save our conversations.`, '#00ff00');
-      addTerminalLine(`You can always enable this later with: JOURNAL ENABLE`, '#00ff00');
+      addTerminalLine(`No problem! Your adventures won't be saved.`, '#00ff00');
+      addTerminalLine(`You can enable this later if you change your mind.`, '#00ff00');
     }
     
-      addTerminalLine(`\n🎉 All set! I'm ${aiName}, your creative assistant!`, '#00ff00');
-      addTerminalLine(`💡 Remember: I'm here to help YOU create, not replace your creativity!`, '#c0ffc0');
-      addTerminalLine(`Let's brainstorm together! What are you working on today?`, '#00ff00');
+    addTerminalLine(`\n🎉 All set, ${aiName}!`, '#00ff00');
+    addTerminalLine(`⚔️ Ready to embark on epic quests!`, '#c0ffc0');
+    addTerminalLine(`\n💡 Type CREATE CHARACTER to design your hero, or START for a quick adventure!`, '#ffff99');
+    addTerminalLine(`Type HELP or press ? to see all commands!`, '#ffff99');
     
     initStep = 0;
     initPrompts.style.display = 'none';
