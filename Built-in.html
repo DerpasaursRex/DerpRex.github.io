@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Built-in - Catherine Ann MacDonald</title>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- Security Headers -->
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self'; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data:; frame-src https://open.spotify.com; font-src 'self' data:;">
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <!-- Cursor follower script with multiple trailing images -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const numFollowers = 5; // Number of trailing images
+      const followers = [];
+      const positions = [];
+      let isMouseOnPage = false;
+      let targetX = 0;
+      let targetY = 0;
+      
+      // Create multiple cursor followers
+      for (let i = 0; i < numFollowers; i++) {
+        const follower = document.createElement('img');
+        follower.src = 'SitePics/Bugtie.png';
+        follower.style.position = 'fixed';
+        follower.style.width = '30px';
+        follower.style.height = '30px';
+        follower.style.pointerEvents = 'none';
+        follower.style.zIndex = '9999';
+        follower.style.display = 'none';
+        follower.style.transition = 'left 0.1s ease-out, top 0.1s ease-out';
+        document.body.appendChild(follower);
+        
+        followers.push(follower);
+        positions.push({ x: 0, y: 0 });
+      }
+      
+      // Animation function
+      function animate() {
+        if (isMouseOnPage && followers[0].style.display !== 'none') {
+          // Update each follower to follow the previous one
+          for (let i = 0; i < numFollowers; i++) {
+            const follower = followers[i];
+            const pos = positions[i];
+            
+            let targetX, targetY;
+            
+            if (i === 0) {
+              // First follower follows the cursor
+              targetX = window.targetX || 0;
+              targetY = window.targetY || 0;
+            } else {
+              // Other followers follow the previous follower
+              const prevPos = positions[i - 1];
+              targetX = prevPos.x;
+              targetY = prevPos.y;
+            }
+            
+            // Calculate distance to target
+            const dx = targetX - pos.x;
+            const dy = targetY - pos.y;
+            
+            // Move towards target with easing (slower for trailing followers)
+            const speed = 0.3 - (i * 0.05); // Each follower is slightly slower
+            const newX = pos.x + dx * speed;
+            const newY = pos.y + dy * speed;
+            
+            // Update position
+            pos.x = newX;
+            pos.y = newY;
+            
+            // Apply position to element
+            follower.style.left = newX + 'px';
+            follower.style.top = newY + 'px';
+            
+            // Add some rotation for fun
+            const rotation = Math.sin(Date.now() * 0.005 + i) * 10;
+            follower.style.transform = `rotate(${rotation}deg)`;
+          }
+        }
+        
+        // Always continue animation
+        requestAnimationFrame(animate);
+      }
+      
+      // Start continuous animation
+      animate();
+      
+      // Track mouse movement
+      document.addEventListener('mousemove', function(e) {
+        followers.forEach(follower => follower.style.display = 'block');
+        isMouseOnPage = true;
+        window.targetX = e.clientX + 10;
+        window.targetY = e.clientY + 10;
+        targetX = e.clientX + 10;
+        targetY = e.clientY + 10;
+      });
+      
+      // Hide when mouse leaves the page
+      document.addEventListener('mouseleave', function() {
+        followers.forEach(follower => follower.style.display = 'none');
+        isMouseOnPage = false;
+      });
+      
+      // Show when mouse enters the page
+      document.addEventListener('mouseenter', function() {
+        followers.forEach(follower => follower.style.display = 'block');
+        isMouseOnPage = true;
+      });
+    });
+
+    // Walking character animation
+    document.addEventListener('DOMContentLoaded', function() {
+      const walkingChar = document.getElementById('walkingCharacter');
+      let position = 0;
+      let direction = 1; // 1 for right, -1 for left
+      const speed = 2; // pixels per frame
+      const maxWidth = window.innerWidth - 50; // account for character width
+      
+      function walk() {
+        position += speed * direction;
+        
+        // Reverse direction when hitting edges
+        if (position >= maxWidth) {
+          direction = -1;
+          walkingChar.style.transform = 'scaleX(-1)'; // flip horizontally
+        } else if (position <= 0) {
+          direction = 1;
+          walkingChar.style.transform = 'scaleX(1)'; // normal orientation
+        }
+        
+        walkingChar.style.left = position + 'px';
+        requestAnimationFrame(walk);
+      }
+      
+      // Start walking animation
+      walk();
+    });
+
+    // Image Modal functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the modal
+      var modal = document.getElementById('imageModal');
+      
+      // Get the image and insert it inside the modal - use its "alt" text as a caption
+      var img = document.getElementById('modalImage');
+      var modalImg = document.getElementById("modalImageDisplay");
+      var captionText = document.getElementById("caption");
+      
+      // When user clicks on image, open modal
+      img.onclick = function(){
+        modal.style.display = "block";
+        modalImg.src = this.src;
+        captionText.innerHTML = this.alt;
+      }
+      
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+      
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() { 
+        modal.style.display = "none";
+      }
+      
+      // When user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+    });
+  </script>
+
+  <style>
+    body {
+      background-image: url("SitePics/galaxy.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      font-family: Arial, sans-serif;
+      color: black;
+      margin: 0;
+      padding: 0;
+    }
+
+    .walking-character {
+      position: fixed;
+      bottom: 20px;
+      width: 50px;
+      height: 50px;
+      z-index: 1000;
+      transition: transform 0.1s ease-in-out;
+    }
+
+    h1 {
+      color: #b82b2f;
+      font-family: Arial, sans-serif;
+      text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
+    }
+
+    h2 {
+      color: #b82b2f;
+      text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
+    }
+
+    h3 {
+      color: #b82b2f;
+      text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
+    }
+
+    h4 {
+      color: #b82b2f;
+      text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
+    }
+
+    h5 {
+      color: #b82b2f;
+      text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
+    }
+
+    p {
+      text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
+    }
+
+    /* Gallery Styles */
+    .gallery-item {
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(240,240,240,0.9));
+      border: 2px solid rgba(184,43,47,0.3);
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      padding: 15px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 16px 40px rgba(184,43,47,0.3);
+      border-color: #b82b2f;
+      z-index: 100;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('SitePics/galaxy.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .modal-content {
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 90%;
+      max-width: 1200px;
+      height: 100%;
+    }
+
+    .modal img {
+      max-width: 100%;
+      max-height: 90vh;
+      border: 3px solid #00ff00;
+      border-radius: 12px;
+      box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+    }
+
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 35px;
+      color: #f1f1f1;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 10001;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #bbb;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    #caption {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #f1f1f1;
+      font-size: 18px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.7);
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+
+    /* Spotify Player Widget */
+    #spotifyWidget {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      background: #000;
+      border: 3px solid #1DB954;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      z-index: 9999;
+      cursor: move;
+    }
+
+    #spotifyHeader {
+      background: #1DB954;
+      color: #fff;
+      padding: 8px 12px;
+      font-weight: bold;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: move;
+      border-radius: 7px 7px 0 0;
+    }
+
+    #spotifyMinimize {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0 5px;
+      line-height: 1;
+    }
+
+    #spotifyMinimize:hover {
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+
+<div class="jumbotron jumbotron-fluid text-center" style="margin-bottom:0">
+  <h1>Catherine Ann MacDonald</h1>
+ <p style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;"> Writer-Artist</p>
+ <a href="ChatBot.html" style="text-decoration: none; transition: transform 0.2s ease; display: inline-block; position: relative;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+  <img src="TestBot/noise.gif" alt="noise" style="width: 22px; height: 15px; position: absolute; top: 5px; left: 5px;">
+  <img src="TestBot/test.png" alt="computer" style="width: 32px; height: 32px; position: relative;">
+ </a>
+</div>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #b82b2f;">
+  <a class="navbar-brand" href="#">Menu</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="index.html">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="currentportfolio.html">Current Portfolio</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="blog.html">Blog</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Projects
+        </a>
+        <div class="dropdown-menu" aria-labelledby="projectsDropdown">
+          <a class="dropdown-item" href="spectrum.html">Spectrum</a>
+          <a class="dropdown-item" href="party.html">Party</a>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Fanart</h6>
+          <a class="dropdown-item" href="Friends.html">Friends</a>
+          <a class="dropdown-item" href="MediaILike.html">Media I Like</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="mediumsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Mediums
+        </a>
+        <div class="dropdown-menu" aria-labelledby="mediumsDropdown">
+          <a class="dropdown-item" href="3D.html">3D</a>
+          <a class="dropdown-item" href="Photography.html">Photography</a>
+          <a class="dropdown-item" href="Writing.html">Writing</a>
+          <a class="dropdown-item" href="Videos.html">Videos</a>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Coding</h6>
+          <a class="dropdown-item" href="Websites.html">Websites</a>
+          <a class="dropdown-item" href="Games.html">Games</a>
+          <a class="dropdown-item" href="Built-in.html">Built-in</a>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Physical Media</h6>
+          <a class="dropdown-item" href="Sculptures.html">Sculptures</a>
+          <a class="dropdown-item" href="Paintings.html">Paintings</a>
+          <a class="dropdown-item" href="Sketches.html">Sketches</a>
+          <a class="dropdown-item" href="Drawings.html">Drawings</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="archiveDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Archive
+        </a>
+        <div class="dropdown-menu" aria-labelledby="archiveDropdown">
+          <a class="dropdown-item" href="earlywork.html">Early Work</a>
+          <a class="dropdown-item" href="OutdatedDesigns.html">Outdated Designs</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="Shop.html">Shop</a>
+      </li>
+    </ul>
+  </div>  
+</nav>
+
+<!-- Draggable Spotify Player Widget -->
+<div id="spotifyWidget">
+  <div id="spotifyHeader">
+    <span>🎵 Spotify Player</span>
+    <button id="spotifyMinimize" onclick="toggleSpotify()">+</button>
+  </div>
+  <div id="spotifyContent" style="display: none;">
+    <iframe id="spotifyIframe" style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+  </div>
+</div>
+
+<div class="container" style="margin-top:30px">
+  <div class="row">
+    <div class="col-12">
+      <h1 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Built-in</h1>
+      <h5 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Coded Experiences Built Into This Site</h5>
+      <p style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Interactive coded experiences and tools directly embedded within this website.</p>
+    </div>
+  </div>
+
+  <!-- Gallery Section -->
+  <div class="row">
+    <div class="col-12 mb-4">
+      <h3 style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Built-in Coded Experiences</h3>
+    </div>
+    
+    <!-- Coming Soon -->
+    <div class="col-12 mb-4">
+      <div style="background-image: url('SitePics/whitepaper.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; padding: 40px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center;">
+        <h4 style="color: #b82b2f;">Coming Soon</h4>
+        <p>Coded experiences and interactive tools will be added here as they are developed and integrated into the site.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Image Modal -->
+<div id="imageModal" class="modal">
+  <span class="close">&times;</span>
+  <div class="modal-content">
+    <img id="modalImageDisplay" class="modal-img">
+    <div id="caption"></div>
+  </div>
+</div>
+
+<!-- Walking Character -->
+<img id="walkingCharacter" class="walking-character" src="SitePics/Shadite.png" alt="Walking Character">
+
+<script>
+// Set Spotify widget to minimized state on load
+document.addEventListener('DOMContentLoaded', function() {
+  const spotifyWidget = document.getElementById('spotifyWidget');
+  if (spotifyWidget) {
+    spotifyWidget.style.width = '200px';
+  }
+});
+
+// Draggable Spotify Widget
+let isDragging = false;
+let currentX;
+let currentY;
+let initialX;
+let initialY;
+let xOffset = 0;
+let yOffset = 0;
+
+const spotifyWidget = document.getElementById('spotifyWidget');
+const spotifyHeader = document.getElementById('spotifyHeader');
+
+spotifyHeader.addEventListener('mousedown', dragStart);
+document.addEventListener('mousemove', drag);
+document.addEventListener('mouseup', dragEnd);
+
+function dragStart(e) {
+  initialX = e.clientX - xOffset;
+  initialY = e.clientY - yOffset;
+  
+  if (e.target === spotifyHeader || e.target.parentElement === spotifyHeader) {
+    isDragging = true;
+  }
+}
+
+function drag(e) {
+  if (isDragging) {
+    e.preventDefault();
+    currentX = e.clientX - initialX;
+    currentY = e.clientY - initialY;
+    xOffset = currentX;
+    yOffset = currentY;
+    
+    setTranslate(currentX, currentY, spotifyWidget);
+  }
+}
+
+function dragEnd(e) {
+  initialX = currentX;
+  initialY = currentY;
+  isDragging = false;
+}
+
+function setTranslate(xPos, yPos, el) {
+  el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+}
+
+function toggleSpotify() {
+  const content = document.getElementById('spotifyContent');
+  const btn = document.getElementById('spotifyMinimize');
+  
+  if (content.style.display === 'none') {
+    content.style.display = 'block';
+    btn.textContent = '−';
+    spotifyWidget.style.width = '300px';
+  } else {
+    content.style.display = 'none';
+    btn.textContent = '+';
+    spotifyWidget.style.width = '200px';
+  }
+}
+
+// Modal functionality
+function openModal(imageSrc, caption) {
+  const modal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('modalImageDisplay');
+  const captionText = document.getElementById('caption');
+  
+  modal.style.display = "block";
+  modalImg.src = imageSrc;
+  captionText.innerHTML = caption;
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+  const modal = document.getElementById('imageModal');
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+});
+
+// Close modal with escape key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    const modal = document.getElementById('imageModal');
+    modal.style.display = "none";
+  }
+});
+</script>
+
+<style>
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+</style>
+
+</body>
+</html>

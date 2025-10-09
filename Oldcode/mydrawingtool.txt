@@ -1,0 +1,96 @@
+char currentkey = '1';
+
+color bgc = color(255);
+
+void setup() {
+
+size(600, 600);
+
+background(255);
+smooth();
+}
+
+void draw() {
+
+if(keyPressed) {
+clear_print(); 
+}
+
+if(mousePressed) {
+  drawChoice(); 
+}
+}
+
+
+void drawChoice() {
+ 
+
+ char currentkey = key;
+   
+switch(currentkey) {
+case '1': 
+  println("1");  // red line
+  drawline(color(165,57,60), mouseX, mouseY, pmouseX, pmouseY); 
+  break;
+case '2': 
+  println("2");  // blue line
+  drawline(color(35,62,115), mouseX, mouseY, pmouseX, pmouseY);
+  break;
+case '3': 
+  println("2");  // green line
+  drawline(color(75,183,73), mouseX, mouseY, pmouseX, pmouseY);
+  break;
+  case '4': 
+  println("2");  // black line
+  drawline(color(17,17,17), mouseX, mouseY, pmouseX, pmouseY);
+  break;
+ 
+case '5': 
+  println("2");  // orange line
+  drawline(color(233,146,50), mouseX, mouseY, pmouseX, pmouseY);
+  break;
+case '6': 
+  println("2");  // erase with bg color
+  eraser(bgc,mouseX, mouseY,25);
+  break;
+default:             
+  println("None");   
+  break;   
+}
+  
+}
+
+void drawline(color k, int lx,int ly, int px,int py) {
+ strokeWeight(5);
+  stroke(k);
+  line(lx, ly, px, py); 
+}
+
+
+
+void eraser(color k,int lx,int ly,int sz) {
+  stroke(k);
+  ellipse(lx, ly, sz,sz); 
+}
+
+
+void clear_print() {
+
+
+  if (key == 'x' || key == 'X') {
+   for (int i = 0; i < 100; i++) {
+ background(random(-50, 50));
+ 
+}
+  } else if (key == 'p' || key == 'P') {
+     saveFrame("project1_####.png");
+    delay(500);
+  
+ 
+}
+
+}
+
+
+
+ 

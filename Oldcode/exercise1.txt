@@ -1,0 +1,111 @@
+int counter = 0;
+float a = 0;
+float x = 0;
+int i = 0; 
+float randr = 0;
+float randg = 0;
+float randb = 0;
+int counterHSB = 0;
+ 
+
+void setup() {
+  size(600, 600);
+  background(0, 50, 100);
+  
+  frameRate(30);
+ 
+  print(counter);
+}
+
+void draw() {
+  counterHSB= 0;
+  for (int x = 0; x < width; x += 15) {
+    for (int j = 0; j < height; j += 15) {
+      
+      randr = random(255);
+      randg = random(255);
+      randb = random(255);
+      fill(counterHSB, randg, randb);
+      
+      if( counterHSB> 255 ){
+        counterHSB = 0;
+      }
+      rect( x+5, j+5, 10, 10 );
+    }
+
+
+ 
+
+
+
+  fill(counter, random(155), 100, counter);
+  
+  
+ ellipse(random(90), counter, 200 - random(200), 30);
+ ellipse(random(500), counter, 200 - random(600), 30);
+ fill(counter, 70, 25, 200-(counter/2));
+ rect(counter, 0, 25, height - random(180));
+ rect(counter, 9, 95, height - random (600));
+       
+      
+      
+  if (counter < height) {
+    counter+=40;
+  } else {
+     background(208);
+    counter = 0;
+    
+  }
+  
+ 
+
+
+      
+       
+      
+ float s = sin(a);  
+ 
+
+ a+= .09;
+ x+=.9;
+  for (int i = 400; i < 5; i++);
+  
+    rect(s*70+x,s*40+x,60,20);
+  rect(s*70+x, s*10+x,60,20, 255);
+  
+  
+  rect(s*80+x,s*60+x,60,20);
+  rect(s*80+x, s*30+x,60,20, 255);
+  
+    rect(s*90+x,s*70+x,60,20);
+  rect(s*90+x, s*40+x,60,20, 255);
+  
+  println("a " + a + " sin " + s  );
+ 
+  }
+  
+  
+  println(frameCount);
+  
+  
+  
+  record(200);
+  
+}
+
+
+
+
+void record(int t) {
+  
+  if ( frameCount < t ) {  
+    saveFrame("sketch1/rdots_####.png");
+  } else {
+    exit();    
+  }
+ 
+ 
+
+
+   
+}

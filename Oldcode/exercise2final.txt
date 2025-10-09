@@ -1,0 +1,77 @@
+
+int tCounter = 0;
+PFont f; 
+PImage b;
+PImage b2;
+
+void setup() {
+  size(800, 700);
+  frameRate(50);
+  b = loadImage("arsoncat.png"); 
+  
+ b2 = loadImage("iamfargeild.png");
+
+ 
+ 
+  
+  f = createFont("Impact", 24);
+  
+  textFont(f);
+ 
+  fill(255, 186, 64);
+  
+  text("Fargeild", 100, 100);
+}
+
+
+
+void draw() {
+  background(0);
+  
+  if (!mousePressed) {
+    noTint();
+    image(b, 0, 0, width, height);
+     } else {
+   if (mousePressed) {
+    noTint();
+   
+    image(b2, 0, 0, width, height);
+   }
+       
+   fill(255, 186, 64);
+   textSize(50);
+  text("Fargeild", tCounter, 100);
+  
+  // this is an example of 'and' logic
+  if ( mousePressed && keyPressed == true )  {
+    textSize(50);
+    fill(255, 0, 0);
+    text("Get a load of this guy. ", 100, tCounter);
+    
+    
+  }
+  
+  tCounter ++;
+  if (tCounter > width) {
+    tCounter = -150;
+  }
+   println(frameCount);
+  
+  
+  
+  record(200);
+  
+}
+}
+
+
+
+void record(int t) {
+  
+  if ( frameCount < t ) {  
+    saveFrame("sketch2/rdots_####.png");
+  } else {
+    exit();    
+  }
+ 
+}

@@ -1,0 +1,146 @@
+
+PImage b;
+PImage b2;
+
+void setup(){
+  size(700,600);
+background(0);
+   b = loadImage("sus.png"); 
+ 
+    b2 = loadImage("roomfunny.png");
+}
+
+void draw(){
+  
+  background(0);
+  
+  if (!keyPressed) {
+    noTint();
+    image(b, 0, 0, width, height);
+    pguy();
+    noStroke();
+     } else {
+   if (key == 'w' ) {
+    noTint();
+ 
+    image(b2, 0, 0, width, height);
+   }
+
+  noStroke();
+  
+  push();
+  rotate( radians(10) );
+   float s = mouseX/600.0;
+  scale(s); 
+ jpguy();
+
+    pop();
+    
+    println(frameCount);
+  
+  
+  
+  record(200);
+  
+}
+
+}
+
+
+void record(int t) {
+  
+  if ( frameCount < t ) {  
+    saveFrame("sketch3/rdots_####.png");
+  } else {
+    exit();    
+  }
+ 
+}
+
+   
+
+
+void jpguy() {
+   color p = color(170,0,200);
+   color k = color(0);
+   color w = color(255);
+  head(20,0,p);
+  eye(80,0,k);
+  eye(-40,0,k);
+  whites(-40,0,w);
+  whites(80,0,w);
+  pupils(80,0,k);
+  pupils(-40,0,k);
+  mouth(-60,90,k);
+  mouth(-60,130,k);
+}
+
+
+void pguy() {
+  //body color
+  color c = color(170,0,200);
+  
+  //black
+   color k = color(0);
+   //white
+   color w = color(255);
+   
+  
+  fill(c);
+  //body
+   rect(width/2,height/2,70,125,5);
+ //arms  
+    rect(width/2 - 90,height/2 + 10,150,20,5);
+  rect(width/2 - 70,height/2 + 40,100,20,5);
+ 
+ //head
+ ellipse(width/2,height/2 -30 ,70,90);
+ 
+  //legs
+  rect(width/2,height/2+120 ,27,150,5); 
+  rect(width/2 + 40,height/2+120 ,27,170,5); 
+  
+  //feet
+  rect(width/2 + 30,height/2+270 ,50,30,5);
+  rect(width/2 - 20,height/2+250 ,50,30,5);
+  
+   fill(k);
+   //eye blacks
+   rect(width/2 - 30,height/2 - 30,20,15,5);
+   rect(width/2 + 10,height/2 - 30,20,15,5);
+   
+   fill(w);
+   //eye whites
+   rect(width/2 - 30,height/2 - 25,10,10);
+   rect(width/2 + 10,height/2 - 25,10,10);
+   
+   fill(k);
+   //mouth
+     rect(width/2 - 20,height/2 - 10,50,10,5);
+   rect(width/2 - 16,height/2 - 10,40,20,5);
+   
+}
+
+
+void head(int xpos, int ypos, color p) {
+  fill(p);
+ellipse(width/2+xpos,height/2 -110 +ypos ,290,490);
+}
+
+void eye(int xpos, int ypos, color k) {
+  fill(k);
+rect(width/2+xpos,height/2 -110 +ypos ,50,80,5);
+}
+
+void whites(int xpos, int ypos, color w) {
+  fill(w);
+rect(width/2+xpos,height/2 -110 +ypos ,40,70,5);
+}
+void pupils(int xpos, int ypos, color k) {
+  fill(k);
+rect(width/2+xpos,height/2 -110 +ypos ,30,60,5);
+}
+void mouth(int xpos, int ypos, color k) {
+  fill(k);
+rect(width/2+xpos,height/2 -110 +ypos ,200,50,5);
+}
