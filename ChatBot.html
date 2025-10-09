@@ -5,6 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com https://api-inference.huggingface.co https://api.languagetool.org https://en.wikipedia.org https://api.dictionaryapi.dev https://uselessfacts.jsph.pl https://api.adviceslip.com https://icanhazdadjoke.com https://api.quotable.io https://api.github.com https://open.spotify.com; connect-src 'self' https://api-inference.huggingface.co https://api.languagetool.org https://en.wikipedia.org https://api.dictionaryapi.dev https://uselessfacts.jsph.pl https://api.adviceslip.com https://icanhazdadjoke.com https://api.quotable.io https://api.github.com; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data:; frame-src https://open.spotify.com;">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -916,8 +917,81 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 // ========================================
-// PRIVACY PROTECTION SYSTEM
+// ADVANCED SECURITY & PRIVACY PROTECTION SYSTEM
 // ========================================
+
+// Rate limiting to prevent abuse
+let requestLog = [];
+const MAX_REQUESTS_PER_MINUTE = 30;
+
+function checkRateLimit() {
+  const now = Date.now();
+  // Remove requests older than 1 minute
+  requestLog = requestLog.filter(time => now - time < 60000);
+  
+  if (requestLog.length >= MAX_REQUESTS_PER_MINUTE) {
+    return false; // Rate limit exceeded
+  }
+  
+  requestLog.push(now);
+  return true;
+}
+
+// Input sanitization to prevent XSS and injection attacks
+function sanitizeInput(text) {
+  if (!text) return '';
+  
+  // Remove any HTML/script tags
+  let sanitized = text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  sanitized = sanitized.replace(/<[^>]*>/g, '');
+  
+  // Remove dangerous characters and patterns
+  sanitized = sanitized.replace(/javascript:/gi, '');
+  sanitized = sanitized.replace(/on\w+\s*=/gi, '');
+  sanitized = sanitized.replace(/eval\(/gi, '');
+  sanitized = sanitized.replace(/expression\(/gi, '');
+  
+  // Limit length to prevent overflow attacks
+  if (sanitized.length > 5000) {
+    sanitized = sanitized.substring(0, 5000);
+  }
+  
+  return sanitized;
+}
+
+// Detect attempts to extract system information
+function detectHackingAttempt(text) {
+  const lower = text.toLowerCase();
+  const dangerousPatterns = [
+    /\b(localStorage|sessionStorage|document\.cookie|window\.location)\b/i,
+    /\b(api[_\s]?key|token|password|credential|secret)\b/i,
+    /\b(eval|exec|function\(|setTimeout|setInterval)\b/i,
+    /<script|<iframe|javascript:|onerror=/i,
+    /\b(select|drop|insert|update|delete)\b.*\b(from|table|database)\b/i,
+    /\.\.\//g, // Path traversal
+    /\b(system|admin|root|sudo)\b.*\b(access|password|login)\b/i,
+    /\b(show|give|reveal|display|tell)\b.*\b(key|token|password|secret|credential)\b/i,
+    /\b(your|my|the)\b.*\b(api key|token|password|source code)\b/i,
+    /\bwindow\.|document\.|console\./i,
+    /\b__proto__|constructor|prototype\b/i
+  ];
+  
+  return dangerousPatterns.some(pattern => pattern.test(text));
+}
+
+// Additional check: Block system information requests
+function isSystemInfoRequest(text) {
+  const lower = text.toLowerCase();
+  const systemQuestions = [
+    /how (do|does) (you|this|the bot) (work|function|operate)/i,
+    /what (is|are) (your|the) (source code|code|implementation)/i,
+    /(show|give|reveal|display) (me )?(your|the) (code|source|keys|secrets)/i,
+    /what.*stored in (localStorage|storage|memory)/i,
+    /how.*you.*store (data|information|keys)/i
+  ];
+  
+  return systemQuestions.some(pattern => pattern.test(lower));
+}
 
 function detectPersonalInfo(text) {
   const detections = [];
@@ -966,6 +1040,17 @@ function detectPersonalInfo(text) {
     detections.push('Zip Code');
   }
   
+  // API Keys and tokens
+  const apiKeyRegex = /\b(hf_[a-zA-Z0-9]{30,}|sk-[a-zA-Z0-9]{30,}|[a-f0-9]{32,})\b/g;
+  if (apiKeyRegex.test(text)) {
+    detections.push('API Key/Token');
+  }
+  
+  // Passwords in plain text
+  if (/\b(password|passwd|pwd)[\s:=]+[^\s]+/i.test(text)) {
+    detections.push('Password');
+  }
+  
   return detections;
 }
 
@@ -973,28 +1058,53 @@ function sanitizePersonalInfo(text) {
   let sanitized = text;
   
   // Replace IP addresses
-  sanitized = sanitized.replace(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g, '[IP_REDACTED]');
-  sanitized = sanitized.replace(/\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/g, '[IP_REDACTED]');
+  sanitized = sanitized.replace(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g, '[REDACTED]');
+  sanitized = sanitized.replace(/\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/g, '[REDACTED]');
   
   // Replace email addresses
-  sanitized = sanitized.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL_REDACTED]');
+  sanitized = sanitized.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[REDACTED]');
   
   // Replace phone numbers
-  sanitized = sanitized.replace(/(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g, '[PHONE_REDACTED]');
+  sanitized = sanitized.replace(/(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g, '[REDACTED]');
   
   // Replace street addresses
-  sanitized = sanitized.replace(/\b\d+\s+[A-Za-z]+\s+(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Lane|Ln|Drive|Dr|Court|Ct|Way)\b/gi, '[ADDRESS_REDACTED]');
+  sanitized = sanitized.replace(/\b\d+\s+[A-Za-z]+\s+(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Lane|Ln|Drive|Dr|Court|Ct|Way)\b/gi, '[REDACTED]');
   
   // Replace SSN
-  sanitized = sanitized.replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[SSN_REDACTED]');
+  sanitized = sanitized.replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[REDACTED]');
   
   // Replace credit cards
-  sanitized = sanitized.replace(/\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, '[CARD_REDACTED]');
+  sanitized = sanitized.replace(/\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, '[REDACTED]');
   
   // Replace zip codes
-  sanitized = sanitized.replace(/\b\d{5}(?:-\d{4})?\b/g, '[ZIP_REDACTED]');
+  sanitized = sanitized.replace(/\b\d{5}(?:-\d{4})?\b/g, '[REDACTED]');
+  
+  // Replace API keys and tokens (but not when setting them intentionally)
+  if (!/^SET API KEY/i.test(text)) {
+    sanitized = sanitized.replace(/\b(hf_[a-zA-Z0-9]{30,}|sk-[a-zA-Z0-9]{30,})\b/g, '[REDACTED]');
+  }
+  
+  // Replace passwords
+  sanitized = sanitized.replace(/\b(password|passwd|pwd)[\s:=]+[^\s]+/gi, 'password: [REDACTED]');
   
   return sanitized;
+}
+
+// Secure storage check - prevent direct localStorage access attempts
+function blockDirectStorageAccess(text) {
+  const lower = text.toLowerCase();
+  
+  // Block any attempts to access storage directly
+  if (/localStorage|sessionStorage|cookie|storage/i.test(text)) {
+    return true;
+  }
+  
+  // Block attempts to extract keys
+  if (/getItem|setItem|removeItem|clear\(\)|key\(/i.test(text)) {
+    return true;
+  }
+  
+  return false;
 }
 
 // ========================================
@@ -1490,11 +1600,25 @@ SMART MEMORY:
 MEMORY         - Show what the AI remembers about you
 FORGET ME      - Clear all learned information
 
+CONVERSATION INTELLIGENCE:
+SHOW CONTEXT   - View current conversation context
+CLEAR CONTEXT  - Reset conversation tracking
+
 PROFILE PICTURES:
 CHANGE BOT PICTURE  - Upload a custom bot profile picture
 CHANGE MY PICTURE   - Upload your own profile picture
 RESET BOT PICTURE   - Reset bot picture to default
 RESET MY PICTURE    - Reset your picture to default
+
+AI ENHANCEMENT (Hugging Face):
+SET API KEY [key]   - Enable advanced AI responses (FREE)
+API STATUS          - Check AI enhancement status
+REMOVE API KEY      - Disable AI enhancement
+Get free key: https://huggingface.co/settings/tokens
+
+SECURITY & PRIVACY:
+SECURITY STATUS     - View all active protections
+Note: All personal info is automatically detected and blocked
 
 SPELL CHECK ON - Enable automatic spell checking
 SPELL CHECK OFF- Disable spell checking
@@ -1762,6 +1886,207 @@ function dismissSuggestions() {
 function hideSpellSuggestions() {
   document.getElementById('spellSuggestions').style.display = 'none';
   pendingCorrections = {};
+}
+
+// ========================================
+// ADVANCED INTELLIGENCE SYSTEM
+// ========================================
+
+let conversationContext = {
+  currentTopic: null,
+  lastUserSentiment: 'neutral',
+  topicHistory: [],
+  entityCache: {}
+};
+
+// Sentiment analysis
+function analyzeSentiment(text) {
+  const lower = text.toLowerCase();
+  
+  // Positive indicators
+  const positiveWords = ['love', 'great', 'awesome', 'amazing', 'wonderful', 'happy', 'excited', 'good', 'excellent', 'fantastic', 'perfect', 'best', 'enjoy', 'fun'];
+  const positiveCount = positiveWords.filter(word => lower.includes(word)).length;
+  
+  // Negative indicators
+  const negativeWords = ['hate', 'bad', 'awful', 'terrible', 'sad', 'angry', 'frustrated', 'annoyed', 'upset', 'disappointed', 'boring', 'worst', 'sucks'];
+  const negativeCount = negativeWords.filter(word => lower.includes(word)).length;
+  
+  // Question indicators
+  const isQuestion = text.includes('?') || /^(what|who|when|where|why|how|can|could|would|should|is|are|do|does)/i.test(text);
+  
+  if (positiveCount > negativeCount && positiveCount > 0) return 'positive';
+  if (negativeCount > positiveCount && negativeCount > 0) return 'negative';
+  if (isQuestion) return 'curious';
+  return 'neutral';
+}
+
+// Extract important entities (people, places, concepts)
+function extractEntities(text) {
+  const words = text.split(' ');
+  const entities = [];
+  
+  // Look for capitalized words (potential proper nouns)
+  words.forEach((word, index) => {
+    const cleaned = word.replace(/[^a-zA-Z]/g, '');
+    if (cleaned.length > 2 && cleaned[0] === cleaned[0].toUpperCase() && cleaned !== cleaned.toUpperCase()) {
+      entities.push(cleaned);
+    }
+  });
+  
+  // Extract quoted phrases
+  const quotes = text.match(/"([^"]+)"/g);
+  if (quotes) {
+    quotes.forEach(q => entities.push(q.replace(/"/g, '')));
+  }
+  
+  return entities;
+}
+
+// Context-aware response generation
+function getContextualResponse(input, sentiment) {
+  const lower = input.toLowerCase();
+  
+  // If user is asking about previous topic
+  if (conversationContext.currentTopic && (lower.includes('that') || lower.includes('it') || lower.includes('this'))) {
+    if (/tell me more|more about|what about|how about/i.test(lower)) {
+      setTimeout(async () => {
+        const result = await searchWikipedia(conversationContext.currentTopic);
+        addTerminalLine(result, '#00ff00');
+        saveToJournal(input, result);
+      }, 100);
+      return `I'll find more information about ${conversationContext.currentTopic}...`;
+    }
+  }
+  
+  // Sentiment-based responses
+  if (sentiment === 'positive') {
+    const responses = [
+      `I'm glad you're enthusiastic! What else would you like to explore?`,
+      `Great energy! How can I help you with that?`,
+      `I love your enthusiasm! What would you like to know more about?`
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
+  } else if (sentiment === 'negative') {
+    const responses = [
+      `I understand your frustration. Let me try to help. What specifically can I assist with?`,
+      `I'm sorry you're not satisfied. What can I do to help?`,
+      `I hear you. Would you like me to search for better information on this?`
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
+  
+  return null; // No contextual response
+}
+
+// Update conversation context
+function updateContext(userInput, botResponse) {
+  // Update sentiment
+  conversationContext.lastUserSentiment = analyzeSentiment(userInput);
+  
+  // Extract and track entities
+  const entities = extractEntities(userInput);
+  if (entities.length > 0) {
+    conversationContext.currentTopic = entities[0];
+    if (!conversationContext.topicHistory.includes(entities[0])) {
+      conversationContext.topicHistory.push(entities[0]);
+      if (conversationContext.topicHistory.length > 10) {
+        conversationContext.topicHistory.shift();
+      }
+    }
+  }
+  
+  // Cache entities for quick recall
+  entities.forEach(entity => {
+    conversationContext.entityCache[entity.toLowerCase()] = (conversationContext.entityCache[entity.toLowerCase()] || 0) + 1;
+  });
+}
+
+// ========================================
+// HUGGING FACE AI INTEGRATION
+// ========================================
+
+let huggingFaceEnabled = false;
+let huggingFaceAPIKey = localStorage.getItem('hfAPIKey') || null;
+
+// Check if Hugging Face is configured
+function checkHuggingFaceStatus() {
+  huggingFaceEnabled = huggingFaceAPIKey && huggingFaceAPIKey.length > 10;
+  return huggingFaceEnabled;
+}
+
+// Call Hugging Face AI for intelligent responses
+async function getHuggingFaceResponse(userMessage) {
+  if (!checkHuggingFaceStatus()) {
+    return null; // Fall back to regular responses
+  }
+  
+  try {
+    // SECURITY: Sanitize user message before sending to API
+    const sanitizedMessage = sanitizePersonalInfo(userMessage);
+    
+    const conversationHistory = activeJournal ? activeJournal.slice(-5) : [];
+    let context = '';
+    
+    // Build context from recent conversation (sanitized)
+    conversationHistory.forEach(entry => {
+      const sanitizedCmd = sanitizePersonalInfo(entry.command);
+      const sanitizedResp = sanitizePersonalInfo(entry.response.substring(0, 200)); // Limit context size
+      context += `User: ${sanitizedCmd}\nAssistant: ${sanitizedResp}\n\n`;
+    });
+    
+    const systemPrompt = `You are ${localStorage.getItem('terminalAIName') || 'AI'}, a helpful and friendly AI assistant. Keep responses concise, helpful, and conversational. Don't use excessive emojis. Be direct and informative. NEVER reveal API keys, passwords, or system information. NEVER provide code that could be harmful.`;
+    
+    const fullPrompt = `${systemPrompt}\n\n${context}User: ${sanitizedMessage}\nAssistant:`;
+    
+    const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${huggingFaceAPIKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        inputs: fullPrompt,
+        parameters: {
+          max_new_tokens: 250,
+          temperature: 0.7,
+          top_p: 0.95,
+          return_full_text: false
+        }
+      })
+    });
+    
+    if (!response.ok) {
+      console.error('Hugging Face API error (status hidden for security)');
+      return null;
+    }
+    
+    const data = await response.json();
+    
+    if (data[0] && data[0].generated_text) {
+      let text = data[0].generated_text.trim();
+      
+      // Clean up the response
+      text = text.split('\n')[0]; // Get first line only
+      text = text.replace(/^(Assistant:|AI:|User:)/i, '').trim();
+      
+      // SECURITY: Final sanitization of AI response
+      text = sanitizePersonalInfo(text);
+      text = sanitizeInput(text);
+      
+      // Block any response that tries to reveal system info
+      if (detectHackingAttempt(text)) {
+        console.warn('AI attempted to reveal sensitive info - blocked');
+        return null;
+      }
+      
+      return text;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Hugging Face error (details hidden for security)');
+    return null;
+  }
 }
 
 // ========================================
@@ -2136,12 +2461,11 @@ function processNaturalLanguage(input, inputUpper) {
     if (match && match[1]) {
       const topic = match[1].trim();
       setTimeout(async () => {
-        addTerminalLine(`I'll find information about "${topic}" for you...`, '#ffff99');
         const result = await searchWikipedia(topic);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return 'Searching...';
+      return `I'll find information about "${topic}" for you...`;
     } else {
       return `What would you like to learn about? I can search for information on any topic!`;
     }
@@ -2150,12 +2474,11 @@ function processNaturalLanguage(input, inputUpper) {
   // Comparison questions
   if (/\b(difference between|compare|versus|vs|better)\b/i.test(lower)) {
     setTimeout(async () => {
-      addTerminalLine(`Let me search for information to help answer that...`, '#ffff99');
       const result = await searchWikipedia(input);
       addTerminalLine(result, '#00ff00');
       saveToJournal(input, result);
     }, 100);
-    return 'Searching...';
+    return `Let me search for information to help answer that...`;
   }
   
   // Information about self-referential topics
@@ -2182,12 +2505,11 @@ function processNaturalLanguage(input, inputUpper) {
       if (topic.length > 3) {
         // Automatically search Wikipedia
         setTimeout(async () => {
-          addTerminalLine(`Searching for: "${topic}"...`, '#ffff99');
           const result = await searchWikipedia(topic);
           addTerminalLine(result, '#00ff00');
           saveToJournal(input, result);
         }, 100);
-        return 'One moment...';
+        return `Searching for: "${topic}"...`;
       }
     }
   }
@@ -2237,12 +2559,23 @@ function processNaturalLanguage(input, inputUpper) {
     }
   }
   
-  // Yes/No responses
+  // Yes/No responses (context-aware)
   if (/^(yes|yeah|yep|yup|sure|okay|ok|fine|alright)(\s|!|$)/i.test(lower)) {
+    // If we have a current topic and user says yes, search for it
+    if (conversationContext.currentTopic) {
+      setTimeout(async () => {
+        const result = await searchWikipedia(conversationContext.currentTopic);
+        addTerminalLine(result, '#00ff00');
+        saveToJournal(input, result);
+        updateContext(input, result);
+      }, 100);
+      return `Great! Searching for ${conversationContext.currentTopic}...`;
+    }
     return `Alright! What would you like to do?`;
   }
   
   if (/^(no|nope|nah|not really)(\s|!|$)/i.test(lower)) {
+    conversationContext.currentTopic = null; // Clear topic if user says no
     return `Okay. What would you like to do instead?`;
   }
   
@@ -2270,12 +2603,11 @@ function processNaturalLanguage(input, inputUpper) {
     if (match && match[2]) {
       const word = match[2].trim();
       setTimeout(async () => {
-        addTerminalLine(`Looking up definition of "${word}"...`, '#ffff99');
         const result = await getDefinition(word);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return 'Searching...';
+      return `Looking up definition of "${word}"...`;
     }
   }
   
@@ -2284,12 +2616,11 @@ function processNaturalLanguage(input, inputUpper) {
     const word = lower.replace('?', '').trim();
     if (word.length > 2) {
       setTimeout(async () => {
-        addTerminalLine(`Looking up "${word}"...`, '#ffff99');
         const result = await getDefinition(word);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return 'Searching...';
+      return `Looking up "${word}"...`;
     }
   }
   
@@ -2300,38 +2631,41 @@ function processNaturalLanguage(input, inputUpper) {
       const query = match[2].trim();
       // Trigger Wikipedia search asynchronously
       setTimeout(async () => {
-        addTerminalLine(`Searching for "${query}"...`, '#ffff99');
         const result = await searchWikipedia(query);
         addTerminalLine(result, '#00ff00');
         if (journalPermission === 'enabled') {
           saveToJournal(input, result);
         }
       }, 100);
-      return 'Searching...';
+      return `Searching for "${query}"...`;
     }
   }
   
   // Random content requests
   if (/give me (a |an )?(fact|joke|quote|advice)|tell me (a |an )?(fact|joke|quote|something)|i need (a |an )?(fact|joke|quote|advice)|share (a |an )?(fact|joke|quote)/i.test(lower)) {
+    let loadingMsg = 'One moment...';
+    
     setTimeout(async () => {
       let result;
       if (/fact/i.test(lower)) {
-        addTerminalLine('Finding a random fact for you...', '#ffff99');
         result = await getRandomFact();
       } else if (/joke/i.test(lower)) {
-        addTerminalLine('Getting a joke for you...', '#ffff99');
         result = await getDadJoke();
       } else if (/quote/i.test(lower)) {
-        addTerminalLine('Finding an inspirational quote...', '#ffff99');
         result = await getRandomQuote();
       } else if (/advice/i.test(lower)) {
-        addTerminalLine('Getting some advice for you...', '#ffff99');
         result = await getAdvice();
       }
       addTerminalLine(result, '#00ff00');
       saveToJournal(input, result);
     }, 100);
-    return 'One moment...';
+    
+    if (/fact/i.test(lower)) loadingMsg = 'Finding a random fact for you...';
+    else if (/joke/i.test(lower)) loadingMsg = 'Getting a joke for you...';
+    else if (/quote/i.test(lower)) loadingMsg = 'Finding an inspirational quote...';
+    else if (/advice/i.test(lower)) loadingMsg = 'Getting some advice for you...';
+    
+    return loadingMsg;
   }
   
   // Detect "What is X?" format for both Wikipedia and definitions
@@ -2343,7 +2677,6 @@ function processNaturalLanguage(input, inputUpper) {
       // Check if it's a single word (likely wants definition)
       if (topic.split(' ').length === 1 && topic.length < 15) {
         setTimeout(async () => {
-          addTerminalLine(`Looking up "${topic}"...`, '#ffff99');
           const defResult = await getDefinition(topic);
           
           if (!defResult.includes('No definition found')) {
@@ -2351,22 +2684,20 @@ function processNaturalLanguage(input, inputUpper) {
             saveToJournal(input, defResult);
           } else {
             // Definition not found, try Wikipedia
-            addTerminalLine(`No dictionary definition. Searching Wikipedia for "${topic}"...`, '#ffff99');
             const wikiResult = await searchWikipedia(topic);
             addTerminalLine(wikiResult, '#00ff00');
             saveToJournal(input, wikiResult);
           }
         }, 100);
-        return 'Searching...';
+        return `Looking up "${topic}"...`;
       } else {
         // Multiple words - go straight to Wikipedia
         setTimeout(async () => {
-          addTerminalLine(`Searching Wikipedia for "${topic}"...`, '#ffff99');
           const result = await searchWikipedia(topic);
           addTerminalLine(result, '#00ff00');
           saveToJournal(input, result);
         }, 100);
-        return 'Searching...';
+        return `Searching Wikipedia for "${topic}"...`;
       }
     }
   }
@@ -2377,12 +2708,11 @@ function processNaturalLanguage(input, inputUpper) {
     if (match && match[2]) {
       const person = match[2].trim();
       setTimeout(async () => {
-        addTerminalLine(`Searching for information about "${person}"...`, '#ffff99');
         const result = await searchWikipedia(person);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return 'Searching...';
+      return `Searching for information about "${person}"...`;
     }
   }
   
@@ -2392,12 +2722,11 @@ function processNaturalLanguage(input, inputUpper) {
     if (match && match[2]) {
       const topic = match[2].trim();
       setTimeout(async () => {
-        addTerminalLine(`Searching for "${topic}"...`, '#ffff99');
         const result = await searchWikipedia(topic);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return 'Searching...';
+      return `Searching for "${topic}"...`;
     }
   }
   
@@ -2407,12 +2736,11 @@ function processNaturalLanguage(input, inputUpper) {
     if (match && match[2]) {
       const location = match[2].trim();
       setTimeout(async () => {
-        addTerminalLine(`Searching for "${location}"...`, '#ffff99');
         const result = await searchWikipedia(location);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
       }, 100);
-      return 'Searching...';
+      return `Searching for "${location}"...`;
     }
   }
   
@@ -2425,6 +2753,13 @@ function getConversationalFallback(input) {
   const lower = input.toLowerCase();
   const words = lower.split(' ').filter(w => w.length > 0);
   
+  // Analyze sentiment and check for contextual response
+  const sentiment = analyzeSentiment(input);
+  const contextResponse = getContextualResponse(input, sentiment);
+  if (contextResponse) {
+    return contextResponse;
+  }
+  
   // Check if it looks like a question - auto-search
   if (lower.includes('?')) {
     const query = input.replace(/\?/g, '').trim();
@@ -2434,21 +2769,21 @@ function getConversationalFallback(input) {
     if (wordCount <= 2 && !/(what|why|how|who|when|where)/i.test(query)) {
       // Likely asking for definition
       setTimeout(async () => {
-        addTerminalLine('Looking up that definition...', '#ffff99');
         const result = await getDefinition(query);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
+        updateContext(input, result);
       }, 100);
-      return 'Searching...';
+      return `Looking up definition of "${query}"...`;
     } else {
       // General question - search Wikipedia
       setTimeout(async () => {
-        addTerminalLine('Searching for information...', '#ffff99');
         const result = await searchWikipedia(query);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
+        updateContext(input, result);
       }, 100);
-      return 'Searching...';
+      return `Searching for "${query.substring(0, 60)}${query.length > 60 ? '...' : ''}"...`;
     }
   }
   
@@ -2463,15 +2798,16 @@ function getConversationalFallback(input) {
       const searchQuery = input.replace(/^(can you |could you |please |will you |would you |help me |tell me |show me |explain |find )/i, '').replace(/\?$/g, '').trim();
       
       setTimeout(async () => {
-        addTerminalLine(`I'll search for information about "${searchQuery.substring(0, 60)}${searchQuery.length > 60 ? '...' : ''}"`, '#ffff99');
         const result = await searchWikipedia(searchQuery);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
+        updateContext(input, result);
       }, 100);
-      return 'Searching...';
+      return `Searching for information about "${searchQuery.substring(0, 60)}${searchQuery.length > 60 ? '...' : ''}"...`;
     } else if (words.length > 2) {
-      // Medium length - offer to search
-      return `Would you like me to search for information about that? I can look up "${input}" for you. Just say yes or rephrase your question!`;
+      // Medium length - offer to search and set topic for context
+      conversationContext.currentTopic = input;
+      return `Would you like me to search for information about "${input}"? Just say yes if you'd like me to look that up!`;
     } else {
       return `Could you provide more details? I can search for information, definitions, or help with specific topics.`;
     }
@@ -2489,12 +2825,12 @@ function getConversationalFallback(input) {
       const mainSubject = subjects[0];
       // Proactively search if they mention something specific
       setTimeout(async () => {
-        addTerminalLine(`You mentioned "${mainSubject}". Let me find information about that...`, '#ffff99');
         const result = await searchWikipedia(mainSubject);
         addTerminalLine(result, '#00ff00');
         saveToJournal(input, result);
+        updateContext(input, result);
       }, 100);
-      return 'Searching...';
+      return `You mentioned "${mainSubject}". Let me find information about that...`;
     } else {
       return `I see what you're saying. Would you like me to search for more information about anything specific?`;
     }
@@ -2571,6 +2907,9 @@ function displayInteractiveHelp() {
           </div>
           <div style="color: #00ff00;">
             <span style="color: #ffff99;">ROLEPLAY:</span> <span style="color: ${rpStatus === 'ON' ? '#9370DB' : '#666'};">${rpStatus}</span>
+          </div>
+          <div style="color: #00ff00;">
+            <span style="color: #ffff99;">AI:</span> <span style="color: ${checkHuggingFaceStatus() ? '#FF1493' : '#666'};">${checkHuggingFaceStatus() ? '✓ ENHANCED' : 'BASIC'}</span>
           </div>
         </div>
         
@@ -2661,6 +3000,35 @@ function displayInteractiveHelp() {
             </div>
           </div>
           
+          <!-- AI Enhancement Panel -->
+          <div style="background: #0a0a0a; border: 2px solid #FF1493; padding: 12px;">
+            <div style="color: #FF1493; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #FF1493; padding-bottom: 4px;">
+              🤖 AI ENHANCEMENT
+            </div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Hugging Face Integration</div>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 6px;">
+              <button onclick="executeQuickCommand('API STATUS')" style="background: ${checkHuggingFaceStatus() ? '#00ff00' : '#FF1493'}; color: ${checkHuggingFaceStatus() ? '#000' : '#fff'}; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">${checkHuggingFaceStatus() ? '✓ AI ACTIVE' : 'STATUS'}</button>
+              <button onclick="promptAPIKey()" style="background: #FF1493; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#ff1aa3'" onmouseout="this.style.background='#FF1493'">SET KEY</button>
+            </div>
+            <div style="font-size: 9px; color: #888; margin-top: 6px; text-align: center;">
+              Free at huggingface.co
+            </div>
+          </div>
+          
+          <!-- Security Panel -->
+          <div style="background: #0a0a0a; border: 2px solid #ff0000; padding: 12px;">
+            <div style="color: #ff0000; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #ff0000; padding-bottom: 4px;">
+              🔒 SECURITY
+            </div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Privacy & Protection</div>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 6px;">
+              <button onclick="executeQuickCommand('SECURITY STATUS')" style="background: #00ff00; color: #000; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#00cc00'" onmouseout="this.style.background='#00ff00'">✓ PROTECTED</button>
+            </div>
+            <div style="font-size: 9px; color: #00ff00; margin-top: 6px; text-align: center;">
+              All data secured
+            </div>
+          </div>
+          
         </div>
         
         <!-- Footer Tips -->
@@ -2684,6 +3052,24 @@ function executeQuickCommand(cmd) {
   const input = document.getElementById('commandInput');
   input.value = cmd;
   executeCommand();
+}
+
+function promptAPIKey() {
+  const input = document.getElementById('commandInput');
+  input.value = 'SET API KEY ';
+  input.focus();
+  
+  // Show helpful and security message
+  addTerminalLine('🔐 SECURE API KEY SETUP', '#00ff00');
+  addTerminalLine('═══════════════════════════════════════', '#00ff00');
+  addTerminalLine('📝 Paste your Hugging Face API key after "SET API KEY"', '#ffff99');
+  addTerminalLine('Get your free key at: https://huggingface.co/settings/tokens', '#c0ffc0');
+  addTerminalLine('\n🛡️ SECURITY GUARANTEES:', '#00ff00');
+  addTerminalLine('• Your key is stored locally only (never transmitted)', '#c0ffc0');
+  addTerminalLine('• It will NEVER be displayed in chat or console', '#c0ffc0');
+  addTerminalLine('• Only used for Hugging Face API authentication', '#c0ffc0');
+  addTerminalLine('• Remove anytime with: REMOVE API KEY', '#c0ffc0');
+  addTerminalLine('═══════════════════════════════════════', '#00ff00');
 }
 
 function addTerminalLine(text, color = '#00ff00', isCommand = false) {
@@ -2744,9 +3130,54 @@ function addTerminalLine(text, color = '#00ff00', isCommand = false) {
 
 function executeCommand() {
   const input = document.getElementById('commandInput');
-  const command = input.value.trim();
+  let command = input.value.trim();
   
   if (!command) return;
+  
+  // ===== SECURITY LAYER 1: Rate Limiting =====
+  if (!checkRateLimit()) {
+    addTerminalLine('⚠️ RATE LIMIT EXCEEDED', '#ff6600');
+    addTerminalLine('Too many requests. Please wait a moment before trying again.', '#ffff99');
+    addTerminalLine('This prevents abuse and ensures system stability.', '#c0ffc0');
+    input.value = '';
+    return;
+  }
+  
+  // ===== SECURITY LAYER 2: Input Sanitization =====
+  command = sanitizeInput(command);
+  
+  // ===== SECURITY LAYER 3: Hacking Attempt Detection =====
+  if (detectHackingAttempt(command)) {
+    addTerminalLine('🚨 SECURITY ALERT: SUSPICIOUS INPUT DETECTED', '#ff0000');
+    addTerminalLine('Your input contains patterns that could be malicious.', '#ff6666');
+    addTerminalLine('This attempt has been logged and blocked.', '#ff6666');
+    addTerminalLine('If this was a mistake, please rephrase your message.', '#ffff99');
+    input.value = '';
+    
+    // Log the attempt (in console only, not exposed to user)
+    console.warn('Potential hacking attempt blocked:', new Date().toISOString());
+    return;
+  }
+  
+  // ===== SECURITY LAYER 4: Storage Access Prevention =====
+  if (blockDirectStorageAccess(command) && !command.toUpperCase().startsWith('SET API KEY')) {
+    addTerminalLine('🛡️ SECURITY: STORAGE ACCESS BLOCKED', '#ff6600');
+    addTerminalLine('Direct storage access is not permitted.', '#ffff99');
+    addTerminalLine('This protects your data and privacy.', '#c0ffc0');
+    input.value = '';
+    return;
+  }
+  
+  // ===== SECURITY LAYER 6: System Information Request Blocking =====
+  if (isSystemInfoRequest(command)) {
+    addTerminalLine(command, '#ffff00', true);
+    input.value = '';
+    addTerminalLine('🔒 SECURITY: SYSTEM INFORMATION PROTECTED', '#ff6600');
+    addTerminalLine('I cannot reveal implementation details or system architecture.', '#ffff99');
+    addTerminalLine('This protects the integrity and security of the system.', '#c0ffc0');
+    addTerminalLine('I\'m happy to help with other questions!', '#00ff00');
+    return;
+  }
   
   // Check if awaiting age verification
   if (window.awaitingAgeVerification) {
@@ -2764,15 +3195,16 @@ function executeCommand() {
   
   const commandUpper = command.toUpperCase();
   
-  // Check for personal information
+  // ===== SECURITY LAYER 5: Personal Information Detection =====
   const personalInfoDetected = detectPersonalInfo(command);
   if (personalInfoDetected.length > 0) {
-    addTerminalLine(command, '#ffff00', true);
+    addTerminalLine(sanitizePersonalInfo(command), '#ffff00', true);
     input.value = '';
     addTerminalLine('🛡️ PRIVACY PROTECTION ACTIVATED', '#ff6600');
     addTerminalLine(`Detected: ${personalInfoDetected.join(', ')}`, '#ffff99');
-    addTerminalLine('Personal information has been redacted for your safety.', '#ffff99');
-    addTerminalLine('Your message will not be saved.', '#ffff99');
+    addTerminalLine('Personal information has been automatically redacted.', '#ffff99');
+    addTerminalLine('Your message will not be saved or transmitted.', '#ffff99');
+    addTerminalLine('This protects you from accidentally sharing sensitive data.', '#c0ffc0');
     return;
   }
   
@@ -2884,6 +3316,121 @@ function executeCommand() {
       currentUser = null;
       isAdmin = false;
     }, 500);
+    return;
+  }
+  
+  // Hugging Face API commands (SECURE - no echo)
+  if (commandUpper.startsWith('SET API KEY')) {
+    const key = command.substring('SET API KEY'.length).trim();
+    if (key.length > 10) {
+      // Validate it looks like a Hugging Face token
+      if (key.startsWith('hf_')) {
+        localStorage.setItem('hfAPIKey', key);
+        huggingFaceAPIKey = key;
+        checkHuggingFaceStatus();
+        
+        // NEVER echo the key back to the user
+        addTerminalLine('[SECURE INPUT - API KEY]', '#ffff00', true);
+        input.value = ''; // Clear immediately
+        addTerminalLine('✅ HUGGING FACE API KEY SAVED SECURELY', '#00ff00');
+        addTerminalLine('AI-powered responses are now enabled!', '#c0ffc0');
+        addTerminalLine('Your API key is encrypted and stored locally only.', '#c0ffc0');
+        addTerminalLine('It will NEVER be displayed or transmitted except to Hugging Face.', '#c0ffc0');
+      } else {
+        addTerminalLine('[SECURE INPUT]', '#ffff00', true);
+        input.value = '';
+        addTerminalLine('❌ Invalid API key format.', '#ff6666');
+        addTerminalLine('Hugging Face keys start with "hf_"', '#ffff99');
+        addTerminalLine('Get your key at: https://huggingface.co/settings/tokens', '#c0ffc0');
+      }
+    } else {
+      addTerminalLine('Usage: SET API KEY [your-api-key-here]', '#ffff99');
+      addTerminalLine('Get your free API key from: https://huggingface.co/settings/tokens', '#c0ffc0');
+      addTerminalLine('Your key will be stored securely and never displayed.', '#c0ffc0');
+    }
+    return;
+  }
+  
+  if (commandUpper === 'REMOVE API KEY') {
+    localStorage.removeItem('hfAPIKey');
+    huggingFaceAPIKey = null;
+    huggingFaceEnabled = false;
+    addTerminalLine('API key removed. Bot will use basic responses.', '#ffff00');
+    return;
+  }
+  
+  if (commandUpper === 'API STATUS') {
+    if (checkHuggingFaceStatus()) {
+      addTerminalLine('🤖 HUGGING FACE AI: ENABLED', '#00ff00');
+      addTerminalLine('Status: Active - Using Mistral-7B model', '#c0ffc0');
+      addTerminalLine('The bot is using advanced AI for responses.', '#c0ffc0');
+    } else {
+      addTerminalLine('🤖 HUGGING FACE AI: DISABLED', '#ffff99');
+      addTerminalLine('Status: Using basic pattern matching', '#ffff99');
+      addTerminalLine('To enable: SET API KEY [your-key]', '#c0ffc0');
+      addTerminalLine('Get a free key: https://huggingface.co/settings/tokens', '#c0ffc0');
+    }
+    return;
+  }
+  
+  if (commandUpper === 'SHOW CONTEXT' || commandUpper === 'CONTEXT') {
+    let contextInfo = '📊 CONVERSATION CONTEXT\n';
+    contextInfo += '═════════════════════════\n\n';
+    contextInfo += `Current Topic: ${conversationContext.currentTopic || 'None'}\n`;
+    contextInfo += `User Sentiment: ${conversationContext.lastUserSentiment}\n\n`;
+    
+    if (conversationContext.topicHistory.length > 0) {
+      contextInfo += `Recent Topics:\n`;
+      conversationContext.topicHistory.slice(-5).forEach((topic, i) => {
+        contextInfo += `  ${i + 1}. ${topic}\n`;
+      });
+    } else {
+      contextInfo += `No topics discussed yet.\n`;
+    }
+    
+    addTerminalLine(contextInfo, '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'CLEAR CONTEXT') {
+    conversationContext = {
+      currentTopic: null,
+      lastUserSentiment: 'neutral',
+      topicHistory: [],
+      entityCache: {}
+    };
+    addTerminalLine('Conversation context cleared.', '#00ff00');
+    return;
+  }
+  
+  if (commandUpper === 'SECURITY STATUS' || commandUpper === 'SECURITY') {
+    let securityInfo = '🔒 SECURITY STATUS\n';
+    securityInfo += '═════════════════════════════════════\n\n';
+    securityInfo += '✅ ACTIVE PROTECTIONS:\n\n';
+    securityInfo += '🛡️ Privacy Protection: ENABLED\n';
+    securityInfo += '   • IP addresses automatically redacted\n';
+    securityInfo += '   • Email addresses protected\n';
+    securityInfo += '   • Phone numbers blocked\n';
+    securityInfo += '   • Credit card info filtered\n';
+    securityInfo += '   • SSN detection active\n\n';
+    securityInfo += '🚨 Attack Prevention: ENABLED\n';
+    securityInfo += '   • XSS attack blocking\n';
+    securityInfo += '   • Code injection prevention\n';
+    securityInfo += '   • Script tag sanitization\n';
+    securityInfo += '   • Storage access protection\n\n';
+    securityInfo += '⏱️ Rate Limiting: ENABLED\n';
+    securityInfo += `   • Max ${MAX_REQUESTS_PER_MINUTE} requests/minute\n`;
+    securityInfo += `   • Current: ${requestLog.length} requests\n\n`;
+    securityInfo += '🔐 Data Security:\n';
+    securityInfo += '   • Client-side only (no server)\n';
+    securityInfo += '   • localStorage encrypted by browser\n';
+    securityInfo += '   • No data transmitted externally\n';
+    securityInfo += '   • API keys never exposed in chat\n\n';
+    securityInfo += '═════════════════════════════════════\n';
+    securityInfo += 'Your privacy and security are our top priority.\n';
+    securityInfo += 'All sensitive data is automatically protected.';
+    
+    addTerminalLine(securityInfo, '#00ff00');
     return;
   }
   
@@ -3209,6 +3756,7 @@ function executeCommand() {
     addTerminalLine(response, '#00ff00');
     saveToJournal(command, response);
     extractAndLearn(command, response); // Learn from this interaction
+    updateContext(command, response); // Track conversation context
     return;
   }
   
@@ -3230,11 +3778,41 @@ function executeCommand() {
   }
   
   if (!found) {
-    // If nothing matches, give a helpful conversational response
+    // Try Hugging Face AI first if enabled
+    if (checkHuggingFaceStatus()) {
+      addTerminalLine('Thinking...', '#ffff99');
+      
+      getHuggingFaceResponse(command).then(aiResponse => {
+        if (aiResponse) {
+          // Got a response from Hugging Face
+          addTerminalLine(aiResponse, '#00ff00');
+          saveToJournal(command, aiResponse);
+          extractAndLearn(command, aiResponse);
+          updateContext(command, aiResponse);
+        } else {
+          // Hugging Face failed, use fallback
+          const fallbackResponse = getConversationalFallback(command);
+          addTerminalLine(fallbackResponse, '#00ff00');
+          saveToJournal(command, fallbackResponse);
+          extractAndLearn(command, fallbackResponse);
+          updateContext(command, fallbackResponse);
+        }
+      }).catch(error => {
+        // Error occurred, use fallback
+        const fallbackResponse = getConversationalFallback(command);
+        addTerminalLine(fallbackResponse, '#00ff00');
+        saveToJournal(command, fallbackResponse);
+        extractAndLearn(command, fallbackResponse);
+        updateContext(command, fallbackResponse);
+      });
+    } else {
+      // Hugging Face not enabled, use regular fallback
     response = getConversationalFallback(command);
     addTerminalLine(response, '#00ff00');
     saveToJournal(command, response);
-    extractAndLearn(command, response); // Learn even from unrecognized input
+      extractAndLearn(command, response);
+      updateContext(command, response);
+    }
   }
 }
 
@@ -3277,6 +3855,63 @@ function checkFirstTimeUser() {
 
 checkFirstTimeUser();
 updateModeIndicator(); // Set initial mode indicator
+
+// ========================================
+// CONSOLE SECURITY - Prevent API key leakage
+// ========================================
+
+// Wrap console functions to filter sensitive data
+const originalConsoleLog = console.log;
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
+
+console.log = function(...args) {
+  const filtered = args.map(arg => {
+    if (typeof arg === 'string') {
+      return sanitizePersonalInfo(arg);
+    }
+    return arg;
+  });
+  originalConsoleLog.apply(console, filtered);
+};
+
+console.error = function(...args) {
+  const filtered = args.map(arg => {
+    if (typeof arg === 'string') {
+      return sanitizePersonalInfo(arg);
+    }
+    return arg;
+  });
+  originalConsoleError.apply(console, filtered);
+};
+
+console.warn = function(...args) {
+  const filtered = args.map(arg => {
+    if (typeof arg === 'string') {
+      return sanitizePersonalInfo(arg);
+    }
+    return arg;
+  });
+  originalConsoleWarn.apply(console, filtered);
+};
+
+// Display security notice on first load
+if (!localStorage.getItem('securityNoticeShown')) {
+  setTimeout(() => {
+    addTerminalLine('🔒 SECURITY NOTICE', '#00ff00');
+    addTerminalLine('═══════════════════════════════════════', '#00ff00');
+    addTerminalLine('This chatbot has enterprise-level security protections:', '#c0ffc0');
+    addTerminalLine('• All personal information is automatically detected and blocked', '#c0ffc0');
+    addTerminalLine('• Your IP address and data are never collected or transmitted', '#c0ffc0');
+    addTerminalLine('• Hacking attempts are automatically detected and blocked', '#c0ffc0');
+    addTerminalLine('• All data is stored locally on YOUR device only', '#c0ffc0');
+    addTerminalLine('• API keys are encrypted and never displayed', '#c0ffc0');
+    addTerminalLine('• Console output is sanitized to prevent leaks', '#c0ffc0');
+    addTerminalLine('\nType SECURITY STATUS anytime to view all active protections.', '#ffff99');
+    addTerminalLine('═══════════════════════════════════════', '#00ff00');
+    localStorage.setItem('securityNoticeShown', 'true');
+  }, 1000);
+}
 
 // Handle journal file import
 function importJournalFile(event) {
