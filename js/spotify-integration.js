@@ -1,5 +1,5 @@
 // Spotify API Integration
-const SPOTIFY_API_BASE = 'https://derp-rex-github-io-git-main-derpasaursrexs-projects.vercel.app';
+const SPOTIFY_API_BASE = 'https://derp-rex-github-io.vercel.app';
 
 // Your playlist ID from the Spotify embed
 const PLAYLIST_ID = '66TP5uc6hwyESdV9AuvUZJ';
