@@ -658,17 +658,23 @@ async function getRandomSpotifyTrack() {
 }
 </script>
 
-<!-- 3D Model Viewer Script -->
+<!-- 3D Model Viewer Script with MTL/Texture Support -->
 <script type="module">
 import * as THREE from 'three';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const viewers = {};
 
-function init3DViewer(modelName, objPath) {
+function init3DViewer(modelName, objPath, mtlPath) {
   const canvas = document.getElementById(`viewer-${modelName}`);
-  if (!canvas) return;
+  if (!canvas) {
+    console.error('Canvas not found:', modelName);
+    return;
+  }
+  
+  console.log(`🔄 Initializing ${modelName}...`);
   
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x1a1a2e);
@@ -680,6 +686,7 @@ function init3DViewer(modelName, objPath) {
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   
+  // Lights
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
   scene.add(ambientLight);
   
@@ -697,45 +704,87 @@ function init3DViewer(modelName, objPath) {
   controls.minDistance = 1;
   controls.maxDistance = 10;
   
-  const loader = new OBJLoader();
   let model = null;
+  let materials = null;
   
-  loader.load(
-    objPath,
-    (object) => {
-      model = object;
-      object.traverse((child) => {
-        if (child.isMesh) {
-          child.material = new THREE.MeshPhongMaterial({
-            color: 0xb82b2f,
-            shininess: 60
+  // Load MTL file first (if available), then OBJ
+  if (mtlPath) {
+    const mtlLoader = new MTLLoader();
+    mtlLoader.setPath('3D/');
+    
+    mtlLoader.load(
+      mtlPath.replace('3D/', ''),
+      (loadedMaterials) => {
+        console.log(`✅ MTL loaded for ${modelName}`);
+        materials = loadedMaterials;
+        materials.preload();
+        loadOBJ(materials);
+      },
+      (xhr) => {
+        console.log(`Loading ${modelName} MTL: ${Math.round(xhr.loaded / xhr.total * 100)}%`);
+      },
+      (error) => {
+        console.warn(`⚠️ MTL not found for ${modelName}, using default material`);
+        loadOBJ(null);
+      }
+    );
+  } else {
+    loadOBJ(null);
+  }
+  
+  function loadOBJ(materials) {
+    const objLoader = new OBJLoader();
+    
+    if (materials) {
+      objLoader.setMaterials(materials);
+    }
+    
+    objLoader.load(
+      objPath,
+      (object) => {
+        model = object;
+        
+        // If no materials were loaded, apply default red material
+        if (!materials) {
+          object.traverse((child) => {
+            if (child.isMesh) {
+              child.material = new THREE.MeshPhongMaterial({
+                color: 0xb82b2f,
+                shininess: 60,
+                flatShading: false
+              });
+            }
           });
         }
-      });
-      
-      const box = new THREE.Box3().setFromObject(object);
-      const center = box.getCenter(new THREE.Vector3());
-      const size = box.getSize(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 2 / maxDim;
-      
-      object.scale.setScalar(scale);
-      object.position.sub(center.multiplyScalar(scale));
-      
-      scene.add(object);
-      console.log('✅ Loaded:', modelName);
-    },
-    (xhr) => {
-      console.log(`Loading ${modelName}: ${Math.round(xhr.loaded / xhr.total * 100)}%`);
-    },
-    (error) => {
-      console.error('❌ Error loading', modelName, error);
-    }
-  );
+        
+        // Center and scale model
+        const box = new THREE.Box3().setFromObject(object);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale = 2 / maxDim;
+        
+        object.scale.setScalar(scale);
+        object.position.sub(center.multiplyScalar(scale));
+        
+        scene.add(object);
+        console.log(`✅ ${modelName} loaded with ${materials ? 'textures' : 'default material'}`);
+      },
+      (xhr) => {
+        if (xhr.lengthComputable) {
+          console.log(`Loading ${modelName} OBJ: ${Math.round(xhr.loaded / xhr.total * 100)}%`);
+        }
+      },
+      (error) => {
+        console.error(`❌ Error loading ${modelName}:`, error);
+      }
+    );
+  }
   
   viewers[modelName] = {
     scene, camera, renderer, controls,
     getModel: () => model,
+    getMaterials: () => materials,
     initialPos: camera.position.clone(),
     wireframe: false
   };
@@ -759,6 +808,7 @@ window.resetCamera3D = (name) => {
   if (v) {
     v.camera.position.copy(v.initialPos);
     v.controls.reset();
+    console.log(`🔄 Camera reset: ${name}`);
   }
 };
 
@@ -767,17 +817,21 @@ window.toggleWireframe3D = (name) => {
   if (v && v.getModel()) {
     v.wireframe = !v.wireframe;
     v.getModel().traverse((child) => {
-      if (child.isMesh) child.material.wireframe = v.wireframe;
+      if (child.isMesh) {
+        child.material.wireframe = v.wireframe;
+      }
     });
+    console.log(`🔲 Wireframe ${v.wireframe ? 'ON' : 'OFF'}: ${name}`);
   }
 };
 
-// Initialize all viewers
+// Initialize all viewers with their MTL files
+console.log('🚀 Initializing 3D viewers with texture support...');
 setTimeout(() => {
-  init3DViewer('clownboy', '3D/clownboy.obj');
-  init3DViewer('depressionclown', '3D/depressionclown.obj');
-  init3DViewer('thecharactertester', '3D/thecharactertester.obj');
-  init3DViewer('vingette', '3D/vingette.obj');
+  init3DViewer('clownboy', '3D/clownboy.obj', '3D/clownboy.mtl');
+  init3DViewer('depressionclown', '3D/depressionclown.obj', '3D/depressionclown.mtl');
+  init3DViewer('thecharactertester', '3D/thecharactertester.obj', '3D/thecharactertester.mtl');
+  init3DViewer('vingette', '3D/vingette.obj', '3D/vingette.mtl');
 }, 500);
 </script>
 
