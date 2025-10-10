@@ -10,7 +10,7 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self' https://derp-rex-github-io-git-main-derpasaursrexs-projects.vercel.app https://api.spotify.com https://accounts.spotify.com; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data: https://*.scdn.co; frame-src https://open.spotify.com; font-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self'; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data:; frame-src https://open.spotify.com; font-src 'self' data:;">
   
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -442,14 +442,10 @@ h1 {
 <div id="spotifyWidget">
   <div id="spotifyHeader">
     <span>🎵 Spotify Player</span>
-    <div style="display: flex; gap: 5px;">
-      <button id="spotifyRandomBtn" onclick="getRandomSpotifyTrack()" title="Get Random Track" style="background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; padding: 0 5px; line-height: 1;">🎲</button>
-      <button id="spotifyMinimize" onclick="toggleSpotifySpec()">+</button>
-    </div>
+    <button id="spotifyMinimize" onclick="toggleSpotifySpec()">+</button>
   </div>
   <div id="spotifyContent" style="display: none;">
     <iframe id="spotifyIframe" style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    <div id="randomTrackDisplay" style="display: none; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 0 0 7px 7px; margin-top: -7px;"></div>
   </div>
 </div>
 
@@ -526,62 +522,3 @@ function toggleSpotifySpec() {
   }
 }
 </script>
-
-<!-- Spotify API Integration -->
-<script src="js/spotify-integration.js"></script>
-<script>
-async function getRandomSpotifyTrack() {
-  const display = document.getElementById('randomTrackDisplay');
-  const content = document.getElementById('spotifyContent');
-  const btn = document.getElementById('spotifyRandomBtn');
-  
-  if (content.style.display === 'none') {
-    toggleSpotifySpec();
-  }
-  
-  display.style.display = 'block';
-  display.innerHTML = '<p style="color: #1DB954; margin: 0; text-align: center; font-size: 12px;">🎲 Getting random track...</p>';
-  btn.style.opacity = '0.5';
-  btn.disabled = true;
-  
-  try {
-    if (typeof SpotifyAPI === 'undefined') {
-      throw new Error('Spotify API script not loaded');
-    }
-    
-    const track = await SpotifyAPI.getRandomTrack();
-    
-    if (track) {
-      const artists = track.artists.map(a => a.name).join(', ');
-      const albumImage = track.album.images[2]?.url || track.album.images[0]?.url;
-      
-      display.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 10px;">
-          ${albumImage ? `<img src="${albumImage}" alt="${track.name}" style="width: 50px; height: 50px; border-radius: 5px;">` : ''}
-          <div style="flex: 1; min-width: 0;">
-            <div style="color: white; font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${track.name}</div>
-            <div style="color: #888; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${artists}</div>
-          </div>
-          <a href="${track.external_urls.spotify}" target="_blank" style="color: #1DB954; text-decoration: none; padding: 5px 10px; border: 1px solid #1DB954; border-radius: 12px; font-size: 11px; white-space: nowrap; transition: all 0.2s;" onmouseover="this.style.background='#1DB954'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#1DB954'">Play</a>
-        </div>
-      `;
-    } else {
-      throw new Error('No track returned from API');
-    }
-  } catch (error) {
-    console.error('❌ Spotify Error:', error);
-    display.innerHTML = `
-      <div style="text-align: center; padding: 5px;">
-        <p style="color: #ff6b6b; margin: 0; font-size: 11px;">❌ ${error.message}</p>
-        <button onclick="getRandomSpotifyTrack()" style="background: #1DB954; color: white; border: none; padding: 4px 12px; border-radius: 12px; font-size: 10px; margin-top: 5px; cursor: pointer;">Retry</button>
-      </div>
-    `;
-  }
-  
-  btn.style.opacity = '1';
-  btn.disabled = false;
-}
-</script>
-
-</body>
-</html>
