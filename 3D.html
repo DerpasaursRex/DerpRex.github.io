@@ -685,6 +685,8 @@ function init3DViewer(modelName, objPath, mtlPath) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Softer shadows
   
   // Lights
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
@@ -692,6 +694,9 @@ function init3DViewer(modelName, objPath, mtlPath) {
   
   const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
   dirLight1.position.set(5, 5, 5);
+  dirLight1.castShadow = true;
+  dirLight1.shadow.mapSize.width = 1024;
+  dirLight1.shadow.mapSize.height = 1024;
   scene.add(dirLight1);
   
   const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.4);
@@ -710,7 +715,15 @@ function init3DViewer(modelName, objPath, mtlPath) {
   // Load MTL file first (if available), then OBJ
   if (mtlPath) {
     const mtlLoader = new MTLLoader();
+    // Set both the path for MTL file and resource path for textures
     mtlLoader.setPath('3D/');
+    mtlLoader.setResourcePath('3D/');
+    
+    // Configure texture loader for better quality
+    mtlLoader.setMaterialOptions({
+      side: THREE.DoubleSide,
+      // Enable mipmaps and better filtering for textures
+    });
     
     mtlLoader.load(
       mtlPath.replace('3D/', ''),
@@ -718,13 +731,30 @@ function init3DViewer(modelName, objPath, mtlPath) {
         console.log(`✅ MTL loaded for ${modelName}`);
         materials = loadedMaterials;
         materials.preload();
+        
+        // Enhance texture settings after preload
+        Object.values(materials.materials).forEach(material => {
+          // Enable better texture filtering if textures exist
+          if (material.map) {
+            material.map.anisotropy = renderer.capabilities.getMaxAnisotropy();
+            material.map.minFilter = THREE.LinearMipMapLinearFilter;
+            material.map.magFilter = THREE.LinearFilter;
+            console.log(`🖼️ Texture configured for ${modelName}:`, material.name);
+          }
+          // Enhance material properties
+          material.side = THREE.DoubleSide;
+        });
+        
         loadOBJ(materials);
       },
       (xhr) => {
-        console.log(`Loading ${modelName} MTL: ${Math.round(xhr.loaded / xhr.total * 100)}%`);
+        if (xhr.lengthComputable) {
+          console.log(`Loading ${modelName} MTL: ${Math.round(xhr.loaded / xhr.total * 100)}%`);
+        }
       },
       (error) => {
         console.warn(`⚠️ MTL not found for ${modelName}, using default material`);
+        console.error('MTL Error details:', error);
         loadOBJ(null);
       }
     );
@@ -755,6 +785,25 @@ function init3DViewer(modelName, objPath, mtlPath) {
               });
             }
           });
+        } else {
+          // If materials were loaded, ensure proper rendering settings
+          object.traverse((child) => {
+            if (child.isMesh) {
+              // Enable shadow casting/receiving for better visual quality
+              child.castShadow = true;
+              child.receiveShadow = true;
+              
+              // Ensure material is using the right settings
+              if (child.material) {
+                child.material.needsUpdate = true;
+                
+                // Log if texture is present
+                if (child.material.map) {
+                  console.log(`✨ Mesh "${child.name}" has texture map`);
+                }
+              }
+            }
+          });
         }
         
         // Center and scale model
@@ -768,7 +817,9 @@ function init3DViewer(modelName, objPath, mtlPath) {
         object.position.sub(center.multiplyScalar(scale));
         
         scene.add(object);
-        console.log(`✅ ${modelName} loaded with ${materials ? 'textures' : 'default material'}`);
+        
+        const textureInfo = materials ? 'MTL materials' : 'default material';
+        console.log(`✅ ${modelName} loaded successfully with ${textureInfo}`);
       },
       (xhr) => {
         if (xhr.lengthComputable) {
@@ -777,6 +828,7 @@ function init3DViewer(modelName, objPath, mtlPath) {
       },
       (error) => {
         console.error(`❌ Error loading ${modelName}:`, error);
+        console.error('Error details:', { path: objPath, message: error.message });
       }
     );
   }
