@@ -877,12 +877,12 @@ window.toggleWireframe3D = (name) => {
   }
 };
 
-// Initialize all viewers with their MTL files
-console.log('🚀 Initializing 3D viewers with texture support...');
+// Initialize all viewers - only vingette uses MTL, others use default red material
+console.log('🚀 Initializing 3D viewers...');
 setTimeout(() => {
-  init3DViewer('clownboy', '3D/clownboy.obj', '3D/clownboy.mtl');
-  init3DViewer('depressionclown', '3D/depressionclown.obj', '3D/depressionclown.mtl');
-  init3DViewer('thecharactertester', '3D/thecharactertester.obj', '3D/thecharactertester.mtl');
+  init3DViewer('clownboy', '3D/clownboy.obj', null);
+  init3DViewer('depressionclown', '3D/depressionclown.obj', null);
+  init3DViewer('thecharactertester', '3D/thecharactertester.obj', null);
   init3DViewer('vingette', '3D/vingette.obj', '3D/vingette.mtl');
 }, 500);
 </script>
