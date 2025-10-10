@@ -10,12 +10,23 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self' https://derp-rex-github-io-git-main-derpasaursrexs-projects.vercel.app https://api.spotify.com https://accounts.spotify.com; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data: https://*.scdn.co; frame-src https://open.spotify.com; font-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net https://unpkg.com; connect-src 'self' https://derp-rex-github-io-git-main-derpasaursrexs-projects.vercel.app https://api.spotify.com https://accounts.spotify.com; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data: https://*.scdn.co; frame-src https://open.spotify.com; font-src 'self' data:;">
   
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <!-- Three.js with ES Module imports for OBJ loading -->
+  <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"
+      }
+    }
+  </script>
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -283,6 +294,70 @@
               <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Silly Render</h6>
               <p class="card-text small">WIP</p>
               <small class="text-muted">3D Art</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Interactive 3D Model Viewers -->
+      <div class="row mt-5">
+        <div class="col-12 mb-4">
+          <h3 style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Interactive 3D Models</h3>
+          <p style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Drag to rotate • Scroll to zoom • Right-click to pan</p>
+        </div>
+        
+        <!-- Clown Boy -->
+        <div class="col-lg-6 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9));">
+            <div class="card-body">
+              <h5 class="text-center" style="color: #b82b2f; font-weight: bold; margin-bottom: 15px;">Clown Boy</h5>
+              <canvas id="viewer-clownboy" style="width: 100%; height: 400px; display: block; border-radius: 10px; background: linear-gradient(135deg, #1a1a2e, #16213e);"></canvas>
+              <div class="text-center mt-3">
+                <button onclick="resetCamera3D('clownboy')" style="background: #b82b2f; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Reset</button>
+                <button onclick="toggleWireframe3D('clownboy')" style="background: #b82b2f; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Wireframe</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Depression Clown -->
+        <div class="col-lg-6 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9));">
+            <div class="card-body">
+              <h5 class="text-center" style="color: #b82b2f; font-weight: bold; margin-bottom: 15px;">Depression Clown</h5>
+              <canvas id="viewer-depressionclown" style="width: 100%; height: 400px; display: block; border-radius: 10px; background: linear-gradient(135deg, #1a1a2e, #16213e);"></canvas>
+              <div class="text-center mt-3">
+                <button onclick="resetCamera3D('depressionclown')" style="background: #b82b2f; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Reset</button>
+                <button onclick="toggleWireframe3D('depressionclown')" style="background: #b82b2f; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Wireframe</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Character Tester -->
+        <div class="col-lg-6 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9));">
+            <div class="card-body">
+              <h5 class="text-center" style="color: #b82b2f; font-weight: bold; margin-bottom: 15px;">The Character Tester</h5>
+              <canvas id="viewer-thecharactertester" style="width: 100%; height: 400px; display: block; border-radius: 10px; background: linear-gradient(135deg, #1a1a2e, #16213e);"></canvas>
+              <div class="text-center mt-3">
+                <button onclick="resetCamera3D('thecharactertester')" style="background: #b82b2f; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Reset</button>
+                <button onclick="toggleWireframe3D('thecharactertester')" style="background: #b82b2f; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Wireframe</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Vingette -->
+        <div class="col-lg-6 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9));">
+            <div class="card-body">
+              <h5 class="text-center" style="color: #b82b2f; font-weight: bold; margin-bottom: 15px;">Vingette</h5>
+              <canvas id="viewer-vingette" style="width: 100%; height: 400px; display: block; border-radius: 10px; background: linear-gradient(135deg, #1a1a2e, #16213e);"></canvas>
+              <div class="text-center mt-3">
+                <button onclick="resetCamera3D('vingette')" style="background: #b82b2f; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Reset</button>
+                <button onclick="toggleWireframe3D('vingette')" style="background: #b82b2f; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Wireframe</button>
+              </div>
             </div>
           </div>
         </div>
@@ -581,6 +656,129 @@ async function getRandomSpotifyTrack() {
   btn.style.opacity = '1';
   btn.disabled = false;
 }
+</script>
+
+<!-- 3D Model Viewer Script -->
+<script type="module">
+import * as THREE from 'three';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const viewers = {};
+
+function init3DViewer(modelName, objPath) {
+  const canvas = document.getElementById(`viewer-${modelName}`);
+  if (!canvas) return;
+  
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x1a1a2e);
+  
+  const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+  camera.position.set(3, 3, 3);
+  
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+  scene.add(ambientLight);
+  
+  const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+  dirLight1.position.set(5, 5, 5);
+  scene.add(dirLight1);
+  
+  const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.4);
+  dirLight2.position.set(-5, -5, -5);
+  scene.add(dirLight2);
+  
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.minDistance = 1;
+  controls.maxDistance = 10;
+  
+  const loader = new OBJLoader();
+  let model = null;
+  
+  loader.load(
+    objPath,
+    (object) => {
+      model = object;
+      object.traverse((child) => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshPhongMaterial({
+            color: 0xb82b2f,
+            shininess: 60
+          });
+        }
+      });
+      
+      const box = new THREE.Box3().setFromObject(object);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const scale = 2 / maxDim;
+      
+      object.scale.setScalar(scale);
+      object.position.sub(center.multiplyScalar(scale));
+      
+      scene.add(object);
+      console.log('✅ Loaded:', modelName);
+    },
+    (xhr) => {
+      console.log(`Loading ${modelName}: ${Math.round(xhr.loaded / xhr.total * 100)}%`);
+    },
+    (error) => {
+      console.error('❌ Error loading', modelName, error);
+    }
+  );
+  
+  viewers[modelName] = {
+    scene, camera, renderer, controls,
+    getModel: () => model,
+    initialPos: camera.position.clone(),
+    wireframe: false
+  };
+  
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+  
+  window.addEventListener('resize', () => {
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  });
+}
+
+window.resetCamera3D = (name) => {
+  const v = viewers[name];
+  if (v) {
+    v.camera.position.copy(v.initialPos);
+    v.controls.reset();
+  }
+};
+
+window.toggleWireframe3D = (name) => {
+  const v = viewers[name];
+  if (v && v.getModel()) {
+    v.wireframe = !v.wireframe;
+    v.getModel().traverse((child) => {
+      if (child.isMesh) child.material.wireframe = v.wireframe;
+    });
+  }
+};
+
+// Initialize all viewers
+setTimeout(() => {
+  init3DViewer('clownboy', '3D/clownboy.obj');
+  init3DViewer('depressionclown', '3D/depressionclown.obj');
+  init3DViewer('thecharactertester', '3D/thecharactertester.obj');
+  init3DViewer('vingette', '3D/vingette.obj');
+}, 500);
 </script>
 
 </body>
