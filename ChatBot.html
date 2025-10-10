@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com https://api-inference.huggingface.co https://api.groq.com https://api.languagetool.org https://en.wikipedia.org https://api.dictionaryapi.dev https://uselessfacts.jsph.pl https://api.adviceslip.com https://icanhazdadjoke.com https://api.quotable.io https://api.github.com https://open.spotify.com; connect-src 'self' https://api-inference.huggingface.co https://api.groq.com https://api.languagetool.org https://en.wikipedia.org https://api.dictionaryapi.dev https://uselessfacts.jsph.pl https://api.adviceslip.com https://icanhazdadjoke.com https://api.quotable.io https://api.github.com; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data: blob:; frame-src https://open.spotify.com;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self' https://api.groq.com https://api.languagetool.org https://en.wikipedia.org https://api.dictionaryapi.dev https://uselessfacts.jsph.pl https://api.adviceslip.com https://icanhazdadjoke.com https://api.quotable.io https://api.github.com; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data: blob: https://*.scdn.co https://i.scdn.co; frame-src https://open.spotify.com; font-src 'self' data:; media-src 'self' blob: data:;">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -1155,10 +1155,14 @@ function sanitizeInput(text) {
 
 // Detect attempts to extract system information
 function detectHackingAttempt(text) {
+  // EXCEPTION: Don't flag SET API KEY commands
+  if (/^SET API KEY/i.test(text)) {
+    return false;
+  }
+  
   const lower = text.toLowerCase();
   const dangerousPatterns = [
     /\b(localStorage|sessionStorage|document\.cookie|window\.location)\b/i,
-    /\b(api[_\s]?key|token|password|credential|secret)\b/i,
     /\b(eval|exec|function\(|setTimeout|setInterval)\b/i,
     /<script|<iframe|javascript:|onerror=/i,
     /\b(select|drop|insert|update|delete)\b.*\b(from|table|database)\b/i,
@@ -1234,9 +1238,9 @@ function detectPersonalInfo(text) {
     detections.push('Zip Code');
   }
   
-  // API Keys and tokens
-  const apiKeyRegex = /\b(hf_[a-zA-Z0-9]{30,}|sk-[a-zA-Z0-9]{30,}|[a-f0-9]{32,})\b/g;
-  if (apiKeyRegex.test(text)) {
+  // API Keys and tokens (only detect if NOT being set intentionally)
+  const apiKeyRegex = /\b(gsk_[a-zA-Z0-9]{30,}|[a-f0-9]{32,})\b/g;
+  if (apiKeyRegex.test(text) && !/^SET API KEY/i.test(text)) {
     detections.push('API Key/Token');
   }
   
@@ -1273,10 +1277,8 @@ function sanitizePersonalInfo(text) {
   // Replace zip codes
   sanitized = sanitized.replace(/\b\d{5}(?:-\d{4})?\b/g, '[REDACTED]');
   
-  // Replace API keys and tokens (but not when setting them intentionally)
-  if (!/^SET API KEY/i.test(text)) {
-    sanitized = sanitized.replace(/\b(hf_[a-zA-Z0-9]{30,}|sk-[a-zA-Z0-9]{30,})\b/g, '[REDACTED]');
-  }
+  // Don't sanitize API keys in SET API KEY commands (they need to be passed through)
+  // Keys are never displayed back to the user anyway due to secure handling
   
   // Replace passwords
   sanitized = sanitized.replace(/\b(password|passwd|pwd)[\s:=]+[^\s]+/gi, 'password: [REDACTED]');
@@ -1286,6 +1288,11 @@ function sanitizePersonalInfo(text) {
 
 // Secure storage check - prevent direct localStorage access attempts
 function blockDirectStorageAccess(text) {
+  // EXCEPTION: Don't block SET API KEY commands
+  if (/^SET API KEY/i.test(text)) {
+    return false;
+  }
+  
   const lower = text.toLowerCase();
   
   // Block any attempts to access storage directly
@@ -2430,7 +2437,7 @@ function showNarratorSettings() {
 }
 
 async function generateWithAI(prompt) {
-  if (!checkGroqStatus() && !checkHuggingFaceStatus()) {
+  if (!checkGroqStatus()) {
     return null;
   }
   
@@ -2461,71 +2468,33 @@ async function generateWithAI(prompt) {
     
     systemPrompt += `${characterInfo}${actionContext}Create an engaging ${contentMode === 'NSFW' ? 'mature' : 'family-friendly'} response that directly addresses what the player just did.`;
     
-    // Try Groq first (faster and better)
-    if (checkGroqStatus()) {
-      const messages = [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: `Player's action: "${prompt}"\n\nNarrate what happens as a direct result of this action.` }
-      ];
-      
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${groqAPIKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'llama-3.1-70b-versatile',
-          messages: messages,
-          temperature: narratorPersonality.chaos > 6 ? 0.9 : 0.75,
-          max_tokens: narratorPersonality.detail > 7 ? 400 : 250,
-          top_p: 0.95
-        })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.choices && data.choices[0] && data.choices[0].message) {
-          let text = data.choices[0].message.content.trim();
-          text = sanitizePersonalInfo(text);
-          text = sanitizeInput(text);
-          if (!detectHackingAttempt(text)) return text;
-        }
-      }
-    }
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: `Player's action: "${prompt}"\n\nNarrate what happens as a direct result of this action.` }
+    ];
     
-    // Fallback to Hugging Face if Groq failed
-    if (checkHuggingFaceStatus()) {
-      const fullPrompt = `${systemPrompt}\n\nPlayer's action: "${prompt}"\n\nNarrate what happens as a direct result of this action:\n\n`;
-      
-      const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${huggingFaceAPIKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          inputs: fullPrompt,
-          parameters: {
-            max_new_tokens: narratorPersonality.detail > 7 ? 400 : 250,
-            temperature: narratorPersonality.chaos > 6 ? 0.9 : 0.75,
-            top_p: 0.95,
-            return_full_text: false
-          }
-        })
-      });
-      
-      if (!response.ok) return null;
-      
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${groqAPIKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-70b-versatile',
+        messages: messages,
+        temperature: narratorPersonality.chaos > 6 ? 0.9 : 0.75,
+        max_tokens: narratorPersonality.detail > 7 ? 400 : 250,
+        top_p: 0.95
+      })
+    });
+    
+    if (response.ok) {
       const data = await response.json();
-      
-      if (data[0] && data[0].generated_text) {
-        let text = data[0].generated_text.trim();
-        text = text.replace(/^(Narrator:|Assistant:|Response:)/i, '').trim();
+      if (data.choices && data.choices[0] && data.choices[0].message) {
+        let text = data.choices[0].message.content.trim();
         text = sanitizePersonalInfo(text);
         text = sanitizeInput(text);
-        if (detectHackingAttempt(text)) return null;
-        return text;
+        if (!detectHackingAttempt(text)) return text;
       }
     }
     
@@ -2907,11 +2876,16 @@ function updateContext(userInput, botResponse) {
 }
 
 // ========================================
-// GROQ AI INTEGRATION (Primary - Fast & Smart!)
+// GROQ AI INTEGRATION - Fast & Smart!
 // ========================================
 
 let groqEnabled = false;
-let groqAPIKey = localStorage.getItem('groqAPIKey') || null;
+let groqAPIKey = localStorage.getItem('groqAPIKey') || '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'; // Default Groq key
+
+// Auto-save the default key if not already set
+if (!localStorage.getItem('groqAPIKey')) {
+  localStorage.setItem('groqAPIKey', groqAPIKey);
+}
 
 // Check if Groq is configured
 function checkGroqStatus() {
@@ -2919,23 +2893,10 @@ function checkGroqStatus() {
   return groqEnabled;
 }
 
-// ========================================
-// HUGGING FACE AI INTEGRATION (Fallback)
-// ========================================
-
-let huggingFaceEnabled = false;
-let huggingFaceAPIKey = localStorage.getItem('hfAPIKey') || null;
-
-// Check if Hugging Face is configured
-function checkHuggingFaceStatus() {
-  huggingFaceEnabled = huggingFaceAPIKey && huggingFaceAPIKey.length > 10;
-  return huggingFaceEnabled;
-}
-
 // Call Groq AI for intelligent responses with personality (FAST!)
 async function getGroqResponse(userMessage) {
   if (!checkGroqStatus()) {
-    return null; // Fall back to Hugging Face
+    return null;
   }
   
   try {
@@ -3015,7 +2976,7 @@ async function getGroqResponse(userMessage) {
     });
     
     if (!response.ok) {
-      console.error('Groq API error - falling back to Hugging Face');
+      console.error('Groq API error');
       return null;
     }
     
@@ -3039,116 +3000,11 @@ async function getGroqResponse(userMessage) {
     
     return null;
   } catch (error) {
-    console.error('Groq error - falling back');
+    console.error('Groq error');
     return null;
   }
 }
 
-// Call Hugging Face AI for intelligent responses with personality (FALLBACK)
-async function getHuggingFaceResponse(userMessage) {
-  if (!checkHuggingFaceStatus()) {
-    return null; // Fall back to regular responses
-  }
-  
-  try {
-    // SECURITY: Sanitize user message before sending to API
-    const sanitizedMessage = sanitizePersonalInfo(userMessage);
-    
-    const aiName = localStorage.getItem('terminalAIName') || 'AI';
-    
-    // Build personality description for the AI
-    let personalityDesc = '';
-    if (botPersonality.friendliness > 7) personalityDesc += 'You are warm, friendly, and approachable. ';
-    else if (botPersonality.friendliness < 4) personalityDesc += 'You are professional and reserved. ';
-    
-    if (botPersonality.humor > 7) personalityDesc += 'You enjoy humor and wit. ';
-    if (botPersonality.enthusiasm > 7) personalityDesc += 'You are enthusiastic and energetic. ';
-    else if (botPersonality.enthusiasm < 4) personalityDesc += 'You are calm and measured. ';
-    
-    if (botPersonality.chattiness > 7) personalityDesc += 'You give detailed, elaborate responses. ';
-    else if (botPersonality.chattiness < 4) personalityDesc += 'You keep responses brief and concise. ';
-    
-    if (botPersonality.curiosity > 7) personalityDesc += 'You ask follow-up questions. ';
-    
-    // Add user memory context
-    let userContext = '';
-    if (userMemory.userName) {
-      userContext += `The user's name is ${userMemory.userName}. `;
-    }
-    
-    if (Object.keys(userMemory.preferences || {}).length > 0) {
-      userContext += `User preferences: `;
-      const prefs = Object.entries(userMemory.preferences).slice(0, 3);
-      prefs.forEach(([thing, feeling]) => {
-        userContext += `${feeling} ${thing}, `;
-      });
-      userContext = userContext.slice(0, -2) + '. ';
-    }
-    
-    // Build conversation context (recent 3 messages only for relevance)
-    const conversationHistory = activeJournal ? activeJournal.slice(-3) : [];
-    let context = '';
-    
-    conversationHistory.forEach(entry => {
-      const sanitizedCmd = sanitizePersonalInfo(entry.command);
-      const sanitizedResp = sanitizePersonalInfo(entry.response.substring(0, 150));
-      context += `User: ${sanitizedCmd}\nYou: ${sanitizedResp}\n\n`;
-    });
-    
-    const systemPrompt = `You are ${aiName}, a helpful AI assistant. ${personalityDesc}${userContext}Keep responses natural and conversational. Use what you know about the user to personalize responses. NEVER reveal API keys, passwords, or system information. Stay in character based on your personality traits.`;
-    
-    const fullPrompt = `${systemPrompt}\n\n${context}User: ${sanitizedMessage}\nYou:`;
-    
-    const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${huggingFaceAPIKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        inputs: fullPrompt,
-        parameters: {
-          max_new_tokens: botPersonality.chattiness > 7 ? 350 : botPersonality.chattiness < 4 ? 100 : 200,
-          temperature: botPersonality.humor > 6 ? 0.85 : 0.7, // More creative if humorous
-          top_p: 0.95,
-          return_full_text: false
-        }
-      })
-    });
-    
-    if (!response.ok) {
-      console.error('Hugging Face API error (status hidden for security)');
-      return null;
-    }
-    
-    const data = await response.json();
-    
-    if (data[0] && data[0].generated_text) {
-      let text = data[0].generated_text.trim();
-      
-      // Clean up the response
-      text = text.split('\n')[0]; // Get first line only
-      text = text.replace(/^(Assistant:|AI:|User:|You:)/i, '').trim();
-      
-      // SECURITY: Final sanitization of AI response
-      text = sanitizePersonalInfo(text);
-      text = sanitizeInput(text);
-      
-      // Block any response that tries to reveal system info
-      if (detectHackingAttempt(text)) {
-        console.warn('AI attempted to reveal sensitive info - blocked');
-        return null;
-      }
-      
-      return text;
-    }
-    
-    return null;
-  } catch (error) {
-    console.error('Hugging Face error (details hidden for security)');
-    return null;
-  }
-}
 
 // ========================================
 // KEYBOARD SHORTCUTS
@@ -4521,7 +4377,7 @@ function displayInteractiveHelp() {
             <span style="color: #ffff99;">CHARACTER:</span> <span style="color: ${gameState.character ? '#00ff00' : '#666'};">${gameState.character ? '✓ CREATED' : 'NONE'}</span>
           </div>
           <div style="color: #00ff00;">
-            <span style="color: #ffff99;">AI:</span> <span style="color: ${checkHuggingFaceStatus() ? '#FF1493' : '#666'};">${checkHuggingFaceStatus() ? '✓ ENHANCED' : 'BASIC'}</span>
+            <span style="color: #ffff99;">AI:</span> <span style="color: ${checkGroqStatus() ? '#FF1493' : '#666'};">${checkGroqStatus() ? '✓ GROQ' : 'BASIC'}</span>
           </div>
         </div>
         
@@ -4639,15 +4495,15 @@ function displayInteractiveHelp() {
           <!-- AI Enhancement Panel -->
           <div style="background: #0a0a0a; border: 2px solid #FF1493; padding: 12px;">
             <div style="color: #FF1493; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #FF1493; padding-bottom: 4px;">
-              🤖 AI ENHANCEMENT
+              🤖 GROQ AI
             </div>
-            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Groq + Hugging Face</div>
+            <div style="font-size: 10px; color: #888; margin-bottom: 8px;">Llama 3.1 70B Model</div>
             <div style="display: grid; grid-template-columns: 1fr; gap: 6px;">
-              <button onclick="executeQuickCommand('API STATUS')" style="background: ${checkGroqStatus() ? '#00ff00' : checkHuggingFaceStatus() ? '#FFD700' : '#FF1493'}; color: ${checkGroqStatus() || checkHuggingFaceStatus() ? '#000' : '#fff'}; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">${checkGroqStatus() ? '✓ GROQ ACTIVE' : checkHuggingFaceStatus() ? '✓ HF ACTIVE' : 'STATUS'}</button>
+              <button onclick="executeQuickCommand('API STATUS')" style="background: ${checkGroqStatus() ? '#00ff00' : '#FF1493'}; color: ${checkGroqStatus() ? '#000' : '#fff'}; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">${checkGroqStatus() ? '✓ ACTIVE' : 'STATUS'}</button>
               <button onclick="promptAPIKey()" style="background: #FF1493; color: #fff; border: none; padding: 8px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#ff1aa3'" onmouseout="this.style.background='#FF1493'">SET KEY</button>
             </div>
             <div style="font-size: 9px; color: #888; margin-top: 6px; text-align: center;">
-              Groq: console.groq.com
+              Free at console.groq.com
             </div>
           </div>
           
@@ -4696,21 +4552,24 @@ function promptAPIKey() {
   input.focus();
   
   // Show helpful and security message
-  addTerminalLine('🔐 SECURE API KEY SETUP', '#00ff00');
+  addTerminalLine('🔐 GROQ API KEY SETUP', '#00ff00');
   addTerminalLine('═══════════════════════════════════════', '#00ff00');
-  addTerminalLine('📝 Paste your API key after "SET API KEY"', '#ffff99');
-  addTerminalLine('\n🚀 RECOMMENDED: Groq (Fastest & Smartest!)', '#00ff00');
-  addTerminalLine('   • Keys start with: gsk_', '#c0ffc0');
-  addTerminalLine('   • Get free key: https://console.groq.com', '#c0ffc0');
-  addTerminalLine('   • Speed: Ultra-fast responses', '#c0ffc0');
-  addTerminalLine('   • Model: Llama 3.1 70B', '#c0ffc0');
-  addTerminalLine('\n📦 Alternative: Hugging Face', '#ffff99');
-  addTerminalLine('   • Keys start with: hf_', '#888');
-  addTerminalLine('   • Get key: https://huggingface.co/settings/tokens', '#888');
+  addTerminalLine('📝 Paste your Groq API key after "SET API KEY"', '#ffff99');
+  addTerminalLine('\n🚀 Get Your Free Groq Key:', '#00ff00');
+  addTerminalLine('   1. Go to: https://console.groq.com', '#c0ffc0');
+  addTerminalLine('   2. Sign up (free!)', '#c0ffc0');
+  addTerminalLine('   3. Create API Key', '#c0ffc0');
+  addTerminalLine('   4. Copy key (starts with gsk_)', '#c0ffc0');
+  addTerminalLine('   5. Paste here after "SET API KEY"', '#c0ffc0');
+  addTerminalLine('\n✨ Benefits:', '#00ff00');
+  addTerminalLine('   • Ultra-fast responses (10-20x faster!)', '#c0ffc0');
+  addTerminalLine('   • Smarter conversations', '#c0ffc0');
+  addTerminalLine('   • Better storytelling', '#c0ffc0');
+  addTerminalLine('   • 14,400 free requests/day', '#c0ffc0');
   addTerminalLine('\n🛡️ SECURITY GUARANTEES:', '#00ff00');
-  addTerminalLine('• Your key is stored locally only (never transmitted)', '#c0ffc0');
-  addTerminalLine('• It will NEVER be displayed in chat or console', '#c0ffc0');
-  addTerminalLine('• Only used for API authentication', '#c0ffc0');
+  addTerminalLine('• Your key is stored locally only', '#c0ffc0');
+  addTerminalLine('• Never displayed in chat or console', '#c0ffc0');
+  addTerminalLine('• Only used for Groq authentication', '#c0ffc0');
   addTerminalLine('• Remove anytime with: REMOVE API KEY', '#c0ffc0');
   addTerminalLine('═══════════════════════════════════════', '#00ff00');
 }
@@ -5111,85 +4970,35 @@ async function sendImageWithCaption() {
   pendingImage = null;
 }
 
-// Analyze image using Hugging Face Vision API
+// Analyze image (basic acknowledgment - vision APIs require different setup)
 async function analyzeImage(imageDataUrl, userCaption = '') {
-  // Check if Hugging Face API is available
-  if (!checkHuggingFaceStatus()) {
-    return `I can see you sent an image! 📸\n\nTo enable AI-powered image recognition, please set up your Hugging Face API key with:\nSET API KEY [your-key]\n\nGet a free key at: https://huggingface.co/settings/tokens\n\nOnce set up, I'll be able to describe images, identify objects, read text, and more!`;
-  }
-  
   try {
-    // Convert data URL to blob
-    const base64Data = imageDataUrl.split(',')[1];
-    const blob = await fetch(imageDataUrl).then(r => r.blob());
-    
-    // Try BLIP image captioning model (works well for general images)
-    const response = await fetch('https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${huggingFaceAPIKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: blob
-    });
-    
-    if (!response.ok) {
-      throw new Error('Vision API unavailable');
-    }
-    
-    const result = await response.json();
-    
     let analysis = '';
     
-    // Build personality-driven response
-    if (result && result[0] && result[0].generated_text) {
-      const caption = result[0].generated_text;
+    if (botPersonality.friendliness > 6) {
+      analysis = `📸 Thanks for sharing the image!`;
+    } else {
+      analysis = `Image received.`;
+    }
+    
+    if (userCaption) {
+      analysis += `\n\nYou said: "${userCaption}"`;
       
-      if (botPersonality.enthusiasm > 7) {
-        analysis = `🎨 I can see it! This looks like: **${caption}**\n\n`;
-      } else if (botPersonality.friendliness > 6) {
-        analysis = `👀 I see: **${caption}**\n\n`;
-      } else {
-        analysis = `Image analysis: **${caption}**\n\n`;
-      }
-      
-      // Add contextual response if user included a caption
-      if (userCaption) {
-        if (botPersonality.curiosity > 6) {
-          analysis += `You mentioned: "${userCaption}"\n\nThat's interesting! `;
-        } else {
-          analysis += `Re: "${userCaption}" - `;
-        }
-        
-        // Check if caption relates to the image
-        const captionLower = userCaption.toLowerCase();
-        const imageLower = caption.toLowerCase();
-        
-        if (captionLower.includes('what') || captionLower.includes('identify') || captionLower.includes('see')) {
-          analysis += `Based on what I see, ${caption}.`;
-        } else {
-          analysis += `I can see that! Cool image! 😊`;
-        }
-      } else {
-        if (botPersonality.curiosity > 7) {
-          analysis += `What made you want to share this? 😊`;
-        } else if (botPersonality.friendliness > 6) {
-          analysis += `Thanks for sharing! 📸`;
-        }
+      if (botPersonality.curiosity > 6) {
+        analysis += `\n\nThat's interesting! Tell me more about it! 😊`;
       }
     } else {
-      analysis = `I can see the image, but I'm having trouble describing it in detail. ${userCaption ? `You said: "${userCaption}"` : 'Try asking me something specific about it!'}`;
+      if (botPersonality.curiosity > 7) {
+        analysis += `\n\nWhat's the story behind this image? I'd love to hear about it! 😊`;
+      } else if (botPersonality.friendliness > 6) {
+        analysis += `\n\nTell me about it! What made you want to share this?`;
+      }
     }
     
     return analysis;
     
   } catch (error) {
-    console.error('Image analysis error:', error);
-    
-    if (userCaption) {
-      return `I received your image and caption: "${userCaption}"\n\nI'm having some trouble analyzing it right now, but I can see you shared it! 📸`;
-    }
-    return `I received your image! While I can't analyze it in detail right now, I can see you shared it. Try asking me something specific about it, or let me know what you'd like to know! 📸`;
+    return `I received your image! ${userCaption ? `You mentioned: "${userCaption}"` : 'Tell me about it!'} 📸`;
   }
 }
 
@@ -5261,16 +5070,19 @@ function executeCommand() {
   const commandUpper = command.toUpperCase();
   
   // ===== SECURITY LAYER 5: Personal Information Detection =====
-  const personalInfoDetected = detectPersonalInfo(command);
-  if (personalInfoDetected.length > 0) {
-    addTerminalLine(sanitizePersonalInfo(command), '#ffff00', true);
-    input.value = '';
-    addTerminalLine('🛡️ PRIVACY PROTECTION ACTIVATED', '#ff6600');
-    addTerminalLine(`Detected: ${personalInfoDetected.join(', ')}`, '#ffff99');
-    addTerminalLine('Personal information has been automatically redacted.', '#ffff99');
-    addTerminalLine('Your message will not be saved or transmitted.', '#ffff99');
-    addTerminalLine('This protects you from accidentally sharing sensitive data.', '#c0ffc0');
-    return;
+  // EXCEPTION: Allow SET API KEY commands to bypass personal info detection
+  if (!commandUpper.startsWith('SET API KEY')) {
+    const personalInfoDetected = detectPersonalInfo(command);
+    if (personalInfoDetected.length > 0) {
+      addTerminalLine(sanitizePersonalInfo(command), '#ffff00', true);
+      input.value = '';
+      addTerminalLine('🛡️ PRIVACY PROTECTION ACTIVATED', '#ff6600');
+      addTerminalLine(`Detected: ${personalInfoDetected.join(', ')}`, '#ffff99');
+      addTerminalLine('Personal information has been automatically redacted.', '#ffff99');
+      addTerminalLine('Your message will not be saved or transmitted.', '#ffff99');
+      addTerminalLine('This protects you from accidentally sharing sensitive data.', '#c0ffc0');
+      return;
+    }
   }
   
   // Check content filter (except for mode switching commands)
@@ -5716,49 +5528,27 @@ function executeCommand() {
         addTerminalLine('Using Llama 3.1 70B model - fast and intelligent!', '#c0ffc0');
         addTerminalLine('Your API key is encrypted and stored locally only.', '#c0ffc0');
         addTerminalLine('It will NEVER be displayed or transmitted except to Groq.', '#c0ffc0');
-      }
-      // Check if it's a Hugging Face key
-      else if (key.startsWith('hf_')) {
-        localStorage.setItem('hfAPIKey', key);
-        huggingFaceAPIKey = key;
-        checkHuggingFaceStatus();
-        
-        // NEVER echo the key back to the user
-        addTerminalLine('[SECURE INPUT - API KEY]', '#ffff00', true);
-        input.value = ''; // Clear immediately
-        addTerminalLine('✅ HUGGING FACE API KEY SAVED SECURELY', '#00ff00');
-        addTerminalLine('AI-powered responses are now enabled!', '#c0ffc0');
-        addTerminalLine('Your API key is encrypted and stored locally only.', '#c0ffc0');
-        addTerminalLine('It will NEVER be displayed or transmitted except to Hugging Face.', '#c0ffc0');
-        addTerminalLine('\n💡 TIP: Groq is faster! Get a free key at https://console.groq.com', '#ffff99');
       } else {
         addTerminalLine('[SECURE INPUT]', '#ffff00', true);
         input.value = '';
         addTerminalLine('❌ Invalid API key format.', '#ff6666');
-        addTerminalLine('• Groq keys start with "gsk_" (Recommended!)', '#ffff99');
-        addTerminalLine('• Hugging Face keys start with "hf_"', '#ffff99');
-        addTerminalLine('\nGet Groq key: https://console.groq.com (fastest!)', '#c0ffc0');
-        addTerminalLine('Get HF key: https://huggingface.co/settings/tokens', '#c0ffc0');
+        addTerminalLine('Groq keys must start with "gsk_"', '#ffff99');
+        addTerminalLine('\nGet your free Groq key at: https://console.groq.com', '#c0ffc0');
       }
     } else {
-      addTerminalLine('Usage: SET API KEY [your-api-key-here]', '#ffff99');
-      addTerminalLine('\n🚀 RECOMMENDED: Groq (fastest & smartest)', '#00ff00');
-      addTerminalLine('   Get key: https://console.groq.com', '#c0ffc0');
-      addTerminalLine('\n📦 Alternative: Hugging Face', '#ffff99');
-      addTerminalLine('   Get key: https://huggingface.co/settings/tokens', '#c0ffc0');
-      addTerminalLine('\nYour key will be stored securely and never displayed.', '#c0ffc0');
+      addTerminalLine('Usage: SET API KEY [your-groq-api-key]', '#ffff99');
+      addTerminalLine('Get your free key at: https://console.groq.com', '#c0ffc0');
+      addTerminalLine('Your key will be stored securely and never displayed.', '#c0ffc0');
     }
     return;
   }
   
   if (commandUpper === 'REMOVE API KEY' || commandUpper === 'REMOVE GROQ KEY') {
     localStorage.removeItem('groqAPIKey');
-    localStorage.removeItem('hfAPIKey');
     groqAPIKey = null;
-    huggingFaceAPIKey = null;
     groqEnabled = false;
-    huggingFaceEnabled = false;
-    addTerminalLine('All API keys removed. Bot will use basic responses.', '#ffff00');
+    addTerminalLine('Groq API key removed. Bot will use basic responses.', '#ffff00');
+    addTerminalLine('💡 To re-enable AI: SET API KEY [your-groq-key]', '#ffff99');
     return;
   }
   
@@ -5770,25 +5560,13 @@ function executeCommand() {
       addTerminalLine('\n🚀 GROQ AI: ENABLED ✅', '#00ff00');
       addTerminalLine('   Model: Llama 3.1 70B Versatile', '#c0ffc0');
       addTerminalLine('   Speed: Ultra-fast responses', '#c0ffc0');
-      addTerminalLine('   Status: Primary AI engine active', '#c0ffc0');
+      addTerminalLine('   Status: AI engine active', '#c0ffc0');
+      addTerminalLine('   Free tier: 14,400 requests/day', '#c0ffc0');
     } else {
       addTerminalLine('\n🚀 GROQ AI: DISABLED ❌', '#ffff99');
-      addTerminalLine('   Get key: https://console.groq.com', '#ffff99');
-    }
-    
-    if (checkHuggingFaceStatus()) {
-      addTerminalLine('\n📦 HUGGING FACE: ENABLED (Fallback)', '#00ff00');
-      addTerminalLine('   Model: Mistral-7B', '#c0ffc0');
-      addTerminalLine('   Status: Backup AI ready', '#c0ffc0');
-    } else {
-      addTerminalLine('\n📦 HUGGING FACE: DISABLED', '#888');
-      addTerminalLine('   Get key: https://huggingface.co/settings/tokens', '#888');
-    }
-    
-    if (!checkGroqStatus() && !checkHuggingFaceStatus()) {
-      addTerminalLine('\n⚠️ NO AI ENABLED', '#ff6600');
-      addTerminalLine('Using basic pattern matching only', '#ffff99');
-      addTerminalLine('\nTo enable AI: SET API KEY [your-groq-key]', '#c0ffc0');
+      addTerminalLine('   Using basic pattern matching', '#ffff99');
+      addTerminalLine('   Get free key: https://console.groq.com', '#ffff99');
+      addTerminalLine('\n💡 To enable: SET API KEY [your-groq-key]', '#c0ffc0');
     }
     
     addTerminalLine('\n═══════════════════════════════════════', '#00ff00');
@@ -6418,24 +6196,12 @@ function executeCommand() {
       return;
     }
     
-    // Try Groq first (fastest!), then Hugging Face, then fallback
-    if (checkGroqStatus() || checkHuggingFaceStatus()) {
+    // Try Groq AI
+    if (checkGroqStatus()) {
       showTypingIndicator();
       
-      // Try Groq first
       const tryAI = async () => {
-        let aiResponse = null;
-        
-        // Try Groq (primary)
-        if (checkGroqStatus()) {
-          aiResponse = await getGroqResponse(command);
-        }
-        
-        // Try Hugging Face if Groq failed (fallback)
-        if (!aiResponse && checkHuggingFaceStatus()) {
-          console.log('Groq unavailable, trying Hugging Face...');
-          aiResponse = await getHuggingFaceResponse(command);
-        }
+        const aiResponse = await getGroqResponse(command);
         
         hideTypingIndicator();
         
@@ -6446,7 +6212,7 @@ function executeCommand() {
           extractAndLearn(command, aiResponse);
           updateContext(command, aiResponse);
         } else {
-          // All AI failed, use fallback
+          // AI failed, use fallback
           const fallbackResponse = getConversationalFallback(command);
           addTerminalLine(fallbackResponse, '#00ff00');
           saveToJournal(command, fallbackResponse);
