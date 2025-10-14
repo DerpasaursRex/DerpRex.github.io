@@ -29,7 +29,7 @@
       
       for (let i = 0; i < numFollowers; i++) {
         const follower = document.createElement('img');
-        follower.src = 'SitePics/Bugtie.png';
+        follower.src = '../SitePics/Bugtie.png';
         follower.style.position = 'fixed';
         follower.style.width = '30px';
         follower.style.height = '30px';
@@ -141,7 +141,7 @@
 
   <style>
   .jumbotron {
-    background-image: url("SitePics/rexbanner.png");
+    background-image: url("../SitePics/rexbanner.png");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -155,9 +155,9 @@
 <div class="jumbotron jumbotron-fluid text-center" style="margin-bottom:0">
   <h1>Catherine Ann MacDonald</h1>
   <p style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Writer-Artist</p>
-  <a href="ChatBot.html" style="text-decoration: none; transition: transform 0.2s ease; display: inline-block; position: relative;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
-    <img src="TestBot/noise.gif" alt="noise" style="width: 22px; height: 15px; position: absolute; top: 5px; left: 5px;">
-    <img src="TestBot/test.png" alt="computer" style="width: 32px; height: 32px; position: relative;">
+  <a href="../ChatBot.html" style="text-decoration: none; transition: transform 0.2s ease; display: inline-block; position: relative;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+    <img src="../TestBot/noise.gif" alt="noise" style="width: 22px; height: 15px; position: absolute; top: 5px; left: 5px;">
+    <img src="../TestBot/test.png" alt="computer" style="width: 32px; height: 32px; position: relative;">
   </a>
 </div>
 
@@ -170,7 +170,7 @@
   <div class="collapse navbar-collapse" id="collapsibleNavbar">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="../index.html">Home</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="currentportfolio.html">Current Portfolio</a>
@@ -199,7 +199,10 @@
           <a class="dropdown-item" href="3D.html">3D</a>
           <a class="dropdown-item" href="Photography.html">Photography</a>
           <a class="dropdown-item" href="Writing.html">Writing</a>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Visual Media</h6>
           <a class="dropdown-item" href="Videos.html">Videos</a>
+          <a class="dropdown-item" href="Animation.html">Animation</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Coding</h6>
           <a class="dropdown-item" href="Websites.html">Websites</a>
@@ -233,29 +236,29 @@
 <div class="container" style="margin-top:30px">
   <div class="row">
     <div class="col-12">
-      <h2 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Paintings</h2>
-      <h5 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Physical Paintings Collection</h5>
+      <h2 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Photography</h2>
+      <h5 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Photo Collection</h5>
       
       <!-- Magazine-Style Gallery -->
       <div class="row">
-        <!-- Placeholder for Paintings -->
+        <!-- Placeholder for Photography -->
         <div class="col-12 mb-4">
           <div class="card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.1); padding: 30px; text-align: center;">
-            <h4 style="color: #b82b2f;">No paintings uploaded yet</h4>
-            <p>This gallery will showcase physical painting works including acrylics, oils, watercolors, and more.</p>
+            <h4 style="color: #b82b2f;">No photos uploaded yet</h4>
+            <p>This gallery will showcase photography work and captured moments.</p>
             <small class="text-muted">Check back soon for updates!</small>
           </div>
         </div>
       
       <!-- Example placeholder cards for future content -->
-      <!-- Uncomment and add paintings as needed:
+      <!-- Uncomment and add photos as needed:
         <div class="col-md-6 col-lg-4 mb-4">
           <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
-            <img src="Paintings/example.jpg" class="card-img-top" alt="Painting Title" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Painting Title', 'Description')">
+            <img src="Photography/example.jpg" class="card-img-top" alt="Photo Title" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Photo Title', 'Description')">
             <div class="card-body text-center">
-              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Painting Title</h6>
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Photo Title</h6>
               <p class="card-text small">Description</p>
-              <small class="text-muted">Physical Media</small>
+              <small class="text-muted">Photography</small>
             </div>
           </div>
         </div>
@@ -266,10 +269,10 @@
 </div>
 
 <!-- Walking Character -->
-<img id="walkingCharacter" class="walking-character" src="SitePics/Shadite.png" alt="Walking Character">
+<img id="walkingCharacter" class="walking-character" src="../SitePics/Shadite.png" alt="Walking Character">
 
 <!-- Footer -->
-<div style="background-image: url('SitePics/elizabanner.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 20px; text-align: center; margin-top: 30px; border-radius: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1);">
+<div style="background-image: url('../SitePics/elizabanner.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 20px; text-align: center; margin-top: 30px; border-radius: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1);">
   <p style="color: white; margin: 0; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Catherine Ann MacDonald</p>
   <p style="color: white; margin: 5px 0 0 0; font-size: 14px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">&copy; 2025</p>
 </div>
@@ -277,7 +280,7 @@
 <!-- Animated Background -->
 <style>
 body {
-  background-image: url("SitePics/spectrumbackground.png");
+  background-image: url("../SitePics/spectrumbackground.png");
   background-size: 200% 100%;
   background-repeat: repeat-x;
   background-attachment: fixed;
@@ -322,7 +325,7 @@ h1 {
 </style>
 
 <!-- Image Modal -->
-<div id="imageModal" class="modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-image: url('SitePics/galaxy.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+<div id="imageModal" class="modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-image: url('../SitePics/galaxy.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
   <span class="close" style="position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer;">&times;</span>
   <img class="modal-content" id="modalImage" style="margin: auto; display: block; width: 90%; max-width: 1200px; max-height: 90%; object-fit: contain;">
   <div id="caption" style="margin: auto; display: block; width: 80%; max-width: 700px; text-align: center; color: #ccc; padding: 10px 0; height: 150px;"></div>
@@ -404,7 +407,7 @@ document.addEventListener('keydown', function(event) {
 <div id="spotifyWidget">
   <div id="spotifyHeader">
     <span>🎵 Spotify Player</span>
-    <button id="spotifyMinimize" onclick="toggleSpotifyPaintings()">+</button>
+    <button id="spotifyMinimize" onclick="toggleSpotifyPhoto()">+</button>
   </div>
   <div id="spotifyContent" style="display: none;">
     <iframe id="spotifyIframe" style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
@@ -419,64 +422,64 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-let spotifyPaintingsDragging = false;
-let spotifyPaintingsCurrentX;
-let spotifyPaintingsCurrentY;
-let spotifyPaintingsInitialX;
-let spotifyPaintingsInitialY;
-let spotifyPaintingsXOffset = 0;
-let spotifyPaintingsYOffset = 0;
+let spotifyPhotoDragging = false;
+let spotifyPhotoCurrentX;
+let spotifyPhotoCurrentY;
+let spotifyPhotoInitialX;
+let spotifyPhotoInitialY;
+let spotifyPhotoXOffset = 0;
+let spotifyPhotoYOffset = 0;
 
-const spotifyPaintingsWidget = document.getElementById('spotifyWidget');
-const spotifyPaintingsHeader = document.getElementById('spotifyHeader');
+const spotifyPhotoWidget = document.getElementById('spotifyWidget');
+const spotifyPhotoHeader = document.getElementById('spotifyHeader');
 
-spotifyPaintingsHeader.addEventListener('mousedown', spotifyPaintingsDragStart);
-document.addEventListener('mousemove', spotifyPaintingsDrag);
-document.addEventListener('mouseup', spotifyPaintingsDragEnd);
+spotifyPhotoHeader.addEventListener('mousedown', spotifyPhotoDragStart);
+document.addEventListener('mousemove', spotifyPhotoDrag);
+document.addEventListener('mouseup', spotifyPhotoDragEnd);
 
-function spotifyPaintingsDragStart(e) {
-  spotifyPaintingsInitialX = e.clientX - spotifyPaintingsXOffset;
-  spotifyPaintingsInitialY = e.clientY - spotifyPaintingsYOffset;
+function spotifyPhotoDragStart(e) {
+  spotifyPhotoInitialX = e.clientX - spotifyPhotoXOffset;
+  spotifyPhotoInitialY = e.clientY - spotifyPhotoYOffset;
   
-  if (e.target === spotifyPaintingsHeader || e.target.parentElement === spotifyPaintingsHeader) {
-    spotifyPaintingsDragging = true;
+  if (e.target === spotifyPhotoHeader || e.target.parentElement === spotifyPhotoHeader) {
+    spotifyPhotoDragging = true;
   }
 }
 
-function spotifyPaintingsDrag(e) {
-  if (spotifyPaintingsDragging) {
+function spotifyPhotoDrag(e) {
+  if (spotifyPhotoDragging) {
     e.preventDefault();
-    spotifyPaintingsCurrentX = e.clientX - spotifyPaintingsInitialX;
-    spotifyPaintingsCurrentY = e.clientX - spotifyPaintingsInitialY;
-    spotifyPaintingsXOffset = spotifyPaintingsCurrentX;
-    spotifyPaintingsYOffset = spotifyPaintingsCurrentY;
+    spotifyPhotoCurrentX = e.clientX - spotifyPhotoInitialX;
+    spotifyPhotoCurrentY = e.clientY - spotifyPhotoInitialY;
+    spotifyPhotoXOffset = spotifyPhotoCurrentX;
+    spotifyPhotoYOffset = spotifyPhotoCurrentY;
     
-    spotifyPaintingsSetTranslate(spotifyPaintingsCurrentX, spotifyPaintingsCurrentY, spotifyPaintingsWidget);
+    spotifyPhotoSetTranslate(spotifyPhotoCurrentX, spotifyPhotoCurrentY, spotifyPhotoWidget);
   }
 }
 
-function spotifyPaintingsDragEnd(e) {
-  spotifyPaintingsInitialX = spotifyPaintingsCurrentX;
-  spotifyPaintingsInitialY = spotifyPaintingsCurrentY;
-  spotifyPaintingsDragging = false;
+function spotifyPhotoDragEnd(e) {
+  spotifyPhotoInitialX = spotifyPhotoCurrentX;
+  spotifyPhotoInitialY = spotifyPhotoCurrentY;
+  spotifyPhotoDragging = false;
 }
 
-function spotifyPaintingsSetTranslate(xPos, yPos, el) {
+function spotifyPhotoSetTranslate(xPos, yPos, el) {
   el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
 }
 
-function toggleSpotifyPaintings() {
+function toggleSpotifyPhoto() {
   const content = document.getElementById('spotifyContent');
   const btn = document.getElementById('spotifyMinimize');
   
   if (content.style.display === 'none') {
     content.style.display = 'block';
     btn.textContent = '−';
-    spotifyPaintingsWidget.style.width = '300px';
+    spotifyPhotoWidget.style.width = '300px';
   } else {
     content.style.display = 'none';
     btn.textContent = '+';
-    spotifyPaintingsWidget.style.width = '200px';
+    spotifyPhotoWidget.style.width = '200px';
   }
 }
 </script>

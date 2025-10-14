@@ -13,7 +13,7 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com https://www.youtube.com; connect-src 'self'; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data: https://i.ytimg.com; frame-src https://open.spotify.com https://www.youtube.com; font-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self'; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data:; frame-src https://open.spotify.com; font-src 'self' data:;">
   
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -33,7 +33,7 @@
       // Create multiple cursor followers
       for (let i = 0; i < numFollowers; i++) {
         const follower = document.createElement('img');
-        follower.src = 'SitePics/Bugtie.png';
+        follower.src = '../SitePics/Bugtie.png';
         follower.style.position = 'fixed';
         follower.style.width = '30px';
         follower.style.height = '30px';
@@ -170,7 +170,7 @@
   }
 
   .jumbotron {
-    background-image: url("SitePics/rexbanner.png");
+    background-image: url("../SitePics/rexbanner.png");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -179,7 +179,7 @@
   }
 
   .jumbotronfooter {
-    background-image: url("SitePics/elizabanner.png");
+    background-image: url("../SitePics/elizabanner.png");
 
     background-size: cover;
 
@@ -197,9 +197,9 @@
 <div class="jumbotron jumbotron-fluid text-center" style="margin-bottom:0">
   <h1>Catherine Ann MacDonald</h1>
  <p style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;"> Writer-Artist</p>
- <a href="ChatBot.html" style="text-decoration: none; transition: transform 0.2s ease; display: inline-block; position: relative;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
-  <img src="TestBot/noise.gif" alt="noise" style="width: 22px; height: 15px; position: absolute; top: 5px; left: 5px;">
-  <img src="TestBot/test.png" alt="computer" style="width: 32px; height: 32px; position: relative;">
+ <a href="../ChatBot.html" style="text-decoration: none; transition: transform 0.2s ease; display: inline-block; position: relative;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+  <img src="../TestBot/noise.gif" alt="noise" style="width: 22px; height: 15px; position: absolute; top: 5px; left: 5px;">
+  <img src="../TestBot/test.png" alt="computer" style="width: 32px; height: 32px; position: relative;">
  </a>
 </div>
 
@@ -211,7 +211,7 @@
   <div class="collapse navbar-collapse" id="collapsibleNavbar">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="../index.html">Home</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="currentportfolio.html">Current Portfolio</a>
@@ -240,7 +240,10 @@
           <a class="dropdown-item" href="3D.html">3D</a>
           <a class="dropdown-item" href="Photography.html">Photography</a>
           <a class="dropdown-item" href="Writing.html">Writing</a>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Visual Media</h6>
           <a class="dropdown-item" href="Videos.html">Videos</a>
+          <a class="dropdown-item" href="Animation.html">Animation</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Coding</h6>
           <a class="dropdown-item" href="Websites.html">Websites</a>
@@ -273,105 +276,137 @@
 <div class="container" style="margin-top:30px">
   <div class="row">
     <div class="col-12">
-      <h2 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Videos</h2>
-      <h5 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Animation & Video Content</h5>
+      <h2 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Early Work Archive</h2>
+      <h5 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Foundation of Creativity</h5>
       
-      <!-- Spiral Animated Video Gallery -->
+      <!-- Magazine-Style Gallery -->
       <div class="row">
-        <div class="col-12">
-          <div id="videoSpiral" class="video-spiral-container" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; padding: 40px 0;">
-            
-            <!-- Video 1 -->
-            <div class="spiral-video-box" data-video-id="0" onclick="openVideoModal('https://www.youtube.com/embed/r6h4H3tqndc')" style="cursor: pointer;">
-              <div class="video-wrapper">
-                <div class="video-container">
-                  <iframe src="https://www.youtube.com/embed/r6h4H3tqndc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="pointer-events: none;"></iframe>
+        <!-- Featured Early Work -->
+        <div class="col-12 mb-4">
+          <div class="card magazine-featured" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+            <div class="row no-gutters">
+              <div class="col-md-6">
+            <img src="../EarlyWork/371.png" class="card-img" alt="Early Work 371" style="height: 400px; object-fit: cover; object-position: center 30%; cursor: pointer;" onclick="openModal(this, 'Work #371', '')">
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <div class="card-body text-center">
+                  <h4 class="card-title" style="color: #b82b2f; font-weight: bold;">Featured Early Work</h4>
+                  <h5 class="card-title">Work #371</h5>
+                  <p class="card-text">WIP</p>
+                  <small class="text-muted">Early Digital Art • Foundation Work</small>
                 </div>
               </div>
             </div>
-            
-            <!-- Video 2 -->
-            <div class="spiral-video-box" data-video-id="1" onclick="openVideoModal('https://www.youtube.com/embed/MXxsX6Nghs8')" style="cursor: pointer;">
-              <div class="video-wrapper">
-                <div class="video-container">
-                  <iframe src="https://www.youtube.com/embed/MXxsX6Nghs8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="pointer-events: none;"></iframe>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Video 3 -->
-            <div class="spiral-video-box" data-video-id="2" onclick="openVideoModal('https://www.youtube.com/embed/E7uBnrBr1hE')" style="cursor: pointer;">
-              <div class="video-wrapper">
-                <div class="video-container">
-                  <iframe src="https://www.youtube.com/embed/E7uBnrBr1hE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="pointer-events: none;"></iframe>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Video 4 -->
-            <div class="spiral-video-box" data-video-id="3" onclick="openVideoModal('https://www.youtube.com/embed/R7vHD5bn1ew')" style="cursor: pointer;">
-              <div class="video-wrapper">
-                <div class="video-container">
-                  <iframe src="https://www.youtube.com/embed/R7vHD5bn1ew" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="pointer-events: none;"></iframe>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Video 5 -->
-            <div class="spiral-video-box" data-video-id="4" onclick="openVideoModal('https://www.youtube.com/embed/rnF88BwI6Mk')" style="cursor: pointer;">
-              <div class="video-wrapper">
-                <div class="video-container">
-                  <iframe src="https://www.youtube.com/embed/rnF88BwI6Mk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="pointer-events: none;"></iframe>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Video 6 -->
-            <div class="spiral-video-box" data-video-id="5" onclick="openVideoModal('https://www.youtube.com/embed/qtmqjoD6fp4')" style="cursor: pointer;">
-              <div class="video-wrapper">
-                <div class="video-container">
-                  <iframe src="https://www.youtube.com/embed/qtmqjoD6fp4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="pointer-events: none;"></iframe>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Video 7 -->
-            <div class="spiral-video-box" data-video-id="6" onclick="openVideoModal('https://www.youtube.com/embed/EyuSPBx0koQ')" style="cursor: pointer;">
-              <div class="video-wrapper">
-                <div class="video-container">
-                  <iframe src="https://www.youtube.com/embed/EyuSPBx0koQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="pointer-events: none;"></iframe>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Video 8 -->
-            <div class="spiral-video-box" data-video-id="7" onclick="openVideoModal('https://www.youtube.com/embed/qZwsnqD3HEw')" style="cursor: pointer;">
-              <div class="video-wrapper">
-                <div class="video-container">
-                  <iframe src="https://www.youtube.com/embed/qZwsnqD3HEw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="pointer-events: none;"></iframe>
-                </div>
-              </div>
-            </div>
-            
           </div>
         </div>
+        
+        <!-- Early Work Gallery Grid -->
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../EarlyWork/382.png" class="card-img-top" alt="Early Work 382" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Work #382', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Work #382</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../EarlyWork/385.png" class="card-img-top" alt="Early Work 385" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Work #385', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Work #385</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../EarlyWork/397.png" class="card-img-top" alt="Early Work 397" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Work #397', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Work #397</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../EarlyWork/399.png" class="card-img-top" alt="Early Work 399" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Work #399', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Work #399</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../EarlyWork/411.png" class="card-img-top" alt="Early Work 411" style="height: 250px; object-fit: cover; object-position: center 25%; cursor: pointer;" onclick="openModal(this, 'Work #411', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Work #411</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../EarlyWork/c79cdb4a-252f-45a8-86e6-d1ab27f06d44.png" class="card-img-top" alt="Fat Creature" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Fat Creature', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Fat Creature</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../EarlyWork/cryingman.png" class="card-img-top" alt="Crying Man" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Crying Man', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Crying Man</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../EarlyWork/Ichors.png" class="card-img-top" alt="Ichors" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Ichors', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Ichors</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Early Digital Art</small>
+            </div>
+          </div>
+        </div>
+        
+      
       
     </div>
   </div>
 </div>
 
 <!-- Walking Character -->
-<img id="walkingCharacter" class="walking-character" src="SitePics/Shadite.png" alt="Walking Character">
+<img id="walkingCharacter" class="walking-character" src="../SitePics/Shadite.png" alt="Walking Character">
 
 <!-- Footer -->
-<div style="background-image: url('SitePics/elizabanner.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 20px; text-align: center; margin-top: 30px; border-radius: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1);">
+<div style="background-image: url('../SitePics/elizabanner.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 20px; text-align: center; margin-top: 30px; border-radius: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1);">
   <p style="color: white; margin: 0; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Catherine Ann MacDonald</p>
   <p style="color: white; margin: 5px 0 0 0; font-size: 14px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">&copy; 2025</p>
 </div>
 
 <style>
 body {
-  background-image: url("SitePics/spectrumbackground.png");
+  background-image: url("../SitePics/spectrumbackground.png");
   background-size: 200% 100%;
   background-repeat: repeat-x;
   background-attachment: fixed;
@@ -411,89 +446,59 @@ h1 {
   text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
 }
 
-.video-container {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-  height: 0;
+.magazine-card:hover {
+  transform: translateY(-5px);
+}
+
+.magazine-featured {
+  border-radius: 15px;
   overflow: hidden;
-  border-radius: 12px;
 }
 
-.video-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+.magazine-card {
+  border-radius: 10px;
+  overflow: hidden;
 }
-
-/* Video Box Styles */
-.spiral-video-box {
-  width: 320px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(240,240,240,0.9));
-  border: 2px solid rgba(184,43,47,0.3);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  padding: 15px;
-  transition: all 0.3s ease;
-}
-
-.video-wrapper {
-  pointer-events: auto;
-}
-
-/* Hover enhances the box */
-.spiral-video-box:hover {
-  transform: scale(1.05);
-  box-shadow: 0 16px 40px rgba(184,43,47,0.3);
-  border-color: #b82b2f;
-  z-index: 100;
-}
-
 </style>
 
 
-  <!-- Video Modal for Fullscreen Viewing -->
-  <div id="videoModal" class="modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-image: url('SitePics/galaxy.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-    <span class="close" id="videoClose" style="position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 10001;">&times;</span>
-    <div style="margin: auto; display: flex; align-items: center; justify-content: center; width: 90%; max-width: 1400px; height: 100%;">
-      <div id="modalVideoContainer" style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; background: rgba(0,0,0,0.8); border-radius: 12px; box-shadow: 0 10px 50px rgba(0,0,0,0.5);">
-        <iframe id="modalVideo" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      </div>
-    </div>
+  <!-- Image Modal -->
+  <div id="imageModal" class="modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-image: url('../SitePics/galaxy.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <span class="close" style="position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer;">&times;</span>
+    <img class="modal-content" id="modalImage" style="margin: auto; display: block; width: 90%; max-width: 1200px; max-height: 90%; object-fit: contain;">
+    <div id="caption" style="margin: auto; display: block; width: 80%; max-width: 700px; text-align: center; color: #ccc; padding: 10px 0; height: 150px;"></div>
   </div>
 
   <script>
-    // Get the video modal
-    var videoModal = document.getElementById('videoModal');
-    var modalVideo = document.getElementById('modalVideo');
-    var videoClose = document.getElementById('videoClose');
+    // Get the modal
+    var modal = document.getElementById('imageModal');
+    var modalImg = document.getElementById("modalImage");
+    var captionText = document.getElementById("caption");
+    var span = document.getElementsByClassName("close")[0];
 
-    // When the user clicks on a video, open the modal
-    function openVideoModal(videoUrl) {
-      videoModal.style.display = "block";
-      modalVideo.src = videoUrl + "?autoplay=1";
+    // When the user clicks on an image, open the modal
+    function openModal(img, title, description) {
+      modal.style.display = "block";
+      modalImg.src = img.src;
+      captionText.innerHTML = '<h3 style="color: #b82b2f; margin-bottom: 10px;">' + title + '</h3><p style="font-size: 16px; line-height: 1.5;">' + description + '</p>';
     }
 
     // When the user clicks on (x), close the modal
-    videoClose.onclick = function() {
-      videoModal.style.display = "none";
-      modalVideo.src = ""; // Stop video playback
+    span.onclick = function() {
+      modal.style.display = "none";
     }
 
-    // When the user clicks anywhere outside of the video, close it
+    // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
-      if (event.target == videoModal) {
-        videoModal.style.display = "none";
-        modalVideo.src = ""; // Stop video playback
+      if (event.target == modal) {
+        modal.style.display = "none";
       }
     }
 
     // Close modal with Escape key
     document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape' && videoModal.style.display === "block") {
-        videoModal.style.display = "none";
-        modalVideo.src = ""; // Stop video playback
+      if (event.key === 'Escape') {
+        modal.style.display = "none";
       }
     });
   </script>
@@ -546,7 +551,7 @@ h1 {
 <div id="spotifyWidget">
   <div id="spotifyHeader">
     <span>🎵 Spotify Player</span>
-    <button id="spotifyMinimize" onclick="toggleSpotifyVid()">+</button>
+    <button id="spotifyMinimize" onclick="toggleSpotifyEarly()">+</button>
   </div>
   <div id="spotifyContent" style="display: none;">
     <iframe id="spotifyIframe" style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
@@ -565,68 +570,64 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 // Draggable Spotify Widget
-let spotifyVidDragging = false;
-let spotifyVidCurrentX;
-let spotifyVidCurrentY;
-let spotifyVidInitialX;
-let spotifyVidInitialY;
-let spotifyVidXOffset = 0;
-let spotifyVidYOffset = 0;
+let spotifyEarlyDragging = false;
+let spotifyEarlyCurrentX;
+let spotifyEarlyCurrentY;
+let spotifyEarlyInitialX;
+let spotifyEarlyInitialY;
+let spotifyEarlyXOffset = 0;
+let spotifyEarlyYOffset = 0;
 
-const spotifyVidWidget = document.getElementById('spotifyWidget');
-const spotifyVidHeader = document.getElementById('spotifyHeader');
+const spotifyEarlyWidget = document.getElementById('spotifyWidget');
+const spotifyEarlyHeader = document.getElementById('spotifyHeader');
 
-spotifyVidHeader.addEventListener('mousedown', spotifyVidDragStart);
-document.addEventListener('mousemove', spotifyVidDrag);
-document.addEventListener('mouseup', spotifyVidDragEnd);
+spotifyEarlyHeader.addEventListener('mousedown', spotifyEarlyDragStart);
+document.addEventListener('mousemove', spotifyEarlyDrag);
+document.addEventListener('mouseup', spotifyEarlyDragEnd);
 
-function spotifyVidDragStart(e) {
-  spotifyVidInitialX = e.clientX - spotifyVidXOffset;
-  spotifyVidInitialY = e.clientY - spotifyVidYOffset;
+function spotifyEarlyDragStart(e) {
+  spotifyEarlyInitialX = e.clientX - spotifyEarlyXOffset;
+  spotifyEarlyInitialY = e.clientY - spotifyEarlyYOffset;
   
-  if (e.target === spotifyVidHeader || e.target.parentElement === spotifyVidHeader) {
-    spotifyVidDragging = true;
+  if (e.target === spotifyEarlyHeader || e.target.parentElement === spotifyEarlyHeader) {
+    spotifyEarlyDragging = true;
   }
 }
 
-function spotifyVidDrag(e) {
-  if (spotifyVidDragging) {
+function spotifyEarlyDrag(e) {
+  if (spotifyEarlyDragging) {
     e.preventDefault();
-    spotifyVidCurrentX = e.clientX - spotifyVidInitialX;
-    spotifyVidCurrentY = e.clientY - spotifyVidInitialY;
-    spotifyVidXOffset = spotifyVidCurrentX;
-    spotifyVidYOffset = spotifyVidCurrentY;
+    spotifyEarlyCurrentX = e.clientX - spotifyEarlyInitialX;
+    spotifyEarlyCurrentY = e.clientY - spotifyEarlyInitialY;
+    spotifyEarlyXOffset = spotifyEarlyCurrentX;
+    spotifyEarlyYOffset = spotifyEarlyCurrentY;
     
-    spotifyVidSetTranslate(spotifyVidCurrentX, spotifyVidCurrentY, spotifyVidWidget);
+    spotifyEarlySetTranslate(spotifyEarlyCurrentX, spotifyEarlyCurrentY, spotifyEarlyWidget);
   }
 }
 
-function spotifyVidDragEnd(e) {
-  spotifyVidInitialX = spotifyVidCurrentX;
-  spotifyVidInitialY = spotifyVidCurrentY;
-  spotifyVidDragging = false;
+function spotifyEarlyDragEnd(e) {
+  spotifyEarlyInitialX = spotifyEarlyCurrentX;
+  spotifyEarlyInitialY = spotifyEarlyCurrentY;
+  spotifyEarlyDragging = false;
 }
 
-function spotifyVidSetTranslate(xPos, yPos, el) {
+function spotifyEarlySetTranslate(xPos, yPos, el) {
   el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
 }
 
-function toggleSpotifyVid() {
+function toggleSpotifyEarly() {
   const content = document.getElementById('spotifyContent');
   const btn = document.getElementById('spotifyMinimize');
   
   if (content.style.display === 'none') {
     content.style.display = 'block';
     btn.textContent = '−';
-    spotifyVidWidget.style.width = '300px';
+    spotifyEarlyWidget.style.width = '300px';
   } else {
     content.style.display = 'none';
     btn.textContent = '+';
-    spotifyVidWidget.style.width = '200px';
+    spotifyEarlyWidget.style.width = '200px';
   }
 }
 </script>
-
-</body>
-</html>
-

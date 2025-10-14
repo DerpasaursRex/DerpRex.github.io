@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <title>Catherine Ann MacDonald</title>
-  
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
@@ -13,13 +12,11 @@
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self'; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data:; frame-src https://open.spotify.com; font-src 'self' data:;">
   
-  <!-- Bootstrap CSS & JS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   
-  <!-- Cursor follower script -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const numFollowers = 5;
@@ -29,7 +26,7 @@
       
       for (let i = 0; i < numFollowers; i++) {
         const follower = document.createElement('img');
-        follower.src = 'SitePics/Bugtie.png';
+        follower.src = '../SitePics/Bugtie.png';
         follower.style.position = 'fixed';
         follower.style.width = '30px';
         follower.style.height = '30px';
@@ -112,7 +109,6 @@
       animate();
     });
 
-    // Walking character animation
     document.addEventListener('DOMContentLoaded', function() {
       const walkingChar = document.getElementById('walkingCharacter');
       let position = 0;
@@ -138,30 +134,42 @@
       walk();
     });
   </script>
+  
+<style>
+  .fakeimg {
+    height: 200px;
+    background: #aaa;
+  }
 
-  <style>
   .jumbotron {
-    background-image: url("SitePics/rexbanner.png");
+    background-image: url("../SitePics/rexbanner.png");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     color: white;
   }
-  </style>
+
+  .jumbotronfooter {
+    background-image: url("../SitePics/elizabanner.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+    padding: 50px;
+  }
+</style>
 </head>
 <body>
 
-<!-- Header -->
 <div class="jumbotron jumbotron-fluid text-center" style="margin-bottom:0">
   <h1>Catherine Ann MacDonald</h1>
-  <p style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Writer-Artist</p>
-  <a href="ChatBot.html" style="text-decoration: none; transition: transform 0.2s ease; display: inline-block; position: relative;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
-    <img src="TestBot/noise.gif" alt="noise" style="width: 22px; height: 15px; position: absolute; top: 5px; left: 5px;">
-    <img src="TestBot/test.png" alt="computer" style="width: 32px; height: 32px; position: relative;">
-  </a>
+ <p style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;"> Writer-Artist</p>
+ <a href="../ChatBot.html" style="text-decoration: none; transition: transform 0.2s ease; display: inline-block; position: relative;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+  <img src="../TestBot/noise.gif" alt="noise" style="width: 22px; height: 15px; position: absolute; top: 5px; left: 5px;">
+  <img src="../TestBot/test.png" alt="computer" style="width: 32px; height: 32px; position: relative;">
+ </a>
 </div>
 
-<!-- Navigation -->
 <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #b82b2f;">
   <a class="navbar-brand" href="#">Menu</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -170,7 +178,7 @@
   <div class="collapse navbar-collapse" id="collapsibleNavbar">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="../index.html">Home</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="currentportfolio.html">Current Portfolio</a>
@@ -199,7 +207,10 @@
           <a class="dropdown-item" href="3D.html">3D</a>
           <a class="dropdown-item" href="Photography.html">Photography</a>
           <a class="dropdown-item" href="Writing.html">Writing</a>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Visual Media</h6>
           <a class="dropdown-item" href="Videos.html">Videos</a>
+          <a class="dropdown-item" href="Animation.html">Animation</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Coding</h6>
           <a class="dropdown-item" href="Websites.html">Websites</a>
@@ -229,85 +240,131 @@
   </div>  
 </nav>
 
-<!-- Main Content -->
 <div class="container" style="margin-top:30px">
   <div class="row">
     <div class="col-12">
-      <h2 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Shop</h2>
-      <h5 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Art Prints, Merchandise & Commissions</h5>
+      <h2 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Party Collection</h2>
+      <h5 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Celebration of Characters</h5>
       
-      <!-- Commissions Section -->
+      <!-- Magazine-Style Gallery -->
       <div class="row">
+        <!-- Featured Character -->
         <div class="col-12 mb-4">
-          <div style="background-image: url('SitePics/whitepaper.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); min-height: 200px;">
-            <h3 style="color: #b82b2f; margin-bottom: 15px; text-align: center;">Commissions</h3>
-            <p style="text-align: center; margin-bottom: 20px;">
-              <a href="index.html#contact" style="color: #b82b2f; text-decoration: none; font-weight: bold; font-size: 16px; transition: color 0.3s ease;" onmouseover="this.style.color='#8a1f23'" onmouseout="this.style.color='#b82b2f'">
-                Contact me for commission inquiries
-              </a>
-            </p>
-            <!-- Commission information will be added here -->
-          </div>
-        </div>
-      </div>
-      
-      <!-- Shop Items Section -->
-      <div class="row">
-        <div class="col-12 mb-3">
-          <h3 style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Shop Items</h3>
-        </div>
-        
-        <!-- Working on it message -->
-        <div class="col-12 mb-4">
-          <div style="background-image: url('SitePics/whitepaper.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; padding: 40px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center;">
-            <h4 style="color: #b82b2f;">Working on it.</h4>
-          </div>
-        </div>
-        
-        <!-- Shop items will be added here using the template below -->
-        
-        <!-- TEMPLATE FOR SHOP ITEMS - Copy and uncomment this block for each product:
-        
-        <div class="col-md-6 col-lg-4 mb-4">
-          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
-            <img src="Shop/product-image.jpg" class="card-img-top" alt="Product Name" style="height: 300px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Product Name', 'Product description text here')">
-            <div class="card-body text-center">
-              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Product Name</h6>
-              <p class="card-text small">Brief product description</p>
-              <p style="color: #b82b2f; font-weight: bold; font-size: 18px;">$25.00</p>
-              <a href="#" class="btn btn-sm" style="background-color: #b82b2f; color: white;">Buy Now</a>
+          <div class="card magazine-featured" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+            <div class="row no-gutters">
+              <div class="col-md-6">
+            <img src="../Party/alienzz.jpg" class="card-img" alt="Alienzz" style="height: 400px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Alienzz', '')">
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <div class="card-body text-center">
+                  <h4 class="card-title" style="color: #b82b2f; font-weight: bold;">Featured Character</h4>
+                  <h5 class="card-title">Alienzz</h5>
+                  <p class="card-text">WIP</p>
+                  <small class="text-muted">Character Design • Digital Art</small>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         
-        END TEMPLATE -->
+        <!-- Character Gallery Grid -->
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../Party/bloo.png" class="card-img-top" alt="Bloo" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Bloo', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Bloo</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Character Design</small>
+            </div>
+          </div>
+        </div>
         
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../Party/Bugtie.png" class="card-img-top" alt="Bugtie" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Bugtie', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Bugtie</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Character Design</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../Party/caylex.png" class="card-img-top" alt="Caylex" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Caylex', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Caylex</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Character Design</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../Party/echo.png" class="card-img-top" alt="Echo" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Echo', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Echo</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Character Design</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../Party/newMorgan.png" class="card-img-top" alt="New Morgan" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'New Morgan', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">New Morgan</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Character Design</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../Party/Shadite.png" class="card-img-top" alt="Shadite" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Shadite', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Shadite</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Character Design</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card magazine-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+            <img src="../Party/Zenith.png" class="card-img-top" alt="Zenith" style="height: 250px; object-fit: cover; cursor: pointer;" onclick="openModal(this, 'Zenith', '')">
+            <div class="card-body text-center">
+              <h6 class="card-title" style="color: #b82b2f; font-weight: bold;">Zenith</h6>
+              <p class="card-text small">WIP</p>
+              <small class="text-muted">Character Design</small>
+            </div>
+          </div>
+        </div>
       </div>
-      
     </div>
   </div>
 </div>
 
-<!-- Walking Character -->
-<img id="walkingCharacter" class="walking-character" src="SitePics/Shadite.png" alt="Walking Character">
+<img id="walkingCharacter" class="walking-character" src="../SitePics/Shadite.png" alt="Walking Character">
 
-<!-- Footer -->
-<div style="background-image: url('SitePics/elizabanner.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 20px; text-align: center; margin-top: 30px; border-radius: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1);">
+<div style="background-image: url('../SitePics/elizabanner.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 20px; text-align: center; margin-top: 30px; border-radius: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1);">
   <p style="color: white; margin: 0; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Catherine Ann MacDonald</p>
   <p style="color: white; margin: 5px 0 0 0; font-size: 14px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">&copy; 2025</p>
 </div>
 
-<!-- Animated Background -->
 <style>
 body {
-  background-image: url("SitePics/spectrumbackground.png");
+  background-image: url("../SitePics/spectrumbackground.png");
   background-size: 200% 100%;
   background-repeat: repeat-x;
   background-attachment: fixed;
   background-position: 0% 50%;
   font-family: Arial, sans-serif;
   animation: spectrumScroll 40s linear infinite;
-  color: black;
 }
 
 @keyframes spectrumScroll {
@@ -328,60 +385,75 @@ body {
   transition: transform 0.1s ease-in-out;
 }
 
+body {
+  color: black;
+  font-family: Arial, sans-serif;
+}
+
 h1 {
   color: #b82b2f;
   font-family: Arial, sans-serif;
   text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
 }
 
+.magazine-card:hover {
+  transform: translateY(-5px);
+}
+
+.magazine-featured {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
 .magazine-card {
   border-radius: 10px;
   overflow: hidden;
 }
-
-.magazine-card:hover {
-  transform: translateY(-5px);
-}
 </style>
 
-<!-- Image Modal -->
-<div id="imageModal" class="modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-image: url('SitePics/galaxy.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-  <span class="close" style="position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer;">&times;</span>
-  <img class="modal-content" id="modalImage" style="margin: auto; display: block; width: 90%; max-width: 1200px; max-height: 90%; object-fit: contain;">
-  <div id="caption" style="margin: auto; display: block; width: 80%; max-width: 700px; text-align: center; color: #ccc; padding: 10px 0; height: 150px;"></div>
-</div>
+  <!-- Image Modal -->
+  <div id="imageModal" class="modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-image: url('../SitePics/galaxy.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <span class="close" style="position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer;">&times;</span>
+    <img class="modal-content" id="modalImage" style="margin: auto; display: block; width: 90%; max-width: 1200px; max-height: 90%; object-fit: contain;">
+    <div id="caption" style="margin: auto; display: block; width: 80%; max-width: 700px; text-align: center; color: #ccc; padding: 10px 0; height: 150px;"></div>
+  </div>
 
-<script>
-var modal = document.getElementById('imageModal');
-var modalImg = document.getElementById("modalImage");
-var captionText = document.getElementById("caption");
-var span = document.getElementsByClassName("close")[0];
+  <script>
+    // Get the modal
+    var modal = document.getElementById('imageModal');
+    var modalImg = document.getElementById("modalImage");
+    var captionText = document.getElementById("caption");
+    var span = document.getElementsByClassName("close")[0];
 
-function openModal(img, title, description) {
-  modal.style.display = "block";
-  modalImg.src = img.src;
-  captionText.innerHTML = '<h3 style="color: #b82b2f; margin-bottom: 10px;">' + title + '</h3><p style="font-size: 16px; line-height: 1.5;">' + description + '</p>';
-}
+    // When the user clicks on an image, open the modal
+    function openModal(img, title, description) {
+      modal.style.display = "block";
+      modalImg.src = img.src;
+      captionText.innerHTML = '<h3 style="color: #b82b2f; margin-bottom: 10px;">' + title + '</h3><p style="font-size: 16px; line-height: 1.5;">' + description + '</p>';
+    }
 
-span.onclick = function() {
-  modal.style.display = "none";
-}
+    // When the user clicks on (x), close the modal
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
 
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
 
-document.addEventListener('keydown', function(event) {
-  if (event.key === 'Escape') {
-    modal.style.display = "none";
-  }
-});
-</script>
-
-<!-- Spotify Widget -->
-<style>
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        modal.style.display = "none";
+      }
+    });
+  </script>
+  
+  <style>
+/* Spotify Player Widget */
 #spotifyWidget {
   position: fixed;
   top: 20px;
@@ -424,10 +496,11 @@ document.addEventListener('keydown', function(event) {
 }
 </style>
 
+<!-- Draggable Spotify Player Widget -->
 <div id="spotifyWidget">
   <div id="spotifyHeader">
     <span>🎵 Spotify Player</span>
-    <button id="spotifyMinimize" onclick="toggleSpotifyShop()">+</button>
+    <button id="spotifyMinimize" onclick="toggleSpotifyParty()">+</button>
   </div>
   <div id="spotifyContent" style="display: none;">
     <iframe id="spotifyIframe" style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
@@ -435,75 +508,75 @@ document.addEventListener('keydown', function(event) {
 </div>
 
 <script>
+// Set Spotify widget to minimized state on load
 document.addEventListener('DOMContentLoaded', function() {
   const spotifyWidget = document.getElementById('spotifyWidget');
   if (spotifyWidget) {
     spotifyWidget.style.width = '200px';
   }
 });
+</script>
 
-let spotifyShopDragging = false;
-let spotifyShopCurrentX;
-let spotifyShopCurrentY;
-let spotifyShopInitialX;
-let spotifyShopInitialY;
-let spotifyShopXOffset = 0;
-let spotifyShopYOffset = 0;
+<script>
+// Draggable Spotify Widget
+let spotifyPartyDragging = false;
+let spotifyPartyCurrentX;
+let spotifyPartyCurrentY;
+let spotifyPartyInitialX;
+let spotifyPartyInitialY;
+let spotifyPartyXOffset = 0;
+let spotifyPartyYOffset = 0;
 
-const spotifyShopWidget = document.getElementById('spotifyWidget');
-const spotifyShopHeader = document.getElementById('spotifyHeader');
+const spotifyPartyWidget = document.getElementById('spotifyWidget');
+const spotifyPartyHeader = document.getElementById('spotifyHeader');
 
-spotifyShopHeader.addEventListener('mousedown', spotifyShopDragStart);
-document.addEventListener('mousemove', spotifyShopDrag);
-document.addEventListener('mouseup', spotifyShopDragEnd);
+spotifyPartyHeader.addEventListener('mousedown', spotifyPartyDragStart);
+document.addEventListener('mousemove', spotifyPartyDrag);
+document.addEventListener('mouseup', spotifyPartyDragEnd);
 
-function spotifyShopDragStart(e) {
-  spotifyShopInitialX = e.clientX - spotifyShopXOffset;
-  spotifyShopInitialY = e.clientY - spotifyShopYOffset;
+function spotifyPartyDragStart(e) {
+  spotifyPartyInitialX = e.clientX - spotifyPartyXOffset;
+  spotifyPartyInitialY = e.clientY - spotifyPartyYOffset;
   
-  if (e.target === spotifyShopHeader || e.target.parentElement === spotifyShopHeader) {
-    spotifyShopDragging = true;
+  if (e.target === spotifyPartyHeader || e.target.parentElement === spotifyPartyHeader) {
+    spotifyPartyDragging = true;
   }
 }
 
-function spotifyShopDrag(e) {
-  if (spotifyShopDragging) {
+function spotifyPartyDrag(e) {
+  if (spotifyPartyDragging) {
     e.preventDefault();
-    spotifyShopCurrentX = e.clientX - spotifyShopInitialX;
-    spotifyShopCurrentY = e.clientY - spotifyShopInitialY;
-    spotifyShopXOffset = spotifyShopCurrentX;
-    spotifyShopYOffset = spotifyShopCurrentY;
+    spotifyPartyCurrentX = e.clientX - spotifyPartyInitialX;
+    spotifyPartyCurrentY = e.clientY - spotifyPartyInitialY;
+    spotifyPartyXOffset = spotifyPartyCurrentX;
+    spotifyPartyYOffset = spotifyPartyCurrentY;
     
-    spotifyShopSetTranslate(spotifyShopCurrentX, spotifyShopCurrentY, spotifyShopWidget);
+    spotifyPartySetTranslate(spotifyPartyCurrentX, spotifyPartyCurrentY, spotifyPartyWidget);
   }
 }
 
-function spotifyShopDragEnd(e) {
-  spotifyShopInitialX = spotifyShopCurrentX;
-  spotifyShopInitialY = spotifyShopCurrentY;
-  spotifyShopDragging = false;
+function spotifyPartyDragEnd(e) {
+  spotifyPartyInitialX = spotifyPartyCurrentX;
+  spotifyPartyInitialY = spotifyPartyCurrentY;
+  spotifyPartyDragging = false;
 }
 
-function spotifyShopSetTranslate(xPos, yPos, el) {
+function spotifyPartySetTranslate(xPos, yPos, el) {
   el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
 }
 
-function toggleSpotifyShop() {
+function toggleSpotifyParty() {
   const content = document.getElementById('spotifyContent');
   const btn = document.getElementById('spotifyMinimize');
   
   if (content.style.display === 'none') {
     content.style.display = 'block';
     btn.textContent = '−';
-    spotifyShopWidget.style.width = '300px';
+    spotifyPartyWidget.style.width = '300px';
   } else {
     content.style.display = 'none';
     btn.textContent = '+';
-    spotifyShopWidget.style.width = '200px';
+    spotifyPartyWidget.style.width = '200px';
   }
 }
 </script>
-
-</body>
-</html>
-
