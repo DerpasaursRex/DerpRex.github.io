@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self' https://api.groq.com https://api.languagetool.org https://en.wikipedia.org https://api.dictionaryapi.dev https://uselessfacts.jsph.pl https://api.adviceslip.com https://icanhazdadjoke.com https://api.quotable.io https://api.github.com; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data: blob: https://*.scdn.co https://i.scdn.co; frame-src https://open.spotify.com; font-src 'self' data:; media-src 'self' blob: data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self' https://api.groq.com https://api.languagetool.org https://en.wikipedia.org https://api.dictionaryapi.dev https://uselessfacts.jsph.pl https://api.adviceslip.com https://icanhazdadjoke.com https://api.quotable.io https://api.github.com; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob: data:;">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -290,17 +290,6 @@
     <!-- Floating Help Button -->
     <button id="floatingHelpBtn" onclick="executeQuickCommand('HELP')" style="position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #00ff00, #00cc00); border: 3px solid #00ff00; color: #000; font-size: 24px; font-weight: bold; cursor: pointer; z-index: 10000; box-shadow: 0 4px 15px rgba(0,255,0,0.4); transition: all 0.3s; font-family: 'Courier New', monospace;" onmouseover="this.style.transform='scale(1.1) rotate(5deg)'; this.style.boxShadow='0 6px 20px rgba(0,255,0,0.6)'" onmouseout="this.style.transform='scale(1) rotate(0deg)'; this.style.boxShadow='0 4px 15px rgba(0,255,0,0.4)'">?</button>
     
-    <!-- Draggable Spotify Player Widget -->
-    <div id="spotifyWidget">
-      <div id="spotifyHeader">
-        <span>🎵 Spotify Player</span>
-        <button id="spotifyMinimize" onclick="toggleSpotifyChat()">+</button>
-      </div>
-      <div id="spotifyContent" style="display: none;">
-        <iframe id="spotifyIframe" style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-      </div>
-    </div>
-
     <!-- Terminal Window -->
     <div id="terminal" style="flex: 1; background: #000000; color: #00ff00; font-family: 'Courier New', monospace; padding: 20px; overflow-y: auto; border: 3px solid #333; box-shadow: inset 0 0 50px rgba(0,255,0,0.1);">
       
@@ -6583,6 +6572,16 @@ function handleInitialization(input) {
 }
 </style>
 
+<!-- Draggable Spotify Player Widget -->
+<div id="spotifyWidget">
+  <div id="spotifyHeader">
+    <span>🎵 Spotify Player</span>
+    <button id="spotifyMinimize" onclick="toggleSpotifyChat()">+</button>
+  </div>
+  <div id="spotifyContent" style="display: none;">
+    <iframe id="spotifyIframe" style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+  </div>
+</div>
 
 <script>
 // Set Spotify widget to minimized state on load
@@ -6592,9 +6591,7 @@ document.addEventListener('DOMContentLoaded', function() {
     spotifyWidget.style.width = '200px';
   }
 });
-</script>
 
-<script>
 // Draggable Spotify Widget
 let spotifyChatDragging = false;
 let spotifyChatCurrentX;

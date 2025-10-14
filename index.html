@@ -963,14 +963,10 @@ h1 {
 <div id="spotifyWidget">
   <div id="spotifyHeader">
     <span>🎵 Spotify Player</span>
-    <div style="display: flex; gap: 5px;">
-      <button id="spotifyRandomBtn" onclick="getRandomSpotifyTrack()" title="Get Random Track" style="background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; padding: 0 5px; line-height: 1;">🎲</button>
-      <button id="spotifyMinimize" onclick="toggleSpotify()">+</button>
-    </div>
+    <button id="spotifyMinimize" onclick="toggleSpotify()">+</button>
   </div>
   <div id="spotifyContent" style="display: none;">
     <iframe id="spotifyIframe" style="border-radius: 0 0 7px 7px;" src="https://open.spotify.com/embed/playlist/66TP5uc6hwyESdV9AuvUZJ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    <div id="randomTrackDisplay" style="display: none; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 0 0 7px 7px; margin-top: -7px;"></div>
   </div>
 </div>
 
@@ -982,9 +978,7 @@ document.addEventListener('DOMContentLoaded', function() {
     spotifyWidget.style.width = '200px';
   }
 });
-</script>
 
-<script>
 // Draggable Spotify Widget
 let isDragging = false;
 let currentX;
@@ -1045,68 +1039,6 @@ function toggleSpotify() {
     btn.textContent = '+';
     spotifyWidget.style.width = '200px';
   }
-}
-</script>
-
-<!-- Spotify API Integration -->
-<script src="js/spotify-integration.js"></script>
-<script>
-async function getRandomSpotifyTrack() {
-  const display = document.getElementById('randomTrackDisplay');
-  const content = document.getElementById('spotifyContent');
-  const btn = document.getElementById('spotifyRandomBtn');
-  
-  // Show content if hidden
-  if (content.style.display === 'none') {
-    toggleSpotify();
-  }
-  
-  // Show loading
-  display.style.display = 'block';
-  display.innerHTML = '<p style="color: #1DB954; margin: 0; text-align: center; font-size: 12px;">🎲 Getting random track...</p>';
-  btn.style.opacity = '0.5';
-  btn.disabled = true;
-  
-  try {
-    // Check if SpotifyAPI is loaded
-    if (typeof SpotifyAPI === 'undefined') {
-      throw new Error('Spotify API script not loaded');
-    }
-    
-    console.log('🎲 Requesting random track...');
-    const track = await SpotifyAPI.getRandomTrack();
-    console.log('Track received:', track);
-    
-    if (track) {
-      const artists = track.artists.map(a => a.name).join(', ');
-      const albumImage = track.album.images[2]?.url || track.album.images[0]?.url;
-      
-      display.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 10px; animation: fadeIn 0.3s;">
-          ${albumImage ? `<img src="${albumImage}" alt="${track.name}" style="width: 50px; height: 50px; border-radius: 5px;">` : ''}
-          <div style="flex: 1; min-width: 0;">
-            <div style="color: white; font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${track.name}</div>
-            <div style="color: #888; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${artists}</div>
-          </div>
-          <a href="${track.external_urls.spotify}" target="_blank" style="color: #1DB954; text-decoration: none; padding: 5px 10px; border: 1px solid #1DB954; border-radius: 12px; font-size: 11px; white-space: nowrap; transition: all 0.2s;" onmouseover="this.style.background='#1DB954'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#1DB954'">Play</a>
-        </div>
-      `;
-      console.log('✅ Track displayed successfully');
-    } else {
-      throw new Error('No track returned from API');
-    }
-  } catch (error) {
-    console.error('❌ Spotify Error:', error);
-    display.innerHTML = `
-      <div style="text-align: center; padding: 5px;">
-        <p style="color: #ff6b6b; margin: 0; font-size: 11px;">❌ ${error.message}</p>
-        <button onclick="getRandomSpotifyTrack()" style="background: #1DB954; color: white; border: none; padding: 4px 12px; border-radius: 12px; font-size: 10px; margin-top: 5px; cursor: pointer;">Retry</button>
-      </div>
-    `;
-  }
-  
-  btn.style.opacity = '1';
-  btn.disabled = false;
 }
 </script>
 

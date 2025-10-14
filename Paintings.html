@@ -447,7 +447,7 @@ function spotifyPaintingsDrag(e) {
   if (spotifyPaintingsDragging) {
     e.preventDefault();
     spotifyPaintingsCurrentX = e.clientX - spotifyPaintingsInitialX;
-    spotifyPaintingsCurrentY = e.clientY - spotifyPaintingsInitialY;
+    spotifyPaintingsCurrentY = e.clientX - spotifyPaintingsInitialY;
     spotifyPaintingsXOffset = spotifyPaintingsCurrentX;
     spotifyPaintingsYOffset = spotifyPaintingsCurrentY;
     
