@@ -1568,17 +1568,21 @@ function savePersonality() {
 }
 
 function getPersonalityGreeting() {
-  const greetings = [];
+  let greetings = [];
+  let contextKey = 'personality_greeting';
   
   if (botPersonality.friendliness > 7) {
-    greetings.push("Hey there, friend!", "Hiya!", "Hello hello!", "Hey buddy!");
+    greetings = ["Hey there, friend!", "Hiya!", "Hello hello!", "Hey buddy!", "Greetings, friend!", "Hey! Good to see you!"];
+    contextKey += '_friendly';
   } else if (botPersonality.friendliness > 4) {
-    greetings.push("Hey!", "Hi there!", "Hello!", "What's up?");
+    greetings = ["Hey!", "Hi there!", "Hello!", "What's up?", "Greetings!", "Hi!", "Hello there!"];
+    contextKey += '_neutral';
   } else {
-    greetings.push("Hello.", "Hi.", "Greetings.");
+    greetings = ["Hello.", "Hi.", "Greetings.", "Good day.", "Welcome."];
+    contextKey += '_formal';
   }
   
-  return greetings[Math.floor(Math.random() * greetings.length)];
+  return selectSmartResponse(greetings, contextKey);
 }
 
 function addPersonalityFlair(text, context = 'general') {
@@ -3501,26 +3505,31 @@ function processNaturalLanguage(input, inputUpper) {
   // How are you (personality-driven)
   if (/how are you|how're you|how r u|hows it going|how's it going|whats up|what's up|how do you feel|are you okay|you good/i.test(lower)) {
     if (botPersonality.enthusiasm > 7) {
-    const responses = [
+      const responses = [
         `I'm fantastic! Thanks for asking! How are YOU doing? 😊`,
         `Amazing! I'm pumped and ready to help! What's up with you?`,
-        `I'm doing great! Super excited to chat! How about you?`
+        `I'm doing great! Super excited to chat! How about you?`,
+        `Wonderful! I'm energized and ready to go! How are things with you?`,
+        `Excellent! So happy to chat with you! What's going on?`
       ];
-      return responses[Math.floor(Math.random() * responses.length)];
+      return selectSmartResponse(responses, 'how_are_you_enthusiastic');
     } else if (botPersonality.friendliness > 6) {
       const responses = [
         `I'm doing well, thanks for asking! How about you? 😊`,
         `Pretty good! What brings you here today?`,
-        `I'm good! Ready to help with whatever you need. How are you?`
+        `I'm good! Ready to help with whatever you need. How are you?`,
+        `I'm doing great, thanks! How are things going for you?`,
+        `Feeling good! What would you like to explore today?`
       ];
-      return responses[Math.floor(Math.random() * responses.length)];
+      return selectSmartResponse(responses, 'how_are_you_friendly');
     } else {
       const responses = [
         `I'm functional. What do you need?`,
         `I'm fine. How can I help?`,
-        `Operating normally. What's your question?`
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+        `Operating normally. What's your question?`,
+        `Status: operational. How may I assist?`
+      ];
+      return selectSmartResponse(responses, 'how_are_you_formal');
     }
   }
   
@@ -3585,21 +3594,27 @@ function processNaturalLanguage(input, inputUpper) {
   // Thank you (personality-driven)
   if (/^(thank you|thanks|thx|ty|appreciate it|cheers|thank u|thanx|gracias|merci)/i.test(lower)) {
     if (botPersonality.friendliness > 8) {
-    const responses = [
+      const responses = [
         `Aww, you're so welcome! Always happy to help you! 😊`,
         `No problem at all! That's what I'm here for! ✨`,
-        `Of course! Anytime you need me, I'm here! 💚`
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+        `Of course! Anytime you need me, I'm here! 💚`,
+        `You're very welcome! It's my pleasure! 😄`,
+        `Happy to help! That's why I'm here! 🌟`,
+        `My pleasure! Feel free to ask anytime! 💙`
+      ];
+      return selectSmartResponse(responses, 'thank_you_friendly');
     } else if (botPersonality.friendliness > 5) {
       const responses = [
         `You're welcome! Happy to help! 😊`,
         `Glad I could assist!`,
-        `Anytime! Let me know if you need more.`
+        `Anytime! Let me know if you need more.`,
+        `No problem! Here to help.`,
+        `You're welcome! Feel free to ask anything.`
       ];
-      return responses[Math.floor(Math.random() * responses.length)];
+      return selectSmartResponse(responses, 'thank_you_neutral');
     } else {
-      return `Acknowledged.`;
+      const responses = [`Acknowledged.`, `Noted.`, `Understood.`];
+      return selectSmartResponse(responses, 'thank_you_formal');
     }
   }
   
@@ -3608,21 +3623,27 @@ function processNaturalLanguage(input, inputUpper) {
     const userName = userMemory.userName ? `, ${userMemory.userName}` : '';
     
     if (botPersonality.friendliness > 8) {
-    const responses = [
+      const responses = [
         `Aww, leaving already${userName}? Take care! Come back soon! 💚`,
         `See you later${userName}! Thanks for hanging out! 😊`,
-        `Bye${userName}! It was great chatting with you! ✨`
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+        `Bye${userName}! It was great chatting with you! ✨`,
+        `Take care${userName}! Can't wait to chat again! 🌟`,
+        `Farewell${userName}! It's been wonderful! Come back anytime! 💙`,
+        `Bye for now${userName}! Stay awesome! See you soon! ⚔️`
+      ];
+      return selectSmartResponse(responses, 'goodbye_friendly');
     } else if (botPersonality.friendliness > 5) {
       const responses = [
         `Goodbye${userName}! Take care!`,
         `See you later! Feel free to come back anytime.`,
-        `Bye${userName}! Have a great day! 😊`
+        `Bye${userName}! Have a great day! 😊`,
+        `Take care${userName}! See you next time!`,
+        `Farewell${userName}! Until next time!`
       ];
-      return responses[Math.floor(Math.random() * responses.length)];
+      return selectSmartResponse(responses, 'goodbye_neutral');
     } else {
-      return `Goodbye${userName}.`;
+      const responses = [`Goodbye${userName}.`, `Farewell${userName}.`, `Until next time${userName}.`];
+      return selectSmartResponse(responses, 'goodbye_formal');
     }
   }
   
@@ -4280,32 +4301,64 @@ function getConversationalFallback(input) {
   // Very short unclear input - personality-driven help
   if (words.length <= 3) {
     if (botPersonality.friendliness > 8) {
-    const responses = [
+      const responses = [
         `Hey! I'm ready to help, just need a bit more to go on! What's on your mind? 😊`,
         `I'm all ears! What would you like to know or talk about?`,
-        `Ooh, tell me more! What are you curious about?`
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+        `Ooh, tell me more! What are you curious about?`,
+        `I'm here for you! Can you give me a bit more detail? 💙`,
+        `Sure! What would you like to explore? I'm ready!`,
+        `Interesting! Tell me more about what you're thinking! 🌟`
+      ];
+      return selectSmartResponse(responses, 'unclear_friendly');
     } else if (botPersonality.friendliness > 5) {
-  const responses = [
+      const responses = [
         `I'm here to help! You can ask me questions, search for info, or type HELP.`,
         `What would you like to know? I can search, define words, or chat!`,
-        `Could you elaborate? I'm ready to help! 😊`
+        `Could you elaborate? I'm ready to help! 😊`,
+        `I'd be happy to assist! What are you looking for?`,
+        `What can I help you with? Feel free to ask anything!`
       ];
-  return responses[Math.floor(Math.random() * responses.length)];
+      return selectSmartResponse(responses, 'unclear_neutral');
     } else {
-      return `Please provide more context. Type HELP for options.`;
+      const responses = [
+        `Please provide more context. Type HELP for options.`,
+        `Clarification needed. See available commands with HELP.`,
+        `Insufficient input. Type HELP for assistance.`
+      ];
+      return selectSmartResponse(responses, 'unclear_formal');
     }
   }
   
   // Default fallback with personality
+  const fallbackResponses = [];
+  let fallbackKey = 'default_fallback';
+  
   if (botPersonality.friendliness > 7) {
-    return `I want to help, but I'm not quite sure what you're looking for! Could you ask in a different way, or type HELP to see what I can do? 😊`;
+    fallbackResponses.push(
+      `I want to help, but I'm not quite sure what you're looking for! Could you ask in a different way, or type HELP to see what I can do? 😊`,
+      `Hmm, I'm not sure I understand. Can you rephrase that? Or type HELP to see what I can do!`,
+      `I'd love to help! Could you explain what you need in a different way? Type HELP if you're stuck! 💙`,
+      `I'm listening, but I'm not quite following. Can you give me more details or try rephrasing?`
+    );
+    fallbackKey += '_friendly';
   } else if (botPersonality.friendliness > 4) {
-    return `I'm not sure what you mean. Try asking a specific question, or type HELP for options!`;
+    fallbackResponses.push(
+      `I'm not sure what you mean. Try asking a specific question, or type HELP for options!`,
+      `Could you rephrase that? Type HELP to see what I can do.`,
+      `I didn't quite get that. Try asking in a different way or use HELP.`,
+      `Not sure what you're asking for. Type HELP for available commands.`
+    );
+    fallbackKey += '_neutral';
   } else {
-    return `Unclear input. Type HELP for commands.`;
+    fallbackResponses.push(
+      `Unclear input. Type HELP for commands.`,
+      `Input not recognized. Use HELP command.`,
+      `Request unclear. See HELP for syntax.`
+    );
+    fallbackKey += '_formal';
   }
+  
+  return selectSmartResponse(fallbackResponses, fallbackKey);
 }
 
 function formatMarkdown(text, isRoleplay = false) {
@@ -4568,14 +4621,66 @@ let lastBotMessage = null;
 let lastBotCommand = null;
 let messageHistory = []; // Track all messages to prevent duplicates
 let lastResponse = null; // Track exact last response
+let recentResponseIndices = {}; // Track which responses from arrays were recently used
+let responseUsageHistory = []; // Track response patterns over time
+
+// Smart response selector that avoids recent responses
+function selectSmartResponse(responsesArray, contextKey) {
+  if (!responsesArray || responsesArray.length === 0) return '';
+  if (responsesArray.length === 1) return responsesArray[0];
+  
+  // Initialize tracking for this context if needed
+  if (!recentResponseIndices[contextKey]) {
+    recentResponseIndices[contextKey] = [];
+  }
+  
+  const recentIndices = recentResponseIndices[contextKey];
+  const maxMemory = Math.min(responsesArray.length - 1, 5); // Remember last 5 or array length - 1
+  
+  // Find indices that haven't been used recently
+  let availableIndices = [];
+  for (let i = 0; i < responsesArray.length; i++) {
+    if (!recentIndices.includes(i)) {
+      availableIndices.push(i);
+    }
+  }
+  
+  // If all have been used recently, use the oldest one
+  if (availableIndices.length === 0) {
+    availableIndices = [recentIndices.shift()]; // Remove and use oldest
+  }
+  
+  // Pick random from available
+  const selectedIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+  
+  // Update memory
+  recentIndices.push(selectedIndex);
+  if (recentIndices.length > maxMemory) {
+    recentIndices.shift(); // Remove oldest
+  }
+  
+  // Track usage for analytics
+  responseUsageHistory.push({
+    context: contextKey,
+    index: selectedIndex,
+    timestamp: Date.now()
+  });
+  
+  // Keep history limited to last 50 responses
+  if (responseUsageHistory.length > 50) {
+    responseUsageHistory.shift();
+  }
+  
+  return responsesArray[selectedIndex];
+}
 
 function addTerminalLine(text, color = '#00ff00', isCommand = false) {
   // Prevent duplicate messages
   const messageKey = `${text}_${isCommand ? 'user' : 'bot'}`;
   const now = Date.now();
   
-  // Check if this exact message was sent in the last 2 seconds
-  if (lastResponse && lastResponse.text === text && lastResponse.isCommand === isCommand && (now - lastResponse.timestamp) < 2000) {
+  // Check if this exact message was sent in the last 5 seconds (increased from 2)
+  if (lastResponse && lastResponse.text === text && lastResponse.isCommand === isCommand && (now - lastResponse.timestamp) < 5000) {
     console.log('Duplicate message prevented:', text.substring(0, 50));
     return; // Don't add duplicate
   }
