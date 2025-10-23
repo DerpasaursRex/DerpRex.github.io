@@ -11,7 +11,7 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self'; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data:; frame-src https://open.spotify.com; font-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self'; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data:; frame-src 'self' https://open.spotify.com; font-src 'self' data:;">
   
   <!-- Bootstrap CSS & JS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -206,7 +206,6 @@
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Coding</h6>
           <a class="dropdown-item" href="Websites.html">Websites</a>
-          <a class="dropdown-item" href="Games.html">Games</a>
           <a class="dropdown-item" href="Built-in.html">Built-in</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Physical Media</h6>
@@ -225,9 +224,6 @@
           <a class="dropdown-item" href="OutdatedDesigns.html">Outdated Designs</a>
         </div>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="Shop.html">Shop</a>
-      </li>
     </ul>
   </div>  
 </nav>
@@ -240,15 +236,56 @@
       <h5 style="text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Stories, Scripts & Creative Writing</h5>
       
       <!-- Content Area -->
-      <div class="row">
-        <!-- Placeholder for Writing -->
-        <div class="col-12 mb-4">
-          <div class="card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.1); padding: 30px; text-align: center;">
-            <h4 style="color: #b82b2f;">No writing samples uploaded yet</h4>
-            <p>This page will showcase stories, scripts, and creative writing pieces.</p>
-            <small class="text-muted">Check back soon for updates!</small>
+      <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="col-12 col-lg-8 col-xl-6">
+          <div class="card" style="background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,248,248,0.95)); border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.15); border-radius: 15px; overflow: hidden;">
+            
+            <!-- Reader Header -->
+            <div class="reader-header" style="background: linear-gradient(135deg, #b82b2f, #d63447); padding: 15px 20px; color: white; text-align: center;">
+              <h4 style="margin: 0; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);" id="readerTitle">Select a Story to Read</h4>
+              <small style="opacity: 0.9;" id="readerSubtitle">Choose from the available writing samples below</small>
+            </div>
+
+            <!-- Reader Content Area -->
+            <div class="reader-content" style="padding: 0; position: relative;">
+              
+              <!-- Story Selection Grid -->
+              <div id="storySelection" class="story-grid" style="padding: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                
+                <div class="story-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border-radius: 12px; padding: 25px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='#b82b2f'; this.style.boxShadow='0 8px 25px rgba(184,43,47,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'; this.style.boxShadow='none'">
+                  <h5 style="color: #b82b2f; font-weight: bold; margin-bottom: 15px;">Hero Story</h5>
+                  <small style="color: #999; font-size: 12px; margin-bottom: 15px; display: block;">October 2022</small>
+                  <div style="margin-top: 15px; background: white; border-radius: 8px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div id="pdf-container-hero" style="width: 100%; height: 400px; border-radius: 4px; overflow: hidden;">
+                      <iframe src="/Writing/herostory.pdf" width="100%" height="400px" style="border: none;" frameborder="0"></iframe>
+                    </div>
+                    <div id="fallback-hero" style="display: none; text-align: center; padding: 40px;">
+                      <p style="color: #666; margin-bottom: 20px;">PDF Preview not available in this browser</p>
+                      <a href="/Writing/herostory.pdf" target="_blank" style="background: #b82b2f; color: white; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: bold;">Open PDF in New Tab</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="story-card" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,240,240,0.9)); border-radius: 12px; padding: 25px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='#b82b2f'; this.style.boxShadow='0 8px 25px rgba(184,43,47,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'; this.style.boxShadow='none'">
+                  <h5 style="color: #b82b2f; font-weight: bold; margin-bottom: 15px;">Short Stories</h5>
+                  <small style="color: #999; font-size: 12px; margin-bottom: 15px; display: block;">May 2021</small>
+                  <div style="margin-top: 15px; background: white; border-radius: 8px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div id="pdf-container-fiction" style="width: 100%; height: 400px; border-radius: 4px; overflow: hidden;">
+                      <iframe src="/Writing/fictionre.pdf" width="100%" height="400px" style="border: none;" frameborder="0"></iframe>
+                    </div>
+                    <div id="fallback-fiction" style="display: none; text-align: center; padding: 40px;">
+                      <p style="color: #666; margin-bottom: 20px;">PDF Preview not available in this browser</p>
+                      <a href="/Writing/fictionre.pdf" target="_blank" style="background: #b82b2f; color: white; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: bold;">Open PDF in New Tab</a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
           </div>
         </div>
+      </div>
       
       <!-- Example placeholder cards for future content -->
       <!-- Uncomment and add writing samples as needed:
@@ -477,6 +514,115 @@ function toggleSpotifyWriting() {
     spotifyWritingWidget.style.width = '200px';
   }
 }
+
+// PDF Reader Functionality
+let currentStory = null;
+let currentPage = 1;
+let totalPages = 1;
+let fontSize = 16;
+let isDarkTheme = false;
+let isFullscreen = false;
+
+
+
+
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: ${type === 'success' ? '#b82b2f' : '#dc3545'};
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 10001;
+    font-weight: bold;
+    animation: slideIn 0.3s ease;
+  `;
+  notification.textContent = message;
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideOut 0.3s ease';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
+
+// Add scroll listener for progress tracking and PDF debugging
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if PDFs are loading properly
+  const heroIframe = document.querySelector('#pdf-container-hero iframe');
+  const fictionIframe = document.querySelector('#pdf-container-fiction iframe');
+  const heroFallback = document.querySelector('#fallback-hero');
+  const fictionFallback = document.querySelector('#fallback-fiction');
+  
+  function checkPDFLoad(iframe, fallback, name) {
+    iframe.addEventListener('load', function() {
+      console.log(`${name} PDF loaded successfully`);
+    });
+    
+    iframe.addEventListener('error', function() {
+      console.log(`${name} PDF failed to load`);
+      iframe.style.display = 'none';
+      fallback.style.display = 'block';
+    });
+    
+    // Set a timeout to check if PDF loaded
+    setTimeout(() => {
+      try {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        if (!iframeDoc || iframeDoc.body.innerHTML.trim() === '') {
+          console.log(`${name} PDF appears to be empty or blocked`);
+          iframe.style.display = 'none';
+          fallback.style.display = 'block';
+        }
+      } catch (e) {
+        console.log(`${name} PDF blocked by CORS or security policy`);
+        iframe.style.display = 'none';
+        fallback.style.display = 'block';
+      }
+    }, 3000);
+  }
+  
+  if (heroIframe && heroFallback) {
+    checkPDFLoad(heroIframe, heroFallback, 'Hero Story');
+  }
+  
+  if (fictionIframe && fictionFallback) {
+    checkPDFLoad(fictionIframe, fictionFallback, 'Short Stories');
+  }
+});
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+  .story-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 8px 25px rgba(184,43,47,0.2) !important;
+  }
+  
+  .pdf-content::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .pdf-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  .pdf-content::-webkit-scrollbar-thumb {
+    background: #b82b2f;
+    border-radius: 4px;
+  }
+  
+  .pdf-content::-webkit-scrollbar-thumb:hover {
+    background: #d63447;
+  }
+`;
+document.head.appendChild(style);
 </script>
 
 </body>
