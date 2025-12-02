@@ -49,7 +49,7 @@
       top: 20px;
       left: 20px;
       z-index: 1000;
-      background-color: rgba(184, 43, 47, 0.9);
+      background: linear-gradient(135deg, #68119A, #8F00E1);
       color: white;
       padding: 12px 24px;
       border-radius: 25px;
@@ -61,22 +61,22 @@
     }
 
     .return-home:hover {
-      background-color: rgba(184, 43, 47, 1);
+      background: linear-gradient(135deg, #8F00E1, #B26BDB);
       transform: scale(1.05);
       color: white;
       text-decoration: none;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 6px 20px rgba(143, 0, 225, 0.5);
     }
 
     .header-section {
       text-align: center;
       padding: 60px 20px 40px;
-      background: linear-gradient(135deg, rgba(184, 43, 47, 0.9), rgba(143, 34, 38, 0.95));
+      background: linear-gradient(135deg, rgba(59, 20, 82, 0.9), rgba(104, 17, 154, 0.95));
       backdrop-filter: blur(10px);
       margin: 20px;
       border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(255, 215, 0, 0.1);
-      border: 3px solid rgba(210, 180, 140, 0.5);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(178, 107, 219, 0.2);
+      border: 3px solid rgba(201, 169, 219, 0.5);
       position: relative;
     }
 
@@ -123,29 +123,29 @@
     }
 
     .sidebar {
-      background: linear-gradient(135deg, rgba(250, 240, 230, 0.98), rgba(255, 248, 240, 0.95));
+      background: linear-gradient(135deg, rgba(250, 240, 250, 0.98), rgba(248, 240, 255, 0.95));
       border-radius: 15px;
       padding: 25px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      border: 2px solid rgba(184, 43, 47, 0.3);
+      border: 2px solid rgba(143, 0, 225, 0.3);
       max-height: 80vh;
       overflow-y: auto;
     }
 
     .center-panel {
-      background: linear-gradient(135deg, rgba(250, 240, 230, 0.98), rgba(255, 248, 240, 0.95));
+      background: linear-gradient(135deg, rgba(250, 240, 250, 0.98), rgba(248, 240, 255, 0.95));
       border-radius: 15px;
       padding: 30px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(184, 43, 47, 0.05);
-      border: 3px solid rgba(184, 43, 47, 0.5);
-      border-left: 8px solid #b82b2f;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(104, 17, 154, 0.05);
+      border: 3px solid rgba(143, 0, 225, 0.5);
+      border-left: 8px solid #8F00E1;
     }
 
     .inline-textarea {
       width: 100%;
       min-height: 150px;
       padding: 15px;
-      border: 2px dashed rgba(184, 43, 47, 0.3);
+      border: 2px dashed rgba(143, 0, 225, 0.3);
       border-radius: 8px;
       font-family: 'Georgia', serif;
       font-size: 1.1em;
@@ -157,7 +157,7 @@
 
     .inline-textarea:focus {
       outline: none;
-      border-color: #b82b2f;
+      border-color: #8F00E1;
       border-style: solid;
       background: rgba(255, 255, 255, 0.5);
     }
@@ -173,15 +173,15 @@
     }
 
     .scrapbook-element:hover {
-      border-color: rgba(184, 43, 47, 0.3);
+      border-color: rgba(143, 0, 225, 0.3);
       background: rgba(255, 255, 255, 0.5);
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
     .scrapbook-element.selected {
-      border-color: #b82b2f;
+      border-color: #8F00E1;
       border-width: 2px;
-      box-shadow: 0 6px 20px rgba(184, 43, 47, 0.3);
+      box-shadow: 0 6px 20px rgba(143, 0, 225, 0.4);
     }
 
     .element-controls {
@@ -202,7 +202,7 @@
     }
 
     .control-btn {
-      background: #b82b2f;
+      background: #8F00E1;
       color: white;
       border: none;
       border-radius: 4px;
@@ -216,11 +216,11 @@
     }
 
     .control-btn:hover {
-      background: #8f2226;
+      background: #68119A;
     }
 
     .inline-canvas {
-      border: 2px dashed rgba(184, 43, 47, 0.5);
+      border: 2px dashed rgba(143, 0, 225, 0.5);
       border-radius: 8px;
       cursor: crosshair;
       background: transparent;
@@ -232,7 +232,7 @@
     .inline-image {
       max-width: 100%;
       border-radius: 8px;
-      border: 2px solid rgba(184, 43, 47, 0.3);
+      border: 2px solid rgba(143, 0, 225, 0.3);
       display: block;
       margin: 10px auto;
     }
@@ -272,11 +272,11 @@
 
     .color-btn:hover {
       transform: scale(1.1);
-      border-color: #b82b2f;
+      border-color: #8F00E1;
     }
 
     .color-btn.active {
-      border: 3px solid #b82b2f;
+      border: 3px solid #8F00E1;
       transform: scale(1.15);
     }
 
@@ -312,7 +312,7 @@
       position: fixed;
       top: 20px;
       right: 20px;
-      background: #b82b2f;
+      background: linear-gradient(135deg, #68119A, #8F00E1);
       color: white;
       border: none;
       padding: 15px 25px;
@@ -324,16 +324,16 @@
     }
 
     .fullscreen-close:hover {
-      background: #8f2226;
+      background: linear-gradient(135deg, #8F00E1, #B26BDB);
     }
 
     .tool-section {
       display: none;
       margin-top: 15px;
       padding: 15px;
-      background: rgba(184, 43, 47, 0.05);
+      background: rgba(178, 107, 219, 0.08);
       border-radius: 8px;
-      border: 1px solid rgba(184, 43, 47, 0.2);
+      border: 1px solid rgba(143, 0, 225, 0.2);
     }
 
     .tool-section.active {
@@ -341,7 +341,7 @@
     }
 
     .btn-custom {
-      background: linear-gradient(135deg, #b82b2f, #8f2226);
+      background: linear-gradient(135deg, #68119A, #8F00E1);
       color: white;
       border: none;
       padding: 10px 20px;
@@ -353,9 +353,9 @@
     }
 
     .btn-custom:hover {
-      background: linear-gradient(135deg, #8f2226, #6d1a1d);
+      background: linear-gradient(135deg, #8F00E1, #B26BDB);
       transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(184, 43, 47, 0.4);
+      box-shadow: 0 4px 15px rgba(143, 0, 225, 0.4);
     }
 
     .btn-secondary-custom {
@@ -379,14 +379,14 @@
       padding: 20px;
       background: white;
       border-radius: 10px;
-      border: 2px solid rgba(184, 43, 47, 0.2);
+      border: 2px solid rgba(143, 0, 225, 0.2);
     }
 
     .suggestion {
       padding: 15px;
       margin: 10px 0;
       border-radius: 8px;
-      border-left: 4px solid #b82b2f;
+      border-left: 4px solid #8F00E1;
     }
 
     .suggestion.warning {
@@ -407,7 +407,7 @@
     .suggestion-title {
       font-weight: bold;
       margin-bottom: 5px;
-      color: #b82b2f;
+      color: #68119A;
     }
 
     .stats-grid {
@@ -418,17 +418,17 @@
     }
 
     .stat-box {
-      background: rgba(184, 43, 47, 0.05);
+      background: rgba(178, 107, 219, 0.08);
       padding: 10px;
       border-radius: 8px;
       text-align: center;
-      border: 1px solid rgba(184, 43, 47, 0.2);
+      border: 1px solid rgba(143, 0, 225, 0.2);
     }
 
     .stat-number {
       font-size: 1.5em;
       font-weight: bold;
-      color: #b82b2f;
+      color: #68119A;
     }
 
     .stat-label {
@@ -438,16 +438,16 @@
     }
 
     h2 {
-      color: #b82b2f;
+      color: #68119A;
       font-size: 1.8em;
       margin-bottom: 20px;
       font-weight: bold;
-      border-bottom: 2px solid rgba(184, 43, 47, 0.2);
+      border-bottom: 2px solid rgba(104, 17, 154, 0.3);
       padding-bottom: 10px;
     }
 
     h3 {
-      color: #b82b2f;
+      color: #8F00E1;
       font-size: 1.3em;
       margin-top: 20px;
       margin-bottom: 10px;
@@ -456,20 +456,20 @@
     .tip-item {
       margin-bottom: 15px;
       padding: 10px;
-      background: rgba(184, 43, 47, 0.03);
+      background: rgba(143, 0, 225, 0.03);
       border-radius: 5px;
       font-size: 0.9em;
     }
 
     .tip-title {
       font-weight: bold;
-      color: #b82b2f;
+      color: #68119A;
       margin-bottom: 5px;
     }
 
     .citation {
-      background: rgba(184, 43, 47, 0.05);
-      border-left: 3px solid #b82b2f;
+      background: rgba(178, 107, 219, 0.08);
+      border-left: 3px solid #8F00E1;
       padding: 10px;
       margin: 10px 0;
       font-size: 0.8em;
@@ -477,7 +477,7 @@
     }
 
     .citation a {
-      color: #b82b2f;
+      color: #68119A;
       text-decoration: none;
       font-weight: bold;
     }
@@ -495,19 +495,19 @@
       padding: 15px;
       margin-bottom: 10px;
       border-radius: 8px;
-      border-left: 4px solid #b82b2f;
+      border-left: 4px solid #8F00E1;
       cursor: pointer;
       transition: all 0.3s ease;
     }
 
     .poem-item:hover {
       transform: translateX(5px);
-      box-shadow: 0 4px 15px rgba(184, 43, 47, 0.2);
+      box-shadow: 0 4px 15px rgba(143, 0, 225, 0.3);
     }
 
     .poem-title-small {
       font-weight: bold;
-      color: #b82b2f;
+      color: #68119A;
       font-size: 0.95em;
     }
 
@@ -523,10 +523,10 @@
       color: #f4e4c1;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
       margin-top: 50px;
-      background: linear-gradient(135deg, rgba(184, 43, 47, 0.7), rgba(143, 34, 38, 0.8));
+      background: linear-gradient(135deg, rgba(59, 20, 82, 0.8), rgba(104, 17, 154, 0.85));
       border-radius: 20px;
       margin: 50px 20px 20px;
-      border: 2px solid rgba(210, 180, 140, 0.3);
+      border: 2px solid rgba(201, 169, 219, 0.4);
     }
 
     .collapsible-section {
@@ -534,17 +534,17 @@
     }
 
     .collapsible-header {
-      background: rgba(184, 43, 47, 0.1);
+      background: rgba(143, 0, 225, 0.1);
       padding: 10px 15px;
       border-radius: 5px;
       cursor: pointer;
       font-weight: bold;
-      color: #b82b2f;
+      color: #68119A;
       transition: all 0.3s ease;
     }
 
     .collapsible-header:hover {
-      background: rgba(184, 43, 47, 0.2);
+      background: rgba(178, 107, 219, 0.2);
     }
 
     .collapsible-content {
@@ -585,8 +585,8 @@
             🎲 Generate Prompt
           </button>
         </div>
-        <div id="promptDisplay" style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #b82b2f; min-height: 80px; display: none;">
-          <div style="font-weight: bold; color: #b82b2f; margin-bottom: 8px; font-size: 0.9em;">Your Prompt:</div>
+        <div id="promptDisplay" style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #8F00E1; min-height: 80px; display: none;">
+          <div style="font-weight: bold; color: #68119A; margin-bottom: 8px; font-size: 0.9em;">Your Prompt:</div>
           <div id="promptText" style="font-size: 0.95em; line-height: 1.6; font-style: italic;"></div>
         </div>
         <div style="margin-top: 10px; font-size: 0.75em; color: #666; text-align: center;">
@@ -742,9 +742,9 @@
       </div>
       <div class="collapsible-content">
         <div style="font-size: 0.85em;">
-          <p><a href="https://www.poetryfoundation.org/" target="_blank" style="color: #b82b2f;">Poetry Foundation</a></p>
-          <p><a href="https://www.writersdigest.com/poetry" target="_blank" style="color: #b82b2f;">Writer's Digest</a></p>
-          <p><a href="https://prowritingaid.com/write-poetry" target="_blank" style="color: #b82b2f;">ProWritingAid</a></p>
+          <p><a href="https://www.poetryfoundation.org/" target="_blank" style="color: #68119A;">Poetry Foundation</a></p>
+          <p><a href="https://www.writersdigest.com/poetry" target="_blank" style="color: #68119A;">Writer's Digest</a></p>
+          <p><a href="https://prowritingaid.com/write-poetry" target="_blank" style="color: #68119A;">ProWritingAid</a></p>
         </div>
       </div>
     </div>
@@ -768,7 +768,7 @@
     </div>
     
     <!-- Scrapbook Content Area -->
-    <div id="scrapbookContent" style="position: relative; min-height: 600px; padding: 20px; background: white; border: 2px solid rgba(184, 43, 47, 0.3); border-radius: 10px; background-image: repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(184, 43, 47, 0.03) 30px, rgba(184, 43, 47, 0.03) 31px); overflow: visible;">
+    <div id="scrapbookContent" style="position: relative; min-height: 600px; padding: 20px; background: white; border: 2px solid rgba(143, 0, 225, 0.3); border-radius: 10px; background-image: repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(178, 107, 219, 0.05) 30px, rgba(178, 107, 219, 0.05) 31px); overflow: visible;">
       <p style="color: #999; font-style: italic; text-align: center; position: relative;">Click "Add Text", "Add Drawing", or "Add Photo" to start creating your scrapbook page!</p>
     </div>
     
@@ -776,21 +776,21 @@
     <div id="drawingTools" class="tool-section">
       <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
         <div>
-          <label style="font-weight: bold; color: #b82b2f; margin-right: 10px;">Colors:</label>
+          <label style="font-weight: bold; color: #68119A; margin-right: 10px;">Colors:</label>
           <div class="color-picker">
             <div class="color-btn active" style="background: #000000;" onclick="setDrawColor('#000000', this)"></div>
-            <div class="color-btn" style="background: #b82b2f;" onclick="setDrawColor('#b82b2f', this)"></div>
-            <div class="color-btn" style="background: #2424ef;" onclick="setDrawColor('#2424ef', this)"></div>
-            <div class="color-btn" style="background: #2bdd27;" onclick="setDrawColor('#2bdd27', this)"></div>
-            <div class="color-btn" style="background: #e9881e;" onclick="setDrawColor('#e9881e', this)"></div>
-            <div class="color-btn" style="background: #e1c81c;" onclick="setDrawColor('#e1c81c', this)"></div>
-            <div class="color-btn" style="background: #ec008c;" onclick="setDrawColor('#ec008c', this)"></div>
-            <div class="color-btn" style="background: #b464d9;" onclick="setDrawColor('#b464d9', this)"></div>
+            <div class="color-btn" style="background: #170C1D;" onclick="setDrawColor('#170C1D', this)" title="Dark purple"></div>
+            <div class="color-btn" style="background: #3B1452;" onclick="setDrawColor('#3B1452', this)" title="Russian violet"></div>
+            <div class="color-btn" style="background: #68119A;" onclick="setDrawColor('#68119A', this)" title="Grape"></div>
+            <div class="color-btn" style="background: #8F00E1;" onclick="setDrawColor('#8F00E1', this)" title="Dark violet"></div>
+            <div class="color-btn" style="background: #B26BDB;" onclick="setDrawColor('#B26BDB', this)" title="Lavender"></div>
+            <div class="color-btn" style="background: #C9A9DB;" onclick="setDrawColor('#C9A9DB', this)" title="Wisteria"></div>
+            <div class="color-btn" style="background: #DBC5E7;" onclick="setDrawColor('#DBC5E7', this)" title="Thistle"></div>
             <div class="color-btn" style="background: #ffffff; border: 2px solid #333;" onclick="setDrawColor('#ffffff', this)"></div>
           </div>
         </div>
         <div>
-          <label style="font-weight: bold; color: #b82b2f; margin-right: 10px;">Brush Size:</label>
+          <label style="font-weight: bold; color: #68119A; margin-right: 10px;">Brush Size:</label>
           <input type="range" id="brushSize" min="1" max="20" value="3" oninput="setBrushSize(this.value)">
           <span id="brushSizeDisplay">3px</span>
         </div>
@@ -822,7 +822,7 @@
 <div id="fullscreenOverlay" class="fullscreen-overlay">
   <button class="fullscreen-close" onclick="toggleFullscreen()">✕ Exit Fullscreen</button>
   <div class="fullscreen-content">
-    <h2 style="color: #b82b2f; margin-bottom: 20px;">✍️ Fullscreen Writing Mode</h2>
+    <h2 style="color: #68119A; margin-bottom: 20px;">✍️ Fullscreen Writing Mode</h2>
     
     <!-- Fullscreen Action Buttons -->
     <div class="action-buttons" style="margin-bottom: 15px;">
@@ -838,21 +838,21 @@
     <div id="drawingToolsFullscreen" class="tool-section">
       <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
         <div>
-          <label style="font-weight: bold; color: #b82b2f; margin-right: 10px;">Colors:</label>
+          <label style="font-weight: bold; color: #68119A; margin-right: 10px;">Colors:</label>
           <div class="color-picker">
             <div class="color-btn active" style="background: #000000;" onclick="setDrawColor('#000000', this)"></div>
-            <div class="color-btn" style="background: #b82b2f;" onclick="setDrawColor('#b82b2f', this)"></div>
-            <div class="color-btn" style="background: #2424ef;" onclick="setDrawColor('#2424ef', this)"></div>
-            <div class="color-btn" style="background: #2bdd27;" onclick="setDrawColor('#2bdd27', this)"></div>
-            <div class="color-btn" style="background: #e9881e;" onclick="setDrawColor('#e9881e', this)"></div>
-            <div class="color-btn" style="background: #e1c81c;" onclick="setDrawColor('#e1c81c', this)"></div>
-            <div class="color-btn" style="background: #ec008c;" onclick="setDrawColor('#ec008c', this)"></div>
-            <div class="color-btn" style="background: #b464d9;" onclick="setDrawColor('#b464d9', this)"></div>
+            <div class="color-btn" style="background: #170C1D;" onclick="setDrawColor('#170C1D', this)" title="Dark purple"></div>
+            <div class="color-btn" style="background: #3B1452;" onclick="setDrawColor('#3B1452', this)" title="Russian violet"></div>
+            <div class="color-btn" style="background: #68119A;" onclick="setDrawColor('#68119A', this)" title="Grape"></div>
+            <div class="color-btn" style="background: #8F00E1;" onclick="setDrawColor('#8F00E1', this)" title="Dark violet"></div>
+            <div class="color-btn" style="background: #B26BDB;" onclick="setDrawColor('#B26BDB', this)" title="Lavender"></div>
+            <div class="color-btn" style="background: #C9A9DB;" onclick="setDrawColor('#C9A9DB', this)" title="Wisteria"></div>
+            <div class="color-btn" style="background: #DBC5E7;" onclick="setDrawColor('#DBC5E7', this)" title="Thistle"></div>
             <div class="color-btn" style="background: #ffffff; border: 2px solid #333;" onclick="setDrawColor('#ffffff', this)"></div>
           </div>
         </div>
         <div>
-          <label style="font-weight: bold; color: #b82b2f; margin-right: 10px;">Brush Size:</label>
+          <label style="font-weight: bold; color: #68119A; margin-right: 10px;">Brush Size:</label>
           <input type="range" id="brushSizeFullscreen" min="1" max="20" value="3" oninput="setBrushSize(this.value)">
           <span id="brushSizeDisplayFullscreen">3px</span>
         </div>
@@ -861,7 +861,7 @@
       </div>
     </div>
     
-    <div id="fullscreenScrapbook" style="position: relative; min-height: 800px; padding: 20px; background: white; border: 2px solid rgba(184, 43, 47, 0.3); border-radius: 10px; background-image: repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(184, 43, 47, 0.03) 30px, rgba(184, 43, 47, 0.03) 31px);"></div>
+    <div id="fullscreenScrapbook" style="position: relative; min-height: 800px; padding: 20px; background: white; border: 2px solid rgba(143, 0, 225, 0.3); border-radius: 10px; background-image: repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(178, 107, 219, 0.05) 30px, rgba(178, 107, 219, 0.05) 31px);"></div>
   </div>
 </div>
 
@@ -1274,7 +1274,7 @@ function displayResults(stats, suggestions) {
     </div>
   `;
   
-  suggestionsContainer.innerHTML = '<h4 style="color: #b82b2f; margin-bottom: 10px; font-size: 1.1em;">Feedback</h4>';
+  suggestionsContainer.innerHTML = '<h4 style="color: #68119A; margin-bottom: 10px; font-size: 1.1em;">Feedback</h4>';
   suggestions.forEach(suggestion => {
     suggestionsContainer.innerHTML += `
       <div class="suggestion ${suggestion.type}">
@@ -1667,7 +1667,7 @@ function setBackgroundImageFullscreen(event) {
 function removeBackground() {
   const container = document.getElementById('scrapbookContent');
   currentBackground = null;
-  container.style.backgroundImage = 'repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(184, 43, 47, 0.03) 30px, rgba(184, 43, 47, 0.03) 31px)';
+  container.style.backgroundImage = 'repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(178, 107, 219, 0.05) 30px, rgba(178, 107, 219, 0.05) 31px)';
   hideRemoveBackgroundButton();
 }
 
