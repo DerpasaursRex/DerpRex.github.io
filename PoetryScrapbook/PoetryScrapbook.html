@@ -1731,6 +1731,7 @@ function finishDrawing() {
 // Fullscreen mode
 let isFullscreen = false;
 let syncInterval = null;
+let syncToFsInterval = null;
 
 function toggleFullscreen() {
   const overlay = document.getElementById('fullscreenOverlay');
@@ -1742,8 +1743,54 @@ function toggleFullscreen() {
     isFullscreen = true;
     overlay.style.display = 'block';
     
+    // Save all data BEFORE cloning HTML
+    const normalElements = scrapbookContent.querySelectorAll('.scrapbook-element');
+    const elementDataMap = new Map();
+    
+    normalElements.forEach((element, index) => {
+      const data = {};
+      
+      const canvas = element.querySelector('canvas');
+      if (canvas) {
+        data.canvasImage = canvas.toDataURL();
+      }
+      
+      const textarea = element.querySelector('textarea');
+      if (textarea) {
+        data.textValue = textarea.value;
+      }
+      
+      elementDataMap.set(index, data);
+    });
+    
     // Clone all elements to fullscreen
     fullscreenScrapbook.innerHTML = scrapbookContent.innerHTML;
+    
+    // Restore all data AFTER cloning
+    const fullscreenElements = fullscreenScrapbook.querySelectorAll('.scrapbook-element');
+    fullscreenElements.forEach((element, index) => {
+      if (elementDataMap.has(index)) {
+        const data = elementDataMap.get(index);
+        
+        // Restore canvas
+        const canvas = element.querySelector('canvas');
+        if (canvas && data.canvasImage) {
+          const ctx = canvas.getContext('2d', { alpha: true });
+          const img = new Image();
+          img.onload = function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+          };
+          img.src = data.canvasImage;
+        }
+        
+        // Restore text
+        const textarea = element.querySelector('textarea');
+        if (textarea && data.textValue !== undefined) {
+          textarea.value = data.textValue;
+        }
+      }
+    });
     
     // Copy background image
     if (currentBackground) {
@@ -1753,10 +1800,12 @@ function toggleFullscreen() {
       fullscreenScrapbook.style.backgroundRepeat = 'no-repeat';
     } else {
       fullscreenScrapbook.style.backgroundImage = scrapbookContent.style.backgroundImage;
+      fullscreenScrapbook.style.backgroundSize = scrapbookContent.style.backgroundSize;
+      fullscreenScrapbook.style.backgroundPosition = scrapbookContent.style.backgroundPosition;
     }
     
     // Re-initialize all interactive elements
-    fullscreenScrapbook.querySelectorAll('.scrapbook-element').forEach(element => {
+    fullscreenElements.forEach(element => {
       makeDraggable(element);
       const canvas = element.querySelector('canvas');
       if (canvas) {
@@ -1768,13 +1817,43 @@ function toggleFullscreen() {
     syncInterval = setInterval(syncFromFullscreen, 1000);
     
     // Also set up syncing from normal to fullscreen (less frequent)
-    setInterval(syncToFullscreen, 2000);
+    syncToFsInterval = setInterval(syncToFullscreen, 2000);
     
     document.body.style.overflow = 'hidden';
   } else {
-    // Exit fullscreen - final sync
+    // Exit fullscreen - save everything first
     clearInterval(syncInterval);
+    clearInterval(syncToFsInterval);
+    
+    // Save all canvas data from fullscreen BEFORE syncing
+    const fullscreenElements = fullscreenScrapbook.querySelectorAll('.scrapbook-element');
+    const canvasDataMap = new Map();
+    
+    fullscreenElements.forEach((element, index) => {
+      const canvas = element.querySelector('canvas');
+      if (canvas) {
+        canvasDataMap.set(index, canvas.toDataURL());
+      }
+    });
+    
+    // Perform final sync
     syncFromFullscreen();
+    
+    // Ensure canvas drawings are restored after sync
+    const normalElements = scrapbookContent.querySelectorAll('.scrapbook-element');
+    normalElements.forEach((element, index) => {
+      const canvas = element.querySelector('canvas');
+      if (canvas && canvasDataMap.has(index)) {
+        const ctx = canvas.getContext('2d', { alpha: true });
+        const img = new Image();
+        img.onload = function() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+        };
+        img.src = canvasDataMap.get(index);
+        initCanvasDrawing(canvas);
+      }
+    });
     
     isFullscreen = false;
     overlay.style.display = 'none';
@@ -1788,21 +1867,45 @@ function syncToFullscreen() {
   const fullscreenScrapbook = document.getElementById('fullscreenScrapbook');
   const scrapbookContent = document.getElementById('scrapbookContent');
   
-  // This is a lighter sync - only update text content and positions
+  // This is a lighter sync - only update text content, positions, and drawings
   // Don't rebuild everything to avoid disrupting user interaction
   const normalElements = scrapbookContent.querySelectorAll('.scrapbook-element');
   const fullscreenElements = fullscreenScrapbook.querySelectorAll('.scrapbook-element');
   
   normalElements.forEach((normalElement, index) => {
     if (fullscreenElements[index]) {
+      // Sync text
       const normalTextarea = normalElement.querySelector('textarea');
       const fsTextarea = fullscreenElements[index].querySelector('textarea');
       
       if (normalTextarea && fsTextarea && document.activeElement !== fsTextarea) {
         fsTextarea.value = normalTextarea.value;
       }
+      
+      // Sync canvas drawings
+      const normalCanvas = normalElement.querySelector('canvas');
+      const fsCanvas = fullscreenElements[index].querySelector('canvas');
+      
+      if (normalCanvas && fsCanvas) {
+        const fsCtx = fsCanvas.getContext('2d', { alpha: true });
+        fsCtx.clearRect(0, 0, fsCanvas.width, fsCanvas.height);
+        fsCtx.drawImage(normalCanvas, 0, 0);
+      }
+      
+      // Sync positions
+      fullscreenElements[index].style.left = normalElement.style.left;
+      fullscreenElements[index].style.top = normalElement.style.top;
+      fullscreenElements[index].style.zIndex = normalElement.style.zIndex;
     }
   });
+  
+  // Sync background
+  if (scrapbookContent.style.backgroundImage !== fullscreenScrapbook.style.backgroundImage) {
+    fullscreenScrapbook.style.backgroundImage = scrapbookContent.style.backgroundImage;
+    fullscreenScrapbook.style.backgroundSize = scrapbookContent.style.backgroundSize;
+    fullscreenScrapbook.style.backgroundPosition = scrapbookContent.style.backgroundPosition;
+    fullscreenScrapbook.style.backgroundRepeat = scrapbookContent.style.backgroundRepeat;
+  }
 }
 
 function syncFromFullscreen() {
@@ -1842,28 +1945,60 @@ function syncFromFullscreen() {
     }
   });
   
-  // Handle new elements added in fullscreen
-  if (fullscreenElements.length > normalElements.length) {
-    // Rebuild entire content from fullscreen
-    scrapbookContent.innerHTML = fullscreenScrapbook.innerHTML;
-    scrapbookContent.querySelectorAll('.scrapbook-element').forEach(element => {
-      makeDraggable(element);
-      const canvas = element.querySelector('canvas');
+  // Handle new elements added in fullscreen or deleted elements
+  if (fullscreenElements.length !== normalElements.length) {
+    // Save ALL data before rebuilding (canvas AND text)
+    const elementData = [];
+    fullscreenElements.forEach(fsElement => {
+      const data = {};
+      
+      const canvas = fsElement.querySelector('canvas');
       if (canvas) {
-        initCanvasDrawing(canvas);
+        data.canvasImage = canvas.toDataURL();
       }
+      
+      const textarea = fsElement.querySelector('textarea');
+      if (textarea) {
+        data.textValue = textarea.value;
+      }
+      
+      const img = fsElement.querySelector('img');
+      if (img) {
+        data.imageSrc = img.src;
+      }
+      
+      elementData.push(data);
     });
-  }
-  
-  // Handle deleted elements in fullscreen
-  if (fullscreenElements.length < normalElements.length) {
+    
     // Rebuild entire content from fullscreen
     scrapbookContent.innerHTML = fullscreenScrapbook.innerHTML;
-    scrapbookContent.querySelectorAll('.scrapbook-element').forEach(element => {
+    
+    // Restore ALL data and re-initialize
+    const newElements = scrapbookContent.querySelectorAll('.scrapbook-element');
+    newElements.forEach((element, index) => {
       makeDraggable(element);
-      const canvas = element.querySelector('canvas');
-      if (canvas) {
-        initCanvasDrawing(canvas);
+      
+      if (elementData[index]) {
+        // Restore canvas
+        const canvas = element.querySelector('canvas');
+        if (canvas && elementData[index].canvasImage) {
+          const ctx = canvas.getContext('2d', { alpha: true });
+          const img = new Image();
+          img.onload = function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+          };
+          img.src = elementData[index].canvasImage;
+          initCanvasDrawing(canvas);
+        } else if (canvas) {
+          initCanvasDrawing(canvas);
+        }
+        
+        // Restore text
+        const textarea = element.querySelector('textarea');
+        if (textarea && elementData[index].textValue !== undefined) {
+          textarea.value = elementData[index].textValue;
+        }
       }
     });
   }
