@@ -395,6 +395,9 @@
       <li class="nav-item">
         <a class="nav-link" href="blog.html">Blog</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="Built-in.html">Built-in</a>
+      </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Projects
@@ -423,7 +426,6 @@
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Coding</h6>
           <a class="dropdown-item" href="Websites.html">Websites</a>
-          <a class="dropdown-item" href="Built-in.html">Built-in</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Physical Media</h6>
           <a class="dropdown-item" href="Sculptures.html">Sculptures</a>
@@ -466,7 +468,26 @@
   <div class="row">
     <div class="col-12 mb-4">
       <h3 style="color: #b82b2f; text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;">Built-in Coded Experiences</h3>
+      
+      <!-- Poetry Scrapbook Portal Button -->
+      <div class="mt-3 mb-3">
+        <a href="../PoetryScrapbook/PoetryScrapbook.html" class="btn btn-lg btn-block portal-button" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); color: white; font-weight: bold; border-radius: 15px; padding: 20px; transition: all 0.4s ease; border: 3px solid rgba(255, 255, 255, 0.3); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.1); position: relative; overflow: hidden; text-decoration: none; display: block;" onmouseover="this.style.transform='scale(1.03) translateY(-3px)'; this.style.boxShadow='0 12px 35px rgba(102, 126, 234, 0.6), 0 0 30px rgba(240, 147, 251, 0.4)'" onmouseout="this.style.transform='scale(1) translateY(0)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.1)'">
+          <span style="font-size: 1.3em;">✨ Enter Poetry Scrapbook Portal ✨</span>
+          <br>
+          <small style="opacity: 0.9; font-style: italic;">A mystical space for your words and thoughts</small>
+        </a>
+      </div>
+      
+      <!-- Collapsible Section for Old Coding Experiences -->
+      <div class="mt-3">
+        <button class="btn btn-lg btn-block" style="background-color: #b82b2f; color: white; font-weight: bold; border-radius: 8px; padding: 15px; transition: all 0.3s ease;" data-toggle="collapse" data-target="#oldCodingExperiences" aria-expanded="false" aria-controls="oldCodingExperiences" onmouseover="this.style.backgroundColor='#8f2226'" onmouseout="this.style.backgroundColor='#b82b2f'">
+          View Old Coding Experiences (Click to Expand)
+        </button>
+      </div>
     </div>
+    
+    <!-- Collapsible Content -->
+    <div class="collapse" id="oldCodingExperiences">
     
     <!-- Drawing Tool -->
     <div class="col-12 mb-4">
@@ -544,6 +565,10 @@
            </div>
          </div>
        </div>
+       
+    </div>
+    <!-- End of Collapsible Content -->
+    
   </div>
 </div>
 
@@ -1102,6 +1127,41 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+@keyframes portalPulse {
+  0%, 100% {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.2), 0 0 40px rgba(240, 147, 251, 0.3);
+  }
+}
+
+.portal-button {
+  animation: portalPulse 3s ease-in-out infinite;
+  background-size: 200% 200%;
+}
+
+.portal-button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  animation: portalRotate 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes portalRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 </style>

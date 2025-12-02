@@ -1,0 +1,2243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Poetry Scrapbook - Catherine Ann MacDonald</title>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- Security Headers -->
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://maxcdn.bootstrapcdn.com; connect-src 'self'; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com; img-src 'self' data:; frame-src https://open.spotify.com; font-src 'self' data:;">
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <style>
+    body {
+      background-image: url('../SitePics/galaxy.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      font-family: 'Georgia', serif;
+      color: #2c2c2c;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: -1;
+    }
+
+    .return-home {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      background-color: rgba(184, 43, 47, 0.9);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      font-family: Arial, sans-serif;
+    }
+
+    .return-home:hover {
+      background-color: rgba(184, 43, 47, 1);
+      transform: scale(1.05);
+      color: white;
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .header-section {
+      text-align: center;
+      padding: 60px 20px 40px;
+      background: linear-gradient(135deg, rgba(184, 43, 47, 0.9), rgba(143, 34, 38, 0.95));
+      backdrop-filter: blur(10px);
+      margin: 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(255, 215, 0, 0.1);
+      border: 3px solid rgba(210, 180, 140, 0.5);
+      position: relative;
+    }
+
+    .header-section::before {
+      content: '📖';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 3em;
+      opacity: 0.3;
+    }
+
+    h1 {
+      color: #f4e4c1;
+      font-size: 3.5em;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 215, 0, 0.3);
+      margin-bottom: 10px;
+      font-family: 'Georgia', serif;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    .subtitle {
+      color: #e6d5b8;
+      font-size: 1.3em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+      font-style: italic;
+    }
+
+    .main-container {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      gap: 20px;
+      max-width: 1600px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    @media (max-width: 1200px) {
+      .main-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sidebar {
+      background: linear-gradient(135deg, rgba(250, 240, 230, 0.98), rgba(255, 248, 240, 0.95));
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 2px solid rgba(184, 43, 47, 0.3);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .center-panel {
+      background: linear-gradient(135deg, rgba(250, 240, 230, 0.98), rgba(255, 248, 240, 0.95));
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(184, 43, 47, 0.05);
+      border: 3px solid rgba(184, 43, 47, 0.5);
+      border-left: 8px solid #b82b2f;
+    }
+
+    .inline-textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 15px;
+      border: 2px dashed rgba(184, 43, 47, 0.3);
+      border-radius: 8px;
+      font-family: 'Georgia', serif;
+      font-size: 1.1em;
+      line-height: 1.8;
+      resize: vertical;
+      background: transparent;
+      margin: 10px 0;
+    }
+
+    .inline-textarea:focus {
+      outline: none;
+      border-color: #b82b2f;
+      border-style: solid;
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .scrapbook-element {
+      position: absolute;
+      padding: 10px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      cursor: move;
+      z-index: 1;
+    }
+
+    .scrapbook-element:hover {
+      border-color: rgba(184, 43, 47, 0.3);
+      background: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .scrapbook-element.selected {
+      border-color: #b82b2f;
+      border-width: 2px;
+      box-shadow: 0 6px 20px rgba(184, 43, 47, 0.3);
+    }
+
+    .element-controls {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      max-width: 150px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .scrapbook-element:hover .element-controls,
+    .scrapbook-element.selected .element-controls {
+      opacity: 1;
+    }
+
+    .control-btn {
+      background: #b82b2f;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .control-btn:hover {
+      background: #8f2226;
+    }
+
+    .inline-canvas {
+      border: 2px dashed rgba(184, 43, 47, 0.5);
+      border-radius: 8px;
+      cursor: crosshair;
+      background: transparent;
+      display: block;
+      margin: 10px auto;
+      max-width: 100%;
+    }
+
+    .inline-image {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 2px solid rgba(184, 43, 47, 0.3);
+      display: block;
+      margin: 10px auto;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .drawing-canvas {
+      border: 2px solid rgba(184, 43, 47, 0.3);
+      border-radius: 10px;
+      cursor: crosshair;
+      background: white;
+      display: none;
+      margin-top: 15px;
+    }
+
+    .color-picker {
+      display: flex;
+      gap: 5px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .color-btn {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .color-btn:hover {
+      transform: scale(1.1);
+      border-color: #b82b2f;
+    }
+
+    .color-btn.active {
+      border: 3px solid #b82b2f;
+      transform: scale(1.15);
+    }
+
+    .inserted-image {
+      max-width: 100%;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 2px solid rgba(184, 43, 47, 0.3);
+    }
+
+    .fullscreen-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 10000;
+      overflow: auto;
+    }
+
+    .fullscreen-content {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 30px;
+      background: linear-gradient(135deg, rgba(250, 240, 230, 0.98), rgba(255, 248, 240, 0.95));
+      border-radius: 15px;
+      position: relative;
+    }
+
+    .fullscreen-close {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #b82b2f;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1.1em;
+      z-index: 10001;
+    }
+
+    .fullscreen-close:hover {
+      background: #8f2226;
+    }
+
+    .tool-section {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(184, 43, 47, 0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(184, 43, 47, 0.2);
+    }
+
+    .tool-section.active {
+      display: block;
+    }
+
+    .btn-custom {
+      background: linear-gradient(135deg, #b82b2f, #8f2226);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: Arial, sans-serif;
+    }
+
+    .btn-custom:hover {
+      background: linear-gradient(135deg, #8f2226, #6d1a1d);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(184, 43, 47, 0.4);
+    }
+
+    .btn-secondary-custom {
+      background: #999;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: Arial, sans-serif;
+    }
+
+    .btn-secondary-custom:hover {
+      background: #777;
+    }
+
+    .analysis-panel {
+      margin-top: 20px;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      border: 2px solid rgba(184, 43, 47, 0.2);
+    }
+
+    .suggestion {
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border-left: 4px solid #b82b2f;
+    }
+
+    .suggestion.warning {
+      background: rgba(255, 193, 7, 0.1);
+      border-left-color: #ffc107;
+    }
+
+    .suggestion.info {
+      background: rgba(23, 162, 184, 0.1);
+      border-left-color: #17a2b8;
+    }
+
+    .suggestion.success {
+      background: rgba(40, 167, 69, 0.1);
+      border-left-color: #28a745;
+    }
+
+    .suggestion-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #b82b2f;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .stat-box {
+      background: rgba(184, 43, 47, 0.05);
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid rgba(184, 43, 47, 0.2);
+    }
+
+    .stat-number {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #b82b2f;
+    }
+
+    .stat-label {
+      font-size: 0.8em;
+      color: #666;
+      margin-top: 3px;
+    }
+
+    h2 {
+      color: #b82b2f;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      font-weight: bold;
+      border-bottom: 2px solid rgba(184, 43, 47, 0.2);
+      padding-bottom: 10px;
+    }
+
+    h3 {
+      color: #b82b2f;
+      font-size: 1.3em;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .tip-item {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(184, 43, 47, 0.03);
+      border-radius: 5px;
+      font-size: 0.9em;
+    }
+
+    .tip-title {
+      font-weight: bold;
+      color: #b82b2f;
+      margin-bottom: 5px;
+    }
+
+    .citation {
+      background: rgba(184, 43, 47, 0.05);
+      border-left: 3px solid #b82b2f;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 0.8em;
+      border-radius: 5px;
+    }
+
+    .citation a {
+      color: #b82b2f;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .citation a:hover {
+      text-decoration: underline;
+    }
+
+    .saved-poems {
+      margin-top: 20px;
+    }
+
+    .poem-item {
+      background: white;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border-left: 4px solid #b82b2f;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .poem-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px rgba(184, 43, 47, 0.2);
+    }
+
+    .poem-title-small {
+      font-weight: bold;
+      color: #b82b2f;
+      font-size: 0.95em;
+    }
+
+    .poem-date-small {
+      font-size: 0.75em;
+      color: #666;
+      font-style: italic;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: #f4e4c1;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+      margin-top: 50px;
+      background: linear-gradient(135deg, rgba(184, 43, 47, 0.7), rgba(143, 34, 38, 0.8));
+      border-radius: 20px;
+      margin: 50px 20px 20px;
+      border: 2px solid rgba(210, 180, 140, 0.3);
+    }
+
+    .collapsible-section {
+      margin-bottom: 15px;
+    }
+
+    .collapsible-header {
+      background: rgba(184, 43, 47, 0.1);
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #b82b2f;
+      transition: all 0.3s ease;
+    }
+
+    .collapsible-header:hover {
+      background: rgba(184, 43, 47, 0.2);
+    }
+
+    .collapsible-content {
+      display: none;
+      padding: 10px 0;
+    }
+
+    .collapsible-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Return to Home Button -->
+<a href="../index.html" class="return-home">← Return Home</a>
+
+<!-- Header Section -->
+<div class="header-section">
+  <h1>Poetry Scrapbook</h1>
+  <p class="subtitle">Write, analyze, and preserve your poetic journey</p>
+</div>
+
+<!-- Main Container -->
+<div class="main-container">
+  
+  <!-- Left Sidebar: Writing Tips -->
+  <div class="sidebar">
+    <h2 style="font-size: 1.5em;">📚 Writing Tips</h2>
+    
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleSection(this)">
+        ▶ Prompt Generator
+      </div>
+      <div class="collapsible-content">
+        <div style="text-align: center; padding: 10px;">
+          <button class="btn-custom" onclick="generatePrompt()" style="width: 100%; margin-bottom: 15px;">
+            🎲 Generate Prompt
+          </button>
+        </div>
+        <div id="promptDisplay" style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #b82b2f; min-height: 80px; display: none;">
+          <div style="font-weight: bold; color: #b82b2f; margin-bottom: 8px; font-size: 0.9em;">Your Prompt:</div>
+          <div id="promptText" style="font-size: 0.95em; line-height: 1.6; font-style: italic;"></div>
+        </div>
+        <div style="margin-top: 10px; font-size: 0.75em; color: #666; text-align: center;">
+          Click the button to get a creative writing prompt!
+        </div>
+      </div>
+    </div>
+
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleSection(this)">
+        ▶ Poetic Devices
+      </div>
+      <div class="collapsible-content">
+        <div class="tip-item">
+          <div class="tip-title">Metaphor</div>
+          <p style="font-size: 0.85em;">Comparison without "like" or "as"</p>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title">Simile</div>
+          <p style="font-size: 0.85em;">Comparison using "like" or "as"</p>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title">Alliteration</div>
+          <p style="font-size: 0.85em;">Repetition of consonant sounds</p>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title">Imagery</div>
+          <p style="font-size: 0.85em;">Vivid sensory descriptions</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleSection(this)">
+        ▶ Poem Examples
+      </div>
+      <div class="collapsible-content">
+        <div class="tip-item">
+          <div class="tip-title">Haiku (5-7-5 syllables)</div>
+          <p style="font-size: 0.85em; font-style: italic;">
+            "An old silent pond—<br>
+            A frog jumps into the pond,<br>
+            splash! Silence again."<br>
+            — Matsuo Bashō
+          </p>
+          <div class="citation" style="margin-top: 5px;">
+            Source: <a href="https://www.studiobinder.com/blog/different-types-of-poems-examples/" target="_blank">StudioBinder</a>
+          </div>
+        </div>
+
+        <div class="tip-item">
+          <div class="tip-title">Sonnet (14 lines)</div>
+          <p style="font-size: 0.85em; font-style: italic;">
+            "Shall I compare thee to a summer's day?<br>
+            Thou art more lovely and more temperate:<br>
+            Rough winds do shake the darling buds of May,<br>
+            And summer's lease hath all too short a date;"<br>
+            — William Shakespeare, "Sonnet 18"
+          </p>
+          <div class="citation" style="margin-top: 5px;">
+            Source: <a href="https://smartblogger.com/types-of-poems/" target="_blank">Smart Blogger</a>
+          </div>
+        </div>
+
+        <div class="tip-item">
+          <div class="tip-title">Limerick (AABBA rhyme)</div>
+          <p style="font-size: 0.85em; font-style: italic;">
+            "There was an Old Man with a beard,<br>
+            Who said, 'It is just as I feared!<br>
+            Two Owls and a Hen,<br>
+            Four Larks and a Wren,<br>
+            Have all built their nests in my beard!'"<br>
+            — Edward Lear
+          </p>
+          <div class="citation" style="margin-top: 5px;">
+            Source: <a href="https://www.penguin.co.uk/discover/childrens-articles/different-types-of-poetry-for-kids" target="_blank">Penguin UK</a>
+          </div>
+        </div>
+
+        <div class="tip-item">
+          <div class="tip-title">Free Verse (no set structure)</div>
+          <p style="font-size: 0.85em; font-style: italic;">
+            "I celebrate myself, and sing myself,<br>
+            And what I assume you shall assume,<br>
+            For every atom belonging to me as good belongs to you."<br>
+            — Walt Whitman, "Song of Myself"
+          </p>
+          <div class="citation" style="margin-top: 5px;">
+            Source: <a href="https://homeschoolgiveaways.com/types-of-poems/" target="_blank">Homeschool Giveaways</a>
+          </div>
+        </div>
+
+        <div class="tip-item">
+          <div class="tip-title">Elegy (mourning poem)</div>
+          <p style="font-size: 0.85em; font-style: italic;">
+            "O Captain! my Captain! our fearful trip is done;<br>
+            The ship has weather'd every rack, the prize we sought is won;<br>
+            The port is near, the bells I hear, the people all exulting,<br>
+            While follow eyes the steady keel, the vessel grim and daring:"<br>
+            — Walt Whitman, "O Captain! My Captain!"
+          </p>
+          <div class="citation" style="margin-top: 5px;">
+            Source: <a href="https://www.sabonews.org/12-different-types-of-poems-and-how-to-write-them/" target="_blank">Sabo News</a>
+          </div>
+        </div>
+
+        <div class="tip-item">
+          <div class="tip-title">Villanelle (19 lines, repeating)</div>
+          <p style="font-size: 0.85em; font-style: italic;">
+            "Do not go gentle into that good night,<br>
+            Old age should burn and rave at close of day;<br>
+            Rage, rage against the dying of the light."<br>
+            — Dylan Thomas
+          </p>
+          <div class="citation" style="margin-top: 5px;">
+            Source: <a href="https://www.penguin.co.uk/discover/childrens-articles/different-types-of-poetry-for-kids" target="_blank">Penguin UK</a>
+          </div>
+        </div>
+
+        <div class="tip-item">
+          <div class="tip-title">Ode (celebratory poem)</div>
+          <p style="font-size: 0.85em; font-style: italic;">
+            "Thou still unravish'd bride of quietness,<br>
+            Thou foster-child of silence and slow time,<br>
+            Sylvan historian, who canst thus express<br>
+            A flowery tale more sweetly than our rhyme:"<br>
+            — John Keats, "Ode on a Grecian Urn"
+          </p>
+          <div class="citation" style="margin-top: 5px;">
+            Source: <a href="https://jerichowriters.com/25-different-types-of-poems/" target="_blank">Jericho Writers</a>
+          </div>
+        </div>
+
+        <div class="tip-item">
+          <div class="tip-title">Ballad (narrative poem)</div>
+          <p style="font-size: 0.85em; font-style: italic;">
+            "It is an ancient Mariner,<br>
+            And he stoppeth one of three.<br>
+            'By thy long grey beard and glittering eye,<br>
+            Now wherefore stopp'st thou me?'"<br>
+            — Samuel Taylor Coleridge, "The Rime of the Ancient Mariner"
+          </p>
+          <div class="citation" style="margin-top: 5px;">
+            Source: <a href="https://www.penguin.co.uk/discover/childrens-articles/different-types-of-poetry-for-kids" target="_blank">Penguin UK</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleSection(this)">
+        ▶ Resources
+      </div>
+      <div class="collapsible-content">
+        <div style="font-size: 0.85em;">
+          <p><a href="https://www.poetryfoundation.org/" target="_blank" style="color: #b82b2f;">Poetry Foundation</a></p>
+          <p><a href="https://www.writersdigest.com/poetry" target="_blank" style="color: #b82b2f;">Writer's Digest</a></p>
+          <p><a href="https://prowritingaid.com/write-poetry" target="_blank" style="color: #b82b2f;">ProWritingAid</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Center Panel: Writing Area -->
+  <div class="center-panel" id="centerPanel">
+    <h2>✍️ Write Your Poem</h2>
+    
+    <div class="action-buttons" style="margin-bottom: 15px;">
+      <button class="btn-custom" onclick="insertTextArea()">📝 Add Text</button>
+      <button class="btn-custom" onclick="insertDrawingCanvas()">🎨 Add Drawing</button>
+      <button class="btn-custom" onclick="document.getElementById('imageUpload').click()">📷 Add Photo</button>
+      <button class="btn-custom" onclick="document.getElementById('backgroundUpload').click()">🖼️ Set Background</button>
+      <button class="btn-custom" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+      <button class="btn-custom" onclick="analyzePoem()">🔍 Analyze</button>
+      <button class="btn-custom" onclick="savePoem()">💾 Save</button>
+      <button class="btn-secondary-custom" onclick="clearPoem()">🗑️ Clear</button>
+      <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="insertInlineImage(event)">
+      <input type="file" id="backgroundUpload" accept="image/*" style="display: none;" onchange="setBackgroundImage(event)">
+    </div>
+    
+    <!-- Scrapbook Content Area -->
+    <div id="scrapbookContent" style="position: relative; min-height: 600px; padding: 20px; background: white; border: 2px solid rgba(184, 43, 47, 0.3); border-radius: 10px; background-image: repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(184, 43, 47, 0.03) 30px, rgba(184, 43, 47, 0.03) 31px); overflow: visible;">
+      <p style="color: #999; font-style: italic; text-align: center; position: relative;">Click "Add Text", "Add Drawing", or "Add Photo" to start creating your scrapbook page!</p>
+    </div>
+    
+    <!-- Drawing Tools (appears when drawing) -->
+    <div id="drawingTools" class="tool-section">
+      <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+        <div>
+          <label style="font-weight: bold; color: #b82b2f; margin-right: 10px;">Colors:</label>
+          <div class="color-picker">
+            <div class="color-btn active" style="background: #000000;" onclick="setDrawColor('#000000', this)"></div>
+            <div class="color-btn" style="background: #b82b2f;" onclick="setDrawColor('#b82b2f', this)"></div>
+            <div class="color-btn" style="background: #2424ef;" onclick="setDrawColor('#2424ef', this)"></div>
+            <div class="color-btn" style="background: #2bdd27;" onclick="setDrawColor('#2bdd27', this)"></div>
+            <div class="color-btn" style="background: #e9881e;" onclick="setDrawColor('#e9881e', this)"></div>
+            <div class="color-btn" style="background: #e1c81c;" onclick="setDrawColor('#e1c81c', this)"></div>
+            <div class="color-btn" style="background: #ec008c;" onclick="setDrawColor('#ec008c', this)"></div>
+            <div class="color-btn" style="background: #b464d9;" onclick="setDrawColor('#b464d9', this)"></div>
+            <div class="color-btn" style="background: #ffffff; border: 2px solid #333;" onclick="setDrawColor('#ffffff', this)"></div>
+          </div>
+        </div>
+        <div>
+          <label style="font-weight: bold; color: #b82b2f; margin-right: 10px;">Brush Size:</label>
+          <input type="range" id="brushSize" min="1" max="20" value="3" oninput="setBrushSize(this.value)">
+          <span id="brushSizeDisplay">3px</span>
+        </div>
+        <button class="btn-secondary-custom" onclick="toggleEraser()">🧽 Eraser</button>
+        <button class="btn-secondary-custom" onclick="finishDrawing()">✓ Done Drawing</button>
+      </div>
+    </div>
+    
+    <div id="analysisResults" style="display: none;">
+      <div class="analysis-panel">
+        <h3>Analysis Results</h3>
+        <div id="statsContainer" class="stats-grid"></div>
+        <div id="suggestionsContainer" style="margin-top: 15px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Sidebar: Saved Poems -->
+  <div class="sidebar">
+    <h2 style="font-size: 1.5em;">📝 Your Poems</h2>
+    <div id="savedPoemsContainer" class="saved-poems">
+      <p style="text-align: center; color: #666; font-style: italic; font-size: 0.9em;">No poems saved yet. Write and save your first poem!</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Fullscreen Overlay -->
+<div id="fullscreenOverlay" class="fullscreen-overlay">
+  <button class="fullscreen-close" onclick="toggleFullscreen()">✕ Exit Fullscreen</button>
+  <div class="fullscreen-content">
+    <h2 style="color: #b82b2f; margin-bottom: 20px;">✍️ Fullscreen Writing Mode</h2>
+    
+    <!-- Fullscreen Action Buttons -->
+    <div class="action-buttons" style="margin-bottom: 15px;">
+      <button class="btn-custom" onclick="insertTextAreaFullscreen()">📝 Add Text</button>
+      <button class="btn-custom" onclick="insertDrawingCanvasFullscreen()">🎨 Add Drawing</button>
+      <button class="btn-custom" onclick="document.getElementById('imageUploadFullscreen').click()">📷 Add Photo</button>
+      <button class="btn-custom" onclick="document.getElementById('backgroundUploadFullscreen').click()">🖼️ Set Background</button>
+      <input type="file" id="imageUploadFullscreen" accept="image/*" style="display: none;" onchange="insertInlineImageFullscreen(event)">
+      <input type="file" id="backgroundUploadFullscreen" accept="image/*" style="display: none;" onchange="setBackgroundImageFullscreen(event)">
+    </div>
+    
+    <!-- Fullscreen Drawing Tools -->
+    <div id="drawingToolsFullscreen" class="tool-section">
+      <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+        <div>
+          <label style="font-weight: bold; color: #b82b2f; margin-right: 10px;">Colors:</label>
+          <div class="color-picker">
+            <div class="color-btn active" style="background: #000000;" onclick="setDrawColor('#000000', this)"></div>
+            <div class="color-btn" style="background: #b82b2f;" onclick="setDrawColor('#b82b2f', this)"></div>
+            <div class="color-btn" style="background: #2424ef;" onclick="setDrawColor('#2424ef', this)"></div>
+            <div class="color-btn" style="background: #2bdd27;" onclick="setDrawColor('#2bdd27', this)"></div>
+            <div class="color-btn" style="background: #e9881e;" onclick="setDrawColor('#e9881e', this)"></div>
+            <div class="color-btn" style="background: #e1c81c;" onclick="setDrawColor('#e1c81c', this)"></div>
+            <div class="color-btn" style="background: #ec008c;" onclick="setDrawColor('#ec008c', this)"></div>
+            <div class="color-btn" style="background: #b464d9;" onclick="setDrawColor('#b464d9', this)"></div>
+            <div class="color-btn" style="background: #ffffff; border: 2px solid #333;" onclick="setDrawColor('#ffffff', this)"></div>
+          </div>
+        </div>
+        <div>
+          <label style="font-weight: bold; color: #b82b2f; margin-right: 10px;">Brush Size:</label>
+          <input type="range" id="brushSizeFullscreen" min="1" max="20" value="3" oninput="setBrushSize(this.value)">
+          <span id="brushSizeDisplayFullscreen">3px</span>
+        </div>
+        <button class="btn-secondary-custom" onclick="toggleEraser()">🧽 Eraser</button>
+        <button class="btn-secondary-custom" onclick="finishDrawing()">✓ Done Drawing</button>
+      </div>
+    </div>
+    
+    <div id="fullscreenScrapbook" style="position: relative; min-height: 800px; padding: 20px; background: white; border: 2px solid rgba(184, 43, 47, 0.3); border-radius: 10px; background-image: repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(184, 43, 47, 0.03) 30px, rgba(184, 43, 47, 0.03) 31px);"></div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <p>Catherine Ann MacDonald &copy; 2025</p>
+  <p style="font-style: italic; font-size: 0.9em;">Every word tells a story</p>
+  <p style="font-size: 0.8em; margin-top: 10px;">Poetry tips compiled from expert sources with proper attribution</p>
+</div>
+
+<script>
+// Prompt Generator
+const poetryPrompts = [
+  "Write about a color without naming it",
+  "Describe a memory using only sensory details (no emotions)",
+  "Write a poem from the perspective of an object in your room",
+  "Create a poem using only questions",
+  "Write about a season through the lens of a specific emotion",
+  "Describe a place you've never been but dream about",
+  "Write a letter to your younger self in verse",
+  "Create a poem inspired by a song that moves you",
+  "Write about silence and what it sounds like",
+  "Describe the taste of a specific memory",
+  "Write a poem about transformation or metamorphosis",
+  "Create a piece about the space between two moments",
+  "Write from the perspective of the moon watching Earth",
+  "Describe a stranger you saw today - imagine their story",
+  "Write about what home means using concrete imagery",
+  "Create a poem about time without mentioning time",
+  "Write about water in all its forms",
+  "Describe the feeling of a specific time of day",
+  "Write a poem using only one-syllable words",
+  "Create a piece about something you've lost",
+  "Write about a door - where it leads, what it keeps out",
+  "Describe the last thing you touched with vivid detail",
+  "Write a poem inspired by a painting or photograph",
+  "Create a piece about the weather as a metaphor for emotion",
+  "Write about a journey, real or imagined",
+  "Describe the sound of your favorite place",
+  "Write a poem about shadows and light",
+  "Create a piece inspired by a childhood memory",
+  "Write about the ocean without using the word 'ocean'",
+  "Describe what hope looks like to you",
+  "Write a poem using a repeating line or phrase",
+  "Create a piece about the stars and what they witness",
+  "Write about hands - what they've held, created, or lost",
+  "Describe a moment of change in nature",
+  "Write a poem about mirrors and reflections",
+  "Create a piece inspired by a dream you remember",
+  "Write about the first or last time you did something",
+  "Describe a sound that brings you peace",
+  "Write a poem about growth - literal or metaphorical",
+  "Create a piece about the relationship between earth and sky"
+];
+
+function generatePrompt() {
+  const randomPrompt = poetryPrompts[Math.floor(Math.random() * poetryPrompts.length)];
+  const promptDisplay = document.getElementById('promptDisplay');
+  const promptText = document.getElementById('promptText');
+  
+  promptText.textContent = randomPrompt;
+  promptDisplay.style.display = 'block';
+  
+  // Smooth scroll to show the prompt
+  promptDisplay.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Toggle collapsible sections
+function toggleSection(header) {
+  const content = header.nextElementSibling;
+  const isActive = content.classList.contains('active');
+  
+  // Close all sections
+  document.querySelectorAll('.collapsible-content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.collapsible-header').forEach(h => h.textContent = h.textContent.replace('▼', '▶'));
+  
+  // Open clicked section if it wasn't active
+  if (!isActive) {
+    content.classList.add('active');
+    header.textContent = header.textContent.replace('▶', '▼');
+  }
+}
+
+// Clear poem
+function clearPoem() {
+  if (confirm('Are you sure you want to clear your current poem?')) {
+    document.getElementById('poemInput').value = '';
+    document.getElementById('analysisResults').style.display = 'none';
+  }
+}
+
+// Save poem to collection
+function savePoem() {
+  const poemText = document.getElementById('poemInput').value.trim();
+  
+  if (!poemText) {
+    alert('Please write a poem before saving.');
+    return;
+  }
+  
+  const title = prompt('Enter a title for your poem:');
+  if (!title) return;
+  
+  const poems = JSON.parse(localStorage.getItem('poetryScrapbook') || '[]');
+  poems.push({
+    title: title,
+    text: poemText,
+    date: new Date().toISOString().split('T')[0]
+  });
+  localStorage.setItem('poetryScrapbook', JSON.stringify(poems));
+  
+  loadSavedPoems();
+  alert('Poem saved successfully!');
+}
+
+// Load saved poems
+function loadSavedPoems() {
+  const poems = JSON.parse(localStorage.getItem('poetryScrapbook') || '[]');
+  const container = document.getElementById('savedPoemsContainer');
+  
+  if (poems.length === 0) {
+    container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic; font-size: 0.9em;">No poems saved yet. Write and save your first poem!</p>';
+    return;
+  }
+  
+  poems.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  container.innerHTML = poems.map((poem, index) => `
+    <div class="poem-item" onclick="loadPoem(${index})">
+      <div class="poem-title-small">${escapeHtml(poem.title)}</div>
+      <div class="poem-date-small">${formatDate(poem.date)}</div>
+    </div>
+  `).join('');
+}
+
+// Load poem into editor
+function loadPoem(index) {
+  const poems = JSON.parse(localStorage.getItem('poetryScrapbook') || '[]');
+  if (poems[index]) {
+    document.getElementById('poemInput').value = poems[index].text;
+    document.getElementById('analysisResults').style.display = 'none';
+  }
+}
+
+// Analyze poem
+function analyzePoem() {
+  // Collect all text from textareas
+  const container = document.getElementById('scrapbookContent');
+  const textareas = container.querySelectorAll('textarea');
+  
+  if (textareas.length === 0) {
+    alert('Please add some text to analyze.');
+    return;
+  }
+  
+  let poemText = '';
+  textareas.forEach(textarea => {
+    poemText += textarea.value + '\n\n';
+  });
+  
+  poemText = poemText.trim();
+  
+  if (!poemText) {
+    alert('Please write some text to analyze.');
+    return;
+  }
+  
+  const lines = poemText.split('\n').filter(line => line.trim() !== '');
+  const words = poemText.split(/\s+/).filter(word => word.trim() !== '');
+  
+  const stats = {
+    lines: lines.length,
+    words: words.length,
+    characters: poemText.length,
+    avgWordsPerLine: lines.length > 0 ? (words.length / lines.length).toFixed(1) : 0
+  };
+  
+  const suggestions = [];
+  
+  // Check for clichés with suggestions
+  const cliches = {
+    'time flies': 'Try: "hours dissolve like sugar in rain" or "moments slip through my fingers"',
+    'crystal clear': 'Try: "sharp as winter air" or "transparent as morning dew"',
+    'heart of gold': 'Try: "kindness radiates from them" or "generosity flows naturally"',
+    'piece of cake': 'Try: "effortless as breathing" or "simple as dawn"',
+    'love at first sight': 'Try: "recognition struck like lightning" or "something shifted in that moment"',
+    'break the ice': 'Try: "ease the tension" or "soften the silence"',
+    'once upon a time': 'Try: "in another season" or "when the world was younger"',
+    'happily ever after': 'Try: "found their peace" or "built their forever"',
+    'needle in a haystack': 'Try: "impossible to find" or "lost among countless others"',
+    'cold as ice': 'Try: "frigid as winter stone" or "chilled to the bone"'
+  };
+  
+  const lowerText = poemText.toLowerCase();
+  Object.keys(cliches).forEach(cliche => {
+    if (lowerText.includes(cliche)) {
+      suggestions.push({
+        type: 'warning',
+        title: 'Cliché Detected: "' + cliche + '"',
+        message: cliches[cliche]
+      });
+    }
+  });
+  
+  // Check for word repetition with synonym suggestions
+  const wordFrequency = {};
+  words.forEach(word => {
+    const cleanWord = word.toLowerCase().replace(/[^a-z]/g, '');
+    if (cleanWord.length > 3) {
+      wordFrequency[cleanWord] = (wordFrequency[cleanWord] || 0) + 1;
+    }
+  });
+  
+  const synonymSuggestions = {
+    'said': 'whispered, murmured, declared, announced, stated',
+    'walk': 'stroll, wander, stride, amble, pace',
+    'look': 'gaze, glance, peer, stare, observe',
+    'good': 'wonderful, excellent, fine, pleasant, delightful',
+    'bad': 'terrible, awful, dreadful, poor, unpleasant',
+    'happy': 'joyful, content, cheerful, elated, pleased',
+    'sad': 'melancholy, sorrowful, dejected, downcast, blue',
+    'big': 'large, enormous, vast, immense, substantial',
+    'small': 'tiny, little, minute, petite, compact',
+    'beautiful': 'lovely, stunning, gorgeous, exquisite, radiant',
+    'dark': 'shadowy, dim, murky, obscure, gloomy',
+    'light': 'bright, luminous, radiant, gleaming, brilliant'
+  };
+  
+  Object.keys(wordFrequency).forEach(word => {
+    if (wordFrequency[word] > 3) {
+      const synonyms = synonymSuggestions[word] || 'Try using a thesaurus for alternatives';
+      suggestions.push({
+        type: 'info',
+        title: `Word Repetition: "${word}" (${wordFrequency[word]} times)`,
+        message: `Synonyms: ${synonyms}`
+      });
+    }
+  });
+  
+  // Check for abstract language with concrete alternatives
+  const abstractWords = {
+    'love': 'Show love through actions: "she braided my hair" or "he saved the last cookie for me"',
+    'hate': 'Show hatred: "his jaw clenched" or "she turned away without a word"',
+    'beauty': 'Describe what makes it beautiful: "sunlight caught in her hair" or "the curve of the mountain against sky"',
+    'happiness': 'Show happiness: "laughter bubbled up" or "I couldn\'t stop smiling"',
+    'sadness': 'Show sadness: "tears blurred my vision" or "my chest felt hollow"',
+    'anger': 'Show anger: "fists trembled" or "words sharp as broken glass"',
+    'fear': 'Show fear: "heart hammered against ribs" or "breath caught in my throat"',
+    'truth': 'Make it concrete: "the facts laid bare" or "what I saw with my own eyes"'
+  };
+  
+  let abstractCount = 0;
+  const abstractFound = [];
+  Object.keys(abstractWords).forEach(word => {
+    const regex = new RegExp('\\b' + word + '\\b', 'gi');
+    const matches = poemText.match(regex);
+    if (matches) {
+      abstractCount += matches.length;
+      abstractFound.push({word: word, suggestion: abstractWords[word]});
+    }
+  });
+  
+  if (abstractCount > 2) {
+    abstractFound.forEach(item => {
+      suggestions.push({
+        type: 'info',
+        title: `Abstract Word: "${item.word}"`,
+        message: item.suggestion
+      });
+    });
+  }
+  
+  // Check for sensory language with examples
+  const sensoryWords = ['see', 'saw', 'look', 'hear', 'heard', 'sound', 'touch', 'feel', 'felt', 'taste', 'smell', 'scent', 'aroma'];
+  let sensoryCount = 0;
+  sensoryWords.forEach(word => {
+    const regex = new RegExp('\\b' + word + '\\b', 'gi');
+    const matches = poemText.match(regex);
+    if (matches) sensoryCount += matches.length;
+  });
+  
+  if (sensoryCount === 0 && words.length > 20) {
+    suggestions.push({
+      type: 'info',
+      title: 'Add Sensory Details',
+      message: 'Engage the senses: Sight (colors, shapes), Sound (whisper, crash), Touch (rough, smooth), Taste (bitter, sweet), Smell (fresh, musty). Example: Instead of "the garden was nice" try "roses perfumed the air, their petals soft as silk"'
+    });
+  }
+  
+  // Check for passive voice
+  const passiveIndicators = ['was', 'were', 'been', 'being', 'is', 'are'];
+  let passiveCount = 0;
+  passiveIndicators.forEach(word => {
+    const regex = new RegExp('\\b' + word + '\\s+\\w+ed\\b', 'gi');
+    const matches = poemText.match(regex);
+    if (matches) passiveCount += matches.length;
+  });
+  
+  if (passiveCount > 3) {
+    suggestions.push({
+      type: 'info',
+      title: 'Passive Voice Detected',
+      message: `Found ${passiveCount} instances of passive voice. Consider active voice for stronger impact. Example: "The door was opened by wind" → "Wind opened the door"`
+    });
+  }
+  
+  // Check for weak verbs
+  const weakVerbs = ['is', 'are', 'was', 'were', 'have', 'has', 'had', 'do', 'does', 'did', 'get', 'got'];
+  let weakVerbCount = 0;
+  weakVerbs.forEach(verb => {
+    const regex = new RegExp('\\b' + verb + '\\b', 'gi');
+    const matches = poemText.match(regex);
+    if (matches) weakVerbCount += matches.length;
+  });
+  
+  if (weakVerbCount > words.length * 0.15) {
+    suggestions.push({
+      type: 'info',
+      title: 'Strengthen Your Verbs',
+      message: 'Consider replacing weak verbs (is, was, have, get) with stronger action verbs. Example: "She was angry" → "She seethed" or "Rage burned in her chest"'
+    });
+  }
+  
+  // Check for adverbs
+  const adverbCount = (poemText.match(/\b\w+ly\b/g) || []).length;
+  if (adverbCount > 5) {
+    suggestions.push({
+      type: 'info',
+      title: 'Adverb Overuse',
+      message: `Found ${adverbCount} adverbs (-ly words). Often you can replace adverb + verb with a stronger verb. Example: "walked slowly" → "trudged" or "ambled"`
+    });
+  }
+  
+  // Check for line breaks and stanza structure
+  const emptyLines = poemText.split('\n').filter(line => line.trim() === '').length;
+  if (lines.length > 10 && emptyLines === 0) {
+    suggestions.push({
+      type: 'info',
+      title: 'Consider Stanza Breaks',
+      message: 'Your poem is one continuous block. Consider breaking it into stanzas (groups of lines separated by blank lines) to give readers breathing room and emphasize shifts in thought or tone.'
+    });
+  }
+  
+  // Check for punctuation variety
+  const punctuation = {
+    periods: (poemText.match(/\./g) || []).length,
+    commas: (poemText.match(/,/g) || []).length,
+    questions: (poemText.match(/\?/g) || []).length,
+    exclamations: (poemText.match(/!/g) || []).length
+  };
+  
+  const totalPunct = punctuation.periods + punctuation.commas + punctuation.questions + punctuation.exclamations;
+  if (totalPunct > 0 && punctuation.commas / totalPunct > 0.8) {
+    suggestions.push({
+      type: 'info',
+      title: 'Punctuation Variety',
+      message: 'Your poem uses mostly commas. Try varying punctuation (periods, dashes, semicolons) to create different rhythms and pauses.'
+    });
+  }
+  
+  // Positive feedback
+  if (suggestions.length === 0) {
+    suggestions.push({
+      type: 'success',
+      title: 'Excellent Craft!',
+      message: 'Your poem shows strong writing with no major issues detected. Read it aloud to hear the rhythm and make final refinements.'
+    });
+  }
+  
+  if (words.length > 50 && sensoryCount > 3) {
+    suggestions.push({
+      type: 'success',
+      title: 'Rich Sensory Imagery',
+      message: 'Your poem engages multiple senses effectively. This creates an immersive experience for readers!'
+    });
+  }
+  
+  if (abstractCount === 0 && words.length > 30) {
+    suggestions.push({
+      type: 'success',
+      title: 'Strong Concrete Language',
+      message: 'You\'re using concrete, specific language. This makes your poem vivid and tangible!'
+    });
+  }
+  
+  displayResults(stats, suggestions);
+}
+
+function displayResults(stats, suggestions) {
+  const resultsDiv = document.getElementById('analysisResults');
+  const statsContainer = document.getElementById('statsContainer');
+  const suggestionsContainer = document.getElementById('suggestionsContainer');
+  
+  statsContainer.innerHTML = `
+    <div class="stat-box">
+      <div class="stat-number">${stats.lines}</div>
+      <div class="stat-label">Lines</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">${stats.words}</div>
+      <div class="stat-label">Words</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">${stats.characters}</div>
+      <div class="stat-label">Characters</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">${stats.avgWordsPerLine}</div>
+      <div class="stat-label">Avg/Line</div>
+    </div>
+  `;
+  
+  suggestionsContainer.innerHTML = '<h4 style="color: #b82b2f; margin-bottom: 10px; font-size: 1.1em;">Feedback</h4>';
+  suggestions.forEach(suggestion => {
+    suggestionsContainer.innerHTML += `
+      <div class="suggestion ${suggestion.type}">
+        <div class="suggestion-title">${suggestion.title}</div>
+        <div style="font-size: 0.9em;">${suggestion.message}</div>
+      </div>
+    `;
+  });
+  
+  resultsDiv.style.display = 'block';
+  resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Scrapbook element management
+let drawColor = '#000000';
+let brushSize = 3;
+let currentCanvas = null;
+let currentCtx = null;
+let isDrawing = false;
+let elementCounter = 0;
+let maxZIndex = 1;
+let draggedElement = null;
+let offsetX = 0;
+let offsetY = 0;
+
+// Insert text area
+function insertTextArea() {
+  const container = document.getElementById('scrapbookContent');
+  
+  // Remove placeholder if exists
+  const placeholder = container.querySelector('p');
+  if (placeholder && placeholder.textContent.includes('Click')) {
+    placeholder.remove();
+  }
+  
+  const wrapper = document.createElement('div');
+  wrapper.className = 'scrapbook-element';
+  wrapper.id = 'element-' + (++elementCounter);
+  wrapper.style.left = '20px';
+  wrapper.style.top = (20 + (elementCounter * 30)) + 'px';
+  wrapper.style.zIndex = ++maxZIndex;
+  
+  const textarea = document.createElement('textarea');
+  textarea.className = 'inline-textarea';
+  textarea.placeholder = 'Write your poem here...';
+  textarea.style.width = '400px';
+  
+  const controls = document.createElement('div');
+  controls.className = 'element-controls';
+  controls.innerHTML = `
+    <button class="control-btn" onclick="bringForward('${wrapper.id}')" title="Bring Forward">⬆</button>
+    <button class="control-btn" onclick="sendBackward('${wrapper.id}')" title="Send Backward">⬇</button>
+    <button class="control-btn" onclick="bringToFront('${wrapper.id}')" title="Bring to Front">⏫</button>
+    <button class="control-btn" onclick="sendToBack('${wrapper.id}')" title="Send to Back">⏬</button>
+    <button class="control-btn" onclick="deleteElement('${wrapper.id}')" title="Delete">✕</button>
+  `;
+  
+  wrapper.appendChild(textarea);
+  wrapper.appendChild(controls);
+  container.appendChild(wrapper);
+  
+  makeDraggable(wrapper);
+  textarea.focus();
+}
+
+// Insert drawing canvas
+function insertDrawingCanvas() {
+  const container = document.getElementById('scrapbookContent');
+  
+  // Remove placeholder if exists
+  const placeholder = container.querySelector('p');
+  if (placeholder && placeholder.textContent.includes('Click')) {
+    placeholder.remove();
+  }
+  
+  const wrapper = document.createElement('div');
+  wrapper.className = 'scrapbook-element';
+  wrapper.id = 'element-' + (++elementCounter);
+  wrapper.style.left = '50px';
+  wrapper.style.top = (50 + (elementCounter * 30)) + 'px';
+  wrapper.style.zIndex = ++maxZIndex;
+  
+  const canvas = document.createElement('canvas');
+  canvas.className = 'inline-canvas';
+  canvas.width = 500;
+  canvas.height = 300;
+  canvas.dataset.elementId = wrapper.id;
+  
+  const controls = document.createElement('div');
+  controls.className = 'element-controls';
+  controls.innerHTML = `
+    <button class="control-btn" onclick="bringForward('${wrapper.id}')" title="Bring Forward">⬆</button>
+    <button class="control-btn" onclick="sendBackward('${wrapper.id}')" title="Send Backward">⬇</button>
+    <button class="control-btn" onclick="bringToFront('${wrapper.id}')" title="Bring to Front">⏫</button>
+    <button class="control-btn" onclick="sendToBack('${wrapper.id}')" title="Send to Back">⏬</button>
+    <button class="control-btn" onclick="deleteElement('${wrapper.id}')" title="Delete">✕</button>
+  `;
+  
+  wrapper.appendChild(canvas);
+  wrapper.appendChild(controls);
+  container.appendChild(wrapper);
+  
+  makeDraggable(wrapper);
+  
+  // Initialize canvas for drawing
+  initCanvasDrawing(canvas);
+  
+  // Show drawing tools
+  document.getElementById('drawingTools').classList.add('active');
+  currentCanvas = canvas;
+}
+
+function initCanvasDrawing(canvas) {
+  const ctx = canvas.getContext('2d', { alpha: true });
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  
+  // Clear canvas to ensure transparency
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  canvas.addEventListener('mousedown', function(e) {
+    isDrawing = true;
+    currentCanvas = canvas;
+    currentCtx = ctx;
+    const rect = canvas.getBoundingClientRect();
+    ctx.beginPath();
+    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+  });
+  
+  canvas.addEventListener('mousemove', function(e) {
+    if (!isDrawing || currentCanvas !== canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+    
+    if (isEraserMode) {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = brushSize * 2;
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = drawColor;
+      ctx.lineWidth = brushSize;
+    }
+    
+    ctx.stroke();
+  });
+  
+  canvas.addEventListener('mouseup', function() {
+    isDrawing = false;
+  });
+  
+  canvas.addEventListener('mouseout', function() {
+    isDrawing = false;
+  });
+  
+  // Touch support
+  canvas.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    isDrawing = true;
+    currentCanvas = canvas;
+    currentCtx = ctx;
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    ctx.beginPath();
+    ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+  });
+  
+  canvas.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    if (!isDrawing || currentCanvas !== canvas) return;
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    
+    if (isEraserMode) {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = brushSize * 2;
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = drawColor;
+      ctx.lineWidth = brushSize;
+    }
+    
+    ctx.stroke();
+  });
+  
+  canvas.addEventListener('touchend', function() {
+    isDrawing = false;
+  });
+}
+
+// Insert inline image
+function insertInlineImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (!file.type.startsWith('image/')) {
+    alert('Please select an image file.');
+    return;
+  }
+  
+  const container = document.getElementById('scrapbookContent');
+  
+  // Remove placeholder if exists
+  const placeholder = container.querySelector('p');
+  if (placeholder && placeholder.textContent.includes('Click')) {
+    placeholder.remove();
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'scrapbook-element';
+    wrapper.id = 'element-' + (++elementCounter);
+    wrapper.style.left = '100px';
+    wrapper.style.top = (100 + (elementCounter * 30)) + 'px';
+    wrapper.style.zIndex = ++maxZIndex;
+    
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    img.className = 'inline-image';
+    img.style.maxWidth = '400px';
+    
+    const controls = document.createElement('div');
+    controls.className = 'element-controls';
+    controls.innerHTML = `
+      <button class="control-btn" onclick="bringForward('${wrapper.id}')" title="Bring Forward">⬆</button>
+      <button class="control-btn" onclick="sendBackward('${wrapper.id}')" title="Send Backward">⬇</button>
+      <button class="control-btn" onclick="bringToFront('${wrapper.id}')" title="Bring to Front">⏫</button>
+      <button class="control-btn" onclick="sendToBack('${wrapper.id}')" title="Send to Back">⏬</button>
+      <button class="control-btn" onclick="deleteElement('${wrapper.id}')" title="Delete">✕</button>
+    `;
+    
+    wrapper.appendChild(img);
+    wrapper.appendChild(controls);
+    container.appendChild(wrapper);
+    
+    makeDraggable(wrapper);
+  };
+  reader.readAsDataURL(file);
+  
+  // Reset file input
+  event.target.value = '';
+}
+
+// Make element draggable
+function makeDraggable(element) {
+  element.addEventListener('mousedown', function(e) {
+    // Don't drag if clicking on textarea, canvas drawing area, or control buttons
+    if (e.target.tagName === 'TEXTAREA' || 
+        e.target.tagName === 'CANVAS' || 
+        e.target.classList.contains('control-btn') ||
+        e.target.tagName === 'BUTTON') {
+      return;
+    }
+    
+    draggedElement = element;
+    element.classList.add('selected');
+    
+    const rect = element.getBoundingClientRect();
+    const containerRect = element.parentElement.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    
+    // Bring to front when dragging
+    element.style.zIndex = ++maxZIndex;
+    
+    e.preventDefault();
+  });
+}
+
+document.addEventListener('mousemove', function(e) {
+  if (draggedElement) {
+    const container = draggedElement.parentElement;
+    const containerRect = container.getBoundingClientRect();
+    
+    let newLeft = e.clientX - containerRect.left - offsetX;
+    let newTop = e.clientY - containerRect.top - offsetY;
+    
+    // Keep within bounds (optional - comment out to allow free positioning)
+    // newLeft = Math.max(0, Math.min(newLeft, containerRect.width - draggedElement.offsetWidth));
+    // newTop = Math.max(0, Math.min(newTop, containerRect.height - draggedElement.offsetHeight));
+    
+    draggedElement.style.left = newLeft + 'px';
+    draggedElement.style.top = newTop + 'px';
+  }
+});
+
+document.addEventListener('mouseup', function() {
+  if (draggedElement) {
+    draggedElement.classList.remove('selected');
+    draggedElement = null;
+  }
+});
+
+// Layering controls
+function bringForward(elementId) {
+  const element = document.getElementById(elementId);
+  const currentZ = parseInt(element.style.zIndex) || 1;
+  element.style.zIndex = currentZ + 1;
+  maxZIndex = Math.max(maxZIndex, currentZ + 1);
+}
+
+function sendBackward(elementId) {
+  const element = document.getElementById(elementId);
+  const currentZ = parseInt(element.style.zIndex) || 1;
+  if (currentZ > 1) {
+    element.style.zIndex = currentZ - 1;
+  }
+}
+
+function bringToFront(elementId) {
+  const element = document.getElementById(elementId);
+  element.style.zIndex = ++maxZIndex;
+}
+
+function sendToBack(elementId) {
+  const element = document.getElementById(elementId);
+  element.style.zIndex = 1;
+}
+
+function deleteElement(elementId) {
+  if (confirm('Delete this element?')) {
+    document.getElementById(elementId).remove();
+  }
+}
+
+// Background image management
+let currentBackground = null;
+
+function setBackgroundImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (!file.type.startsWith('image/')) {
+    alert('Please select an image file.');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const container = document.getElementById('scrapbookContent');
+    currentBackground = e.target.result;
+    container.style.backgroundImage = `url('${e.target.result}')`;
+    container.style.backgroundSize = 'cover';
+    container.style.backgroundPosition = 'center';
+    container.style.backgroundRepeat = 'no-repeat';
+    
+    // Add remove background button if not exists
+    showRemoveBackgroundButton();
+  };
+  reader.readAsDataURL(file);
+  
+  event.target.value = '';
+}
+
+function setBackgroundImageFullscreen(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (!file.type.startsWith('image/')) {
+    alert('Please select an image file.');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const container = document.getElementById('fullscreenScrapbook');
+    currentBackground = e.target.result;
+    container.style.backgroundImage = `url('${e.target.result}')`;
+    container.style.backgroundSize = 'cover';
+    container.style.backgroundPosition = 'center';
+    container.style.backgroundRepeat = 'no-repeat';
+  };
+  reader.readAsDataURL(file);
+  
+  event.target.value = '';
+}
+
+function removeBackground() {
+  const container = document.getElementById('scrapbookContent');
+  currentBackground = null;
+  container.style.backgroundImage = 'repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(184, 43, 47, 0.03) 30px, rgba(184, 43, 47, 0.03) 31px)';
+  hideRemoveBackgroundButton();
+}
+
+function showRemoveBackgroundButton() {
+  let btn = document.getElementById('removeBackgroundBtn');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'removeBackgroundBtn';
+    btn.className = 'btn-secondary-custom';
+    btn.textContent = '🗑️ Remove Background';
+    btn.onclick = removeBackground;
+    btn.style.marginLeft = '10px';
+    
+    const actionButtons = document.querySelector('.action-buttons');
+    actionButtons.appendChild(btn);
+  }
+}
+
+function hideRemoveBackgroundButton() {
+  const btn = document.getElementById('removeBackgroundBtn');
+  if (btn) {
+    btn.remove();
+  }
+}
+
+// Drawing tools
+let isEraserMode = false;
+
+function setDrawColor(color, element) {
+  drawColor = color;
+  isEraserMode = false;
+  document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+  element.classList.add('active');
+}
+
+function setBrushSize(size) {
+  brushSize = parseInt(size);
+  const display = document.getElementById('brushSizeDisplay');
+  const displayFullscreen = document.getElementById('brushSizeDisplayFullscreen');
+  if (display) display.textContent = size + 'px';
+  if (displayFullscreen) displayFullscreen.textContent = size + 'px';
+}
+
+function toggleEraser() {
+  isEraserMode = !isEraserMode;
+  if (isEraserMode) {
+    document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+  }
+}
+
+function finishDrawing() {
+  const tools = document.getElementById('drawingTools');
+  const toolsFullscreen = document.getElementById('drawingToolsFullscreen');
+  if (tools) tools.classList.remove('active');
+  if (toolsFullscreen) toolsFullscreen.classList.remove('active');
+  currentCanvas = null;
+  currentCtx = null;
+  isEraserMode = false;
+}
+
+// Fullscreen mode
+let isFullscreen = false;
+let syncInterval = null;
+
+function toggleFullscreen() {
+  const overlay = document.getElementById('fullscreenOverlay');
+  const fullscreenScrapbook = document.getElementById('fullscreenScrapbook');
+  const scrapbookContent = document.getElementById('scrapbookContent');
+  
+  if (!isFullscreen) {
+    // Enter fullscreen
+    isFullscreen = true;
+    overlay.style.display = 'block';
+    
+    // Clone all elements to fullscreen
+    fullscreenScrapbook.innerHTML = scrapbookContent.innerHTML;
+    
+    // Copy background image
+    if (currentBackground) {
+      fullscreenScrapbook.style.backgroundImage = `url('${currentBackground}')`;
+      fullscreenScrapbook.style.backgroundSize = 'cover';
+      fullscreenScrapbook.style.backgroundPosition = 'center';
+      fullscreenScrapbook.style.backgroundRepeat = 'no-repeat';
+    } else {
+      fullscreenScrapbook.style.backgroundImage = scrapbookContent.style.backgroundImage;
+    }
+    
+    // Re-initialize all interactive elements
+    fullscreenScrapbook.querySelectorAll('.scrapbook-element').forEach(element => {
+      makeDraggable(element);
+      const canvas = element.querySelector('canvas');
+      if (canvas) {
+        initCanvasDrawing(canvas);
+      }
+    });
+    
+    // Set up continuous syncing from fullscreen to normal
+    syncInterval = setInterval(syncFromFullscreen, 1000);
+    
+    // Also set up syncing from normal to fullscreen (less frequent)
+    setInterval(syncToFullscreen, 2000);
+    
+    document.body.style.overflow = 'hidden';
+  } else {
+    // Exit fullscreen - final sync
+    clearInterval(syncInterval);
+    syncFromFullscreen();
+    
+    isFullscreen = false;
+    overlay.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+}
+
+function syncToFullscreen() {
+  if (!isFullscreen) return;
+  
+  const fullscreenScrapbook = document.getElementById('fullscreenScrapbook');
+  const scrapbookContent = document.getElementById('scrapbookContent');
+  
+  // This is a lighter sync - only update text content and positions
+  // Don't rebuild everything to avoid disrupting user interaction
+  const normalElements = scrapbookContent.querySelectorAll('.scrapbook-element');
+  const fullscreenElements = fullscreenScrapbook.querySelectorAll('.scrapbook-element');
+  
+  normalElements.forEach((normalElement, index) => {
+    if (fullscreenElements[index]) {
+      const normalTextarea = normalElement.querySelector('textarea');
+      const fsTextarea = fullscreenElements[index].querySelector('textarea');
+      
+      if (normalTextarea && fsTextarea && document.activeElement !== fsTextarea) {
+        fsTextarea.value = normalTextarea.value;
+      }
+    }
+  });
+}
+
+function syncFromFullscreen() {
+  if (!isFullscreen) return;
+  
+  const fullscreenScrapbook = document.getElementById('fullscreenScrapbook');
+  const scrapbookContent = document.getElementById('scrapbookContent');
+  
+  // Get all elements from fullscreen
+  const fullscreenElements = fullscreenScrapbook.querySelectorAll('.scrapbook-element');
+  const normalElements = scrapbookContent.querySelectorAll('.scrapbook-element');
+  
+  // Sync text content
+  fullscreenElements.forEach((fsElement, index) => {
+    if (normalElements[index]) {
+      const fsTextarea = fsElement.querySelector('textarea');
+      const normalTextarea = normalElements[index].querySelector('textarea');
+      
+      if (fsTextarea && normalTextarea) {
+        normalTextarea.value = fsTextarea.value;
+      }
+      
+      // Sync position and z-index
+      normalElements[index].style.left = fsElement.style.left;
+      normalElements[index].style.top = fsElement.style.top;
+      normalElements[index].style.zIndex = fsElement.style.zIndex;
+      
+      // Sync canvas drawings
+      const fsCanvas = fsElement.querySelector('canvas');
+      const normalCanvas = normalElements[index].querySelector('canvas');
+      
+      if (fsCanvas && normalCanvas) {
+        const normalCtx = normalCanvas.getContext('2d', { alpha: true });
+        normalCtx.clearRect(0, 0, normalCanvas.width, normalCanvas.height);
+        normalCtx.drawImage(fsCanvas, 0, 0);
+      }
+    }
+  });
+  
+  // Handle new elements added in fullscreen
+  if (fullscreenElements.length > normalElements.length) {
+    // Rebuild entire content from fullscreen
+    scrapbookContent.innerHTML = fullscreenScrapbook.innerHTML;
+    scrapbookContent.querySelectorAll('.scrapbook-element').forEach(element => {
+      makeDraggable(element);
+      const canvas = element.querySelector('canvas');
+      if (canvas) {
+        initCanvasDrawing(canvas);
+      }
+    });
+  }
+  
+  // Handle deleted elements in fullscreen
+  if (fullscreenElements.length < normalElements.length) {
+    // Rebuild entire content from fullscreen
+    scrapbookContent.innerHTML = fullscreenScrapbook.innerHTML;
+    scrapbookContent.querySelectorAll('.scrapbook-element').forEach(element => {
+      makeDraggable(element);
+      const canvas = element.querySelector('canvas');
+      if (canvas) {
+        initCanvasDrawing(canvas);
+      }
+    });
+  }
+  
+  // Sync background
+  if (fullscreenScrapbook.style.backgroundImage !== scrapbookContent.style.backgroundImage) {
+    scrapbookContent.style.backgroundImage = fullscreenScrapbook.style.backgroundImage;
+    scrapbookContent.style.backgroundSize = fullscreenScrapbook.style.backgroundSize;
+    scrapbookContent.style.backgroundPosition = fullscreenScrapbook.style.backgroundPosition;
+    scrapbookContent.style.backgroundRepeat = fullscreenScrapbook.style.backgroundRepeat;
+  }
+}
+
+// Fullscreen-specific insertion functions
+function insertTextAreaFullscreen() {
+  const container = document.getElementById('fullscreenScrapbook');
+  insertTextAreaInContainer(container);
+}
+
+function insertDrawingCanvasFullscreen() {
+  const container = document.getElementById('fullscreenScrapbook');
+  insertDrawingCanvasInContainer(container);
+}
+
+function insertInlineImageFullscreen(event) {
+  const container = document.getElementById('fullscreenScrapbook');
+  insertInlineImageInContainer(event, container);
+}
+
+// Generalized insertion functions
+function insertTextAreaInContainer(container) {
+  // Remove placeholder if exists
+  const placeholder = container.querySelector('p');
+  if (placeholder && placeholder.textContent.includes('Click')) {
+    placeholder.remove();
+  }
+  
+  const wrapper = document.createElement('div');
+  wrapper.className = 'scrapbook-element';
+  wrapper.id = 'element-' + (++elementCounter);
+  wrapper.style.left = '20px';
+  wrapper.style.top = (20 + (elementCounter * 30)) + 'px';
+  wrapper.style.zIndex = ++maxZIndex;
+  
+  const textarea = document.createElement('textarea');
+  textarea.className = 'inline-textarea';
+  textarea.placeholder = 'Write your poem here...';
+  textarea.style.width = '400px';
+  
+  const controls = document.createElement('div');
+  controls.className = 'element-controls';
+  controls.innerHTML = `
+    <button class="control-btn" onclick="bringForward('${wrapper.id}')" title="Bring Forward">⬆</button>
+    <button class="control-btn" onclick="sendBackward('${wrapper.id}')" title="Send Backward">⬇</button>
+    <button class="control-btn" onclick="bringToFront('${wrapper.id}')" title="Bring to Front">⏫</button>
+    <button class="control-btn" onclick="sendToBack('${wrapper.id}')" title="Send to Back">⏬</button>
+    <button class="control-btn" onclick="deleteElement('${wrapper.id}')" title="Delete">✕</button>
+  `;
+  
+  wrapper.appendChild(textarea);
+  wrapper.appendChild(controls);
+  container.appendChild(wrapper);
+  
+  makeDraggable(wrapper);
+  textarea.focus();
+}
+
+function insertDrawingCanvasInContainer(container) {
+  // Remove placeholder if exists
+  const placeholder = container.querySelector('p');
+  if (placeholder && placeholder.textContent.includes('Click')) {
+    placeholder.remove();
+  }
+  
+  const wrapper = document.createElement('div');
+  wrapper.className = 'scrapbook-element';
+  wrapper.id = 'element-' + (++elementCounter);
+  wrapper.style.left = '50px';
+  wrapper.style.top = (50 + (elementCounter * 30)) + 'px';
+  wrapper.style.zIndex = ++maxZIndex;
+  
+  const canvas = document.createElement('canvas');
+  canvas.className = 'inline-canvas';
+  canvas.width = 500;
+  canvas.height = 300;
+  canvas.dataset.elementId = wrapper.id;
+  
+  const controls = document.createElement('div');
+  controls.className = 'element-controls';
+  controls.innerHTML = `
+    <button class="control-btn" onclick="bringForward('${wrapper.id}')" title="Bring Forward">⬆</button>
+    <button class="control-btn" onclick="sendBackward('${wrapper.id}')" title="Send Backward">⬇</button>
+    <button class="control-btn" onclick="bringToFront('${wrapper.id}')" title="Bring to Front">⏫</button>
+    <button class="control-btn" onclick="sendToBack('${wrapper.id}')" title="Send to Back">⏬</button>
+    <button class="control-btn" onclick="deleteElement('${wrapper.id}')" title="Delete">✕</button>
+  `;
+  
+  wrapper.appendChild(canvas);
+  wrapper.appendChild(controls);
+  container.appendChild(wrapper);
+  
+  makeDraggable(wrapper);
+  initCanvasDrawing(canvas);
+  
+  // Show drawing tools
+  const tools = isFullscreen ? document.getElementById('drawingToolsFullscreen') : document.getElementById('drawingTools');
+  tools.classList.add('active');
+  currentCanvas = canvas;
+}
+
+function insertInlineImageInContainer(event, container) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (!file.type.startsWith('image/')) {
+    alert('Please select an image file.');
+    return;
+  }
+  
+  // Remove placeholder if exists
+  const placeholder = container.querySelector('p');
+  if (placeholder && placeholder.textContent.includes('Click')) {
+    placeholder.remove();
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'scrapbook-element';
+    wrapper.id = 'element-' + (++elementCounter);
+    wrapper.style.left = '100px';
+    wrapper.style.top = (100 + (elementCounter * 30)) + 'px';
+    wrapper.style.zIndex = ++maxZIndex;
+    
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    img.className = 'inline-image';
+    img.style.maxWidth = '400px';
+    
+    const controls = document.createElement('div');
+    controls.className = 'element-controls';
+    controls.innerHTML = `
+      <button class="control-btn" onclick="bringForward('${wrapper.id}')" title="Bring Forward">⬆</button>
+      <button class="control-btn" onclick="sendBackward('${wrapper.id}')" title="Send Backward">⬇</button>
+      <button class="control-btn" onclick="bringToFront('${wrapper.id}')" title="Bring to Front">⏫</button>
+      <button class="control-btn" onclick="sendToBack('${wrapper.id}')" title="Send to Back">⏬</button>
+      <button class="control-btn" onclick="deleteElement('${wrapper.id}')" title="Delete">✕</button>
+    `;
+    
+    wrapper.appendChild(img);
+    wrapper.appendChild(controls);
+    container.appendChild(wrapper);
+    
+    makeDraggable(wrapper);
+  };
+  reader.readAsDataURL(file);
+  
+  // Reset file input
+  event.target.value = '';
+}
+
+// Clear scrapbook
+function clearPoem() {
+  const container = document.getElementById('scrapbookContent');
+  const hasContent = container.children.length > 0 && !container.querySelector('p[style*="color: #999"]');
+  
+  if (hasContent) {
+    if (confirm('Are you sure you want to clear all content?')) {
+      container.innerHTML = '<p style="color: #999; font-style: italic; text-align: center;">Click "Add Text", "Add Drawing", or "Add Photo" to start creating your scrapbook page!</p>';
+      document.getElementById('analysisResults').style.display = 'none';
+      document.getElementById('drawingTools').classList.remove('active');
+    }
+  }
+}
+
+// Save scrapbook page
+function savePoem() {
+  const container = document.getElementById('scrapbookContent');
+  const hasContent = container.children.length > 0 && !container.querySelector('p[style*="color: #999"]');
+  
+  if (!hasContent) {
+    alert('Please add some content before saving.');
+    return;
+  }
+  
+  const title = prompt('Enter a title for your scrapbook entry:');
+  if (!title) return;
+  
+  // Serialize the scrapbook content
+  const elements = [];
+  Array.from(container.children).forEach(child => {
+    if (child.classList.contains('scrapbook-element')) {
+      const textarea = child.querySelector('textarea');
+      const canvas = child.querySelector('canvas');
+      const img = child.querySelector('img');
+      
+      const baseData = {
+        left: child.style.left,
+        top: child.style.top,
+        zIndex: child.style.zIndex
+      };
+      
+      if (textarea) {
+        elements.push({
+          ...baseData,
+          type: 'text',
+          content: textarea.value,
+          width: textarea.style.width
+        });
+      } else if (canvas) {
+        elements.push({
+          ...baseData,
+          type: 'drawing',
+          content: canvas.toDataURL(),
+          width: canvas.width,
+          height: canvas.height
+        });
+      } else if (img) {
+        elements.push({
+          ...baseData,
+          type: 'image',
+          content: img.src,
+          maxWidth: img.style.maxWidth
+        });
+      }
+    }
+  });
+  
+  const poems = JSON.parse(localStorage.getItem('poetryScrapbook') || '[]');
+  
+  const entry = {
+    title: title,
+    date: new Date().toISOString().split('T')[0],
+    elements: elements,
+    background: currentBackground
+  };
+  
+  poems.push(entry);
+  localStorage.setItem('poetryScrapbook', JSON.stringify(poems));
+  
+  loadSavedPoems();
+  alert('Scrapbook entry saved successfully!');
+}
+
+// Load scrapbook page
+function loadPoem(index) {
+  const poems = JSON.parse(localStorage.getItem('poetryScrapbook') || '[]');
+  if (!poems[index]) return;
+  
+  const entry = poems[index];
+  const container = document.getElementById('scrapbookContent');
+  container.innerHTML = '';
+  
+  // Restore background image
+  if (entry.background) {
+    currentBackground = entry.background;
+    container.style.backgroundImage = `url('${entry.background}')`;
+    container.style.backgroundSize = 'cover';
+    container.style.backgroundPosition = 'center';
+    container.style.backgroundRepeat = 'no-repeat';
+  } else {
+    currentBackground = null;
+    container.style.backgroundImage = 'repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(184, 43, 47, 0.03) 30px, rgba(184, 43, 47, 0.03) 31px)';
+  }
+  
+  if (entry.elements && entry.elements.length > 0) {
+    entry.elements.forEach(element => {
+      if (element.type === 'text') {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'scrapbook-element';
+        wrapper.id = 'element-' + (++elementCounter);
+        wrapper.style.left = element.left || '20px';
+        wrapper.style.top = element.top || '20px';
+        wrapper.style.zIndex = element.zIndex || ++maxZIndex;
+        
+        const textarea = document.createElement('textarea');
+        textarea.className = 'inline-textarea';
+        textarea.value = element.content;
+        textarea.style.width = element.width || '400px';
+        
+        const controls = document.createElement('div');
+        controls.className = 'element-controls';
+        controls.innerHTML = `
+          <button class="control-btn" onclick="bringForward('${wrapper.id}')" title="Bring Forward">⬆</button>
+          <button class="control-btn" onclick="sendBackward('${wrapper.id}')" title="Send Backward">⬇</button>
+          <button class="control-btn" onclick="bringToFront('${wrapper.id}')" title="Bring to Front">⏫</button>
+          <button class="control-btn" onclick="sendToBack('${wrapper.id}')" title="Send to Back">⏬</button>
+          <button class="control-btn" onclick="deleteElement('${wrapper.id}')" title="Delete">✕</button>
+        `;
+        
+        wrapper.appendChild(textarea);
+        wrapper.appendChild(controls);
+        container.appendChild(wrapper);
+        makeDraggable(wrapper);
+        
+      } else if (element.type === 'drawing') {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'scrapbook-element';
+        wrapper.id = 'element-' + (++elementCounter);
+        wrapper.style.left = element.left || '50px';
+        wrapper.style.top = element.top || '50px';
+        wrapper.style.zIndex = element.zIndex || ++maxZIndex;
+        
+        const canvas = document.createElement('canvas');
+        canvas.className = 'inline-canvas';
+        canvas.width = element.width || 500;
+        canvas.height = element.height || 300;
+        
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.onload = function() {
+          ctx.drawImage(img, 0, 0);
+        };
+        img.src = element.content;
+        
+        const controls = document.createElement('div');
+        controls.className = 'element-controls';
+        controls.innerHTML = `
+          <button class="control-btn" onclick="bringForward('${wrapper.id}')" title="Bring Forward">⬆</button>
+          <button class="control-btn" onclick="sendBackward('${wrapper.id}')" title="Send Backward">⬇</button>
+          <button class="control-btn" onclick="bringToFront('${wrapper.id}')" title="Bring to Front">⏫</button>
+          <button class="control-btn" onclick="sendToBack('${wrapper.id}')" title="Send to Back">⏬</button>
+          <button class="control-btn" onclick="deleteElement('${wrapper.id}')" title="Delete">✕</button>
+        `;
+        
+        wrapper.appendChild(canvas);
+        wrapper.appendChild(controls);
+        container.appendChild(wrapper);
+        makeDraggable(wrapper);
+        
+        // Re-initialize drawing on this canvas
+        initCanvasDrawing(canvas);
+        
+      } else if (element.type === 'image') {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'scrapbook-element';
+        wrapper.id = 'element-' + (++elementCounter);
+        wrapper.style.left = element.left || '100px';
+        wrapper.style.top = element.top || '100px';
+        wrapper.style.zIndex = element.zIndex || ++maxZIndex;
+        
+        const img = document.createElement('img');
+        img.src = element.content;
+        img.className = 'inline-image';
+        img.style.maxWidth = element.maxWidth || '400px';
+        
+        const controls = document.createElement('div');
+        controls.className = 'element-controls';
+        controls.innerHTML = `
+          <button class="control-btn" onclick="bringForward('${wrapper.id}')" title="Bring Forward">⬆</button>
+          <button class="control-btn" onclick="sendBackward('${wrapper.id}')" title="Send Backward">⬇</button>
+          <button class="control-btn" onclick="bringToFront('${wrapper.id}')" title="Bring to Front">⏫</button>
+          <button class="control-btn" onclick="sendToBack('${wrapper.id}')" title="Send to Back">⏬</button>
+          <button class="control-btn" onclick="deleteElement('${wrapper.id}')" title="Delete">✕</button>
+        `;
+        
+        wrapper.appendChild(img);
+        wrapper.appendChild(controls);
+        container.appendChild(wrapper);
+        makeDraggable(wrapper);
+      }
+    });
+  }
+  
+  document.getElementById('analysisResults').style.display = 'none';
+}
+
+// Load saved poems on page load
+document.addEventListener('DOMContentLoaded', function() {
+  loadSavedPoems();
+});
+</script>
+
+</body>
+</html>
+
+
