@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Space Explorer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        #canvas {
+            display: block;
+        }
+        
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 100;
+        }
+        
+        #controls h3 {
+            margin: 0 0 10px 0;
+        }
+        
+        #controls ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <h3>3D Space Explorer</h3>
+        <p><strong>Features:</strong> Doughnut-shaped orange-glow black hole with 13 custom planets orbiting above, plus an orbiting sun and moon!</p>
+        <ul>
+            <li>W/S - Move forward/backward</li>
+            <li>A/D - Strafe left/right</li>
+            <li>Space - Move up</li>
+            <li>Shift - Move down</li>
+            <li>Left Mouse Drag - Look around</li>
+            <li>Right Mouse Drag - Pan camera</li>
+            <li>Mouse Wheel - Zoom in/out</li>
+        </ul>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+

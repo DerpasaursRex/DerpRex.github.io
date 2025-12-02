@@ -44,6 +44,78 @@
       z-index: -1;
     }
 
+    /* Animated stars */
+    .stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s ease-in-out infinite, float 6s ease-in-out infinite;
+      box-shadow: 0 0 4px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+    .star.purple {
+      background: #B26BDB;
+      box-shadow: 0 0 5px rgba(178, 107, 219, 0.9), 0 0 10px rgba(143, 0, 225, 0.6);
+    }
+
+    .star.large {
+      width: 4px;
+      height: 4px;
+      animation: twinkle 4s ease-in-out infinite, float 8s ease-in-out infinite;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 1), 0 0 12px rgba(255, 255, 255, 0.6);
+    }
+
+    .star.large.purple {
+      box-shadow: 0 0 8px rgba(178, 107, 219, 1), 0 0 15px rgba(143, 0, 225, 0.7);
+    }
+
+    @keyframes twinkle {
+      0%, 100% {
+        opacity: 0.4;
+        transform: scale(1);
+      }
+      25% {
+        opacity: 0.7;
+        transform: scale(1.1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.3);
+      }
+      75% {
+        opacity: 0.7;
+        transform: scale(1.1);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px) translateX(0px);
+      }
+      25% {
+        transform: translateY(-8px) translateX(3px);
+      }
+      50% {
+        transform: translateY(-15px) translateX(-2px);
+      }
+      75% {
+        transform: translateY(-8px) translateX(-3px);
+      }
+    }
+
     .return-home {
       position: fixed;
       top: 20px;
@@ -340,6 +412,40 @@
       display: block;
     }
 
+    .instruction-card {
+      background: linear-gradient(135deg, rgba(219, 197, 231, 0.3), rgba(201, 169, 219, 0.3));
+      border: 2px solid #8F00E1;
+      border-radius: 10px;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+      box-shadow: 0 4px 15px rgba(143, 0, 225, 0.2);
+      max-width: 400px;
+    }
+
+    .instruction-title {
+      font-weight: bold;
+      color: #68119A;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      border-bottom: 2px solid rgba(143, 0, 225, 0.3);
+      padding-bottom: 5px;
+    }
+
+    .instruction-content {
+      color: #3a2a1a;
+      font-size: 0.95em;
+      line-height: 1.6;
+    }
+
+    .instruction-content ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+
+    .instruction-content li {
+      margin: 5px 0;
+    }
+
     .btn-custom {
       background: linear-gradient(135deg, #68119A, #8F00E1);
       color: white;
@@ -459,6 +565,18 @@
       background: rgba(143, 0, 225, 0.03);
       border-radius: 5px;
       font-size: 0.9em;
+      transition: all 0.3s ease;
+    }
+
+    .tip-item[onclick] {
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .tip-item[onclick]:hover {
+      background: rgba(178, 107, 219, 0.15);
+      border-color: rgba(143, 0, 225, 0.3);
+      transform: translateX(3px);
     }
 
     .tip-title {
@@ -562,6 +680,9 @@
 <!-- Return to Home Button -->
 <a href="../index.html" class="return-home">← Return Home</a>
 
+<!-- Animated Stars -->
+<div class="stars-container" id="starsContainer"></div>
+
 <!-- Header Section -->
 <div class="header-section">
   <h1>Poetry Scrapbook</h1>
@@ -573,7 +694,7 @@
   
   <!-- Left Sidebar: Writing Tips -->
   <div class="sidebar">
-    <h2 style="font-size: 1.5em;">📚 Writing Tips</h2>
+    <h2 style="font-size: 1.5em;">📚 Writing Assistance</h2>
     
     <div class="collapsible-section">
       <div class="collapsible-header" onclick="toggleSection(this)">
@@ -591,6 +712,47 @@
         </div>
         <div style="margin-top: 10px; font-size: 0.75em; color: #666; text-align: center;">
           Click the button to get a creative writing prompt!
+        </div>
+      </div>
+    </div>
+
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleSection(this)">
+        ▶ Poem Type Instructions
+      </div>
+      <div class="collapsible-content">
+        <p style="font-size: 0.85em; margin-bottom: 10px; color: #666;">Click a poem type to add instructions to your page:</p>
+        <div class="tip-item" onclick="insertInstructions('haiku')" style="cursor: pointer;">
+          <div class="tip-title">📝 Haiku</div>
+          <p style="font-size: 0.85em;">5-7-5 syllable structure</p>
+        </div>
+        <div class="tip-item" onclick="insertInstructions('sonnet')" style="cursor: pointer;">
+          <div class="tip-title">📝 Sonnet</div>
+          <p style="font-size: 0.85em;">14 lines in iambic pentameter</p>
+        </div>
+        <div class="tip-item" onclick="insertInstructions('limerick')" style="cursor: pointer;">
+          <div class="tip-title">📝 Limerick</div>
+          <p style="font-size: 0.85em;">5 lines with AABBA rhyme</p>
+        </div>
+        <div class="tip-item" onclick="insertInstructions('freeverse')" style="cursor: pointer;">
+          <div class="tip-title">📝 Free Verse</div>
+          <p style="font-size: 0.85em;">No fixed structure</p>
+        </div>
+        <div class="tip-item" onclick="insertInstructions('villanelle')" style="cursor: pointer;">
+          <div class="tip-title">📝 Villanelle</div>
+          <p style="font-size: 0.85em;">19 lines with refrains</p>
+        </div>
+        <div class="tip-item" onclick="insertInstructions('acrostic')" style="cursor: pointer;">
+          <div class="tip-title">📝 Acrostic</div>
+          <p style="font-size: 0.85em;">First letters spell a word</p>
+        </div>
+        <div class="tip-item" onclick="insertInstructions('ballad')" style="cursor: pointer;">
+          <div class="tip-title">📝 Ballad</div>
+          <p style="font-size: 0.85em;">Narrative poem with rhythm</p>
+        </div>
+        <div class="tip-item" onclick="insertInstructions('ode')" style="cursor: pointer;">
+          <div class="tip-title">📝 Ode</div>
+          <p style="font-size: 0.85em;">Formal poem of praise</p>
         </div>
       </div>
     </div>
@@ -810,7 +972,7 @@
 
   <!-- Right Sidebar: Saved Poems -->
   <div class="sidebar">
-    <h2 style="font-size: 1.5em;">📝 Your Poems</h2>
+    <h2 style="font-size: 1.5em;">📝 Your Archive</h2>
     <div id="savedPoemsContainer" class="saved-poems">
       <p style="text-align: center; color: #666; font-style: italic; font-size: 0.9em;">No poems saved yet. Write and save your first poem!</p>
     </div>
@@ -868,8 +1030,6 @@
 <!-- Footer -->
 <div class="footer">
   <p>Catherine Ann MacDonald &copy; 2025</p>
-  <p style="font-style: italic; font-size: 0.9em;">Every word tells a story</p>
-  <p style="font-size: 0.8em; margin-top: 10px;">Poetry tips compiled from expert sources with proper attribution</p>
 </div>
 
 <script>
@@ -1947,7 +2107,7 @@ function syncFromFullscreen() {
   
   // Handle new elements added in fullscreen or deleted elements
   if (fullscreenElements.length !== normalElements.length) {
-    // Save ALL data before rebuilding (canvas AND text)
+    // Save ALL data before rebuilding (canvas, text, images, instructions)
     const elementData = [];
     fullscreenElements.forEach(fsElement => {
       const data = {};
@@ -1965,6 +2125,11 @@ function syncFromFullscreen() {
       const img = fsElement.querySelector('img');
       if (img) {
         data.imageSrc = img.src;
+      }
+      
+      const instructionCard = fsElement.querySelector('.instruction-card');
+      if (instructionCard) {
+        data.instructionHTML = instructionCard.innerHTML;
       }
       
       elementData.push(data);
@@ -1998,6 +2163,12 @@ function syncFromFullscreen() {
         const textarea = element.querySelector('textarea');
         if (textarea && elementData[index].textValue !== undefined) {
           textarea.value = elementData[index].textValue;
+        }
+        
+        // Restore instruction cards
+        const instructionCard = element.querySelector('.instruction-card');
+        if (instructionCard && elementData[index].instructionHTML) {
+          instructionCard.innerHTML = elementData[index].instructionHTML;
         }
       }
     });
@@ -2194,6 +2365,7 @@ function savePoem() {
       const textarea = child.querySelector('textarea');
       const canvas = child.querySelector('canvas');
       const img = child.querySelector('img');
+      const instructionCard = child.querySelector('.instruction-card');
       
       const baseData = {
         left: child.style.left,
@@ -2201,7 +2373,13 @@ function savePoem() {
         zIndex: child.style.zIndex
       };
       
-      if (textarea) {
+      if (instructionCard) {
+        elements.push({
+          ...baseData,
+          type: 'instruction',
+          content: instructionCard.innerHTML
+        });
+      } else if (textarea) {
         elements.push({
           ...baseData,
           type: 'text',
@@ -2332,6 +2510,33 @@ function loadPoem(index) {
         // Re-initialize drawing on this canvas
         initCanvasDrawing(canvas);
         
+      } else if (element.type === 'instruction') {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'scrapbook-element';
+        wrapper.id = 'element-' + (++elementCounter);
+        wrapper.style.left = element.left || '30px';
+        wrapper.style.top = element.top || '30px';
+        wrapper.style.zIndex = element.zIndex || ++maxZIndex;
+        
+        const card = document.createElement('div');
+        card.className = 'instruction-card';
+        card.innerHTML = element.content;
+        
+        const controls = document.createElement('div');
+        controls.className = 'element-controls';
+        controls.innerHTML = `
+          <button class="control-btn" onclick="bringForward('${wrapper.id}')" title="Bring Forward">⬆</button>
+          <button class="control-btn" onclick="sendBackward('${wrapper.id}')" title="Send Backward">⬇</button>
+          <button class="control-btn" onclick="bringToFront('${wrapper.id}')" title="Bring to Front">⏫</button>
+          <button class="control-btn" onclick="sendToBack('${wrapper.id}')" title="Send to Back">⏬</button>
+          <button class="control-btn" onclick="deleteElement('${wrapper.id}')" title="Delete">✕</button>
+        `;
+        
+        wrapper.appendChild(card);
+        wrapper.appendChild(controls);
+        container.appendChild(wrapper);
+        makeDraggable(wrapper);
+        
       } else if (element.type === 'image') {
         const wrapper = document.createElement('div');
         wrapper.className = 'scrapbook-element';
@@ -2366,9 +2571,213 @@ function loadPoem(index) {
   document.getElementById('analysisResults').style.display = 'none';
 }
 
+// Poem type instructions
+const poemInstructions = {
+  haiku: {
+    title: "Haiku",
+    structure: "3 lines: 5-7-5 syllables",
+    rules: [
+      "Line 1: 5 syllables",
+      "Line 2: 7 syllables",
+      "Line 3: 5 syllables",
+      "Often focuses on nature",
+      "Captures a single moment"
+    ],
+    example: "An old silent pond—\nA frog jumps into the pond,\nsplash! Silence again.\n— Matsuo Bashō"
+  },
+  sonnet: {
+    title: "Sonnet",
+    structure: "14 lines in iambic pentameter",
+    rules: [
+      "14 lines total",
+      "Usually 10 syllables per line",
+      "Shakespearean: ABAB CDCD EFEF GG",
+      "Petrarchan: ABBAABBA CDECDE",
+      "Volta (turn) around line 9 or 13"
+    ],
+    example: "Shall I compare thee to a summer's day?\nThou art more lovely and more temperate..."
+  },
+  limerick: {
+    title: "Limerick",
+    structure: "5 lines with AABBA rhyme",
+    rules: [
+      "Lines 1, 2, 5: Longer, rhyme together (A)",
+      "Lines 3, 4: Shorter, rhyme together (B)",
+      "Usually humorous or whimsical",
+      "Bouncy rhythm"
+    ],
+    example: "There was an Old Man with a beard,\nWho said, 'It is just as I feared!'\nTwo Owls and a Hen,\nFour Larks and a Wren,\nHave all built their nests in my beard!'"
+  },
+  freeverse: {
+    title: "Free Verse",
+    structure: "No fixed structure",
+    rules: [
+      "No required rhyme scheme",
+      "No required meter",
+      "Focus on imagery and meaning",
+      "Line breaks create rhythm",
+      "Freedom to experiment"
+    ],
+    example: "I celebrate myself, and sing myself,\nAnd what I assume you shall assume,\nFor every atom belonging to me as good belongs to you."
+  },
+  villanelle: {
+    title: "Villanelle",
+    structure: "19 lines with repeating refrains",
+    rules: [
+      "5 tercets (3-line stanzas)",
+      "1 quatrain (4-line stanza) at end",
+      "Two repeating rhymes throughout",
+      "Line 1 repeats on lines 6, 12, 18",
+      "Line 3 repeats on lines 9, 15, 19"
+    ],
+    example: "Do not go gentle into that good night,\nOld age should burn and rave at close of day;\nRage, rage against the dying of the light."
+  },
+  acrostic: {
+    title: "Acrostic",
+    structure: "First letters spell a word",
+    rules: [
+      "Choose your word or name",
+      "Each line starts with next letter",
+      "Lines can be any length",
+      "Can rhyme or not",
+      "Word is usually the subject"
+    ],
+    example: "Sunset paints the sky\nUnder clouds of gold\nMountains stand in silhouette\nMoments of peace unfold\nEvening whispers soft\nRest comes at last"
+  },
+  ballad: {
+    title: "Ballad",
+    structure: "Narrative poem, often ABAB",
+    rules: [
+      "Tells a story",
+      "Usually 4-line stanzas",
+      "ABAB or ABCB rhyme scheme",
+      "Often has a refrain",
+      "Simple language, strong rhythm"
+    ],
+    example: "It is an ancient Mariner,\nAnd he stoppeth one of three.\n'By thy long grey beard and glittering eye,\nNow wherefore stopp'st thou me?'"
+  },
+  ode: {
+    title: "Ode",
+    structure: "Formal poem of praise",
+    rules: [
+      "Addresses a person, place, or thing",
+      "Elevated, formal language",
+      "Often uses stanzas",
+      "Celebrates the subject",
+      "Can be structured or free"
+    ],
+    example: "Thou still unravish'd bride of quietness,\nThou foster-child of silence and slow time,\nSylvan historian, who canst thus express\nA flowery tale more sweetly than our rhyme"
+  }
+};
+
+// Insert instruction card
+function insertInstructions(type) {
+  const container = isFullscreen ? document.getElementById('fullscreenScrapbook') : document.getElementById('scrapbookContent');
+  insertInstructionsInContainer(type, container);
+}
+
+function insertInstructionsInContainer(type, container) {
+  const poem = poemInstructions[type];
+  if (!poem) return;
+  
+  // Remove placeholder if exists
+  const placeholder = container.querySelector('p');
+  if (placeholder && placeholder.textContent.includes('Click')) {
+    placeholder.remove();
+  }
+  
+  const wrapper = document.createElement('div');
+  wrapper.className = 'scrapbook-element';
+  wrapper.id = 'element-' + (++elementCounter);
+  wrapper.style.left = '30px';
+  wrapper.style.top = (30 + (elementCounter * 30)) + 'px';
+  wrapper.style.zIndex = ++maxZIndex;
+  
+  const card = document.createElement('div');
+  card.className = 'instruction-card';
+  
+  const rulesHtml = poem.rules.map(rule => `<li>${rule}</li>`).join('');
+  
+  card.innerHTML = `
+    <div class="instruction-title">📋 ${poem.title}</div>
+    <div class="instruction-content">
+      <p><strong>Structure:</strong> ${poem.structure}</p>
+      <p><strong>Rules:</strong></p>
+      <ul>${rulesHtml}</ul>
+      <p><strong>Example:</strong></p>
+      <p style="font-style: italic; white-space: pre-wrap; background: rgba(255, 255, 255, 0.5); padding: 10px; border-radius: 5px; font-size: 0.9em;">${poem.example}</p>
+    </div>
+  `;
+  
+  const controls = document.createElement('div');
+  controls.className = 'element-controls';
+  controls.innerHTML = `
+    <button class="control-btn" onclick="bringForward('${wrapper.id}')" title="Bring Forward">⬆</button>
+    <button class="control-btn" onclick="sendBackward('${wrapper.id}')" title="Send Backward">⬇</button>
+    <button class="control-btn" onclick="bringToFront('${wrapper.id}')" title="Bring to Front">⏫</button>
+    <button class="control-btn" onclick="sendToBack('${wrapper.id}')" title="Send to Back">⏬</button>
+    <button class="control-btn" onclick="deleteElement('${wrapper.id}')" title="Delete">✕</button>
+  `;
+  
+  wrapper.appendChild(card);
+  wrapper.appendChild(controls);
+  container.appendChild(wrapper);
+  
+  makeDraggable(wrapper);
+}
+
+// Create animated stars
+function createStars() {
+  const container = document.getElementById('starsContainer');
+  const starCount = 80; // Increased number of stars
+  
+  for (let i = 0; i < starCount; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    
+    // Random position - concentrate on sides but also some in center
+    const placement = Math.random();
+    if (placement < 0.4) {
+      // Left side (40% of stars)
+      star.style.left = Math.random() * 20 + '%';
+    } else if (placement < 0.8) {
+      // Right side (40% of stars)
+      star.style.right = Math.random() * 20 + '%';
+    } else {
+      // Center area (20% of stars, more sparse)
+      star.style.left = (20 + Math.random() * 60) + '%';
+    }
+    star.style.top = Math.random() * 100 + '%';
+    
+    // Random size - more variety
+    const sizeRandom = Math.random();
+    if (sizeRandom > 0.8) {
+      star.classList.add('large');
+      star.style.width = '5px';
+      star.style.height = '5px';
+    } else if (sizeRandom > 0.6) {
+      star.classList.add('large');
+    }
+    
+    // More purple stars
+    if (Math.random() > 0.5) {
+      star.classList.add('purple');
+    }
+    
+    // Random animation delay for variety
+    star.style.animationDelay = Math.random() * 4 + 's';
+    
+    // Random animation duration for more variety
+    star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    
+    container.appendChild(star);
+  }
+}
+
 // Load saved poems on page load
 document.addEventListener('DOMContentLoaded', function() {
   loadSavedPoems();
+  createStars();
 });
 </script>
 
