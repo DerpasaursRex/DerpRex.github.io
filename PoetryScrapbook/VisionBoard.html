@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision Board Maker</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .toolbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 15px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .toolbar h2 {
+      color: #68119A;
+      margin-right: 20px;
+      font-size: 1.3em;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #68119A, #8F00E1);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      font-size: 0.9em;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #8F00E1, #B26BDB);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(143, 0, 225, 0.4);
+    }
+
+    .btn-secondary {
+      background: #999;
+    }
+
+    .btn-secondary:hover {
+      background: #777;
+    }
+
+    .canvas-container {
+      position: absolute;
+      top: 80px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+    }
+
+    #visionBoard {
+      width: 100%;
+      height: 100%;
+      cursor: default;
+      background: white;
+      position: relative;
+    }
+
+    .board-element {
+      position: absolute;
+      cursor: move;
+      user-select: none;
+      transition: box-shadow 0.3s;
+    }
+
+    .board-element:hover {
+      box-shadow: 0 4px 20px rgba(143, 0, 225, 0.4);
+      z-index: 100;
+    }
+
+    .board-element.selected {
+      box-shadow: 0 6px 25px rgba(143, 0, 225, 0.6);
+      outline: 3px solid #8F00E1;
+    }
+
+    .board-image {
+      max-width: 300px;
+      max-height: 300px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .board-text {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid rgba(143, 0, 225, 0.3);
+      min-width: 150px;
+      max-width: 400px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .board-text textarea {
+      border: none;
+      background: transparent;
+      width: 100%;
+      min-height: 60px;
+      font-family: 'Georgia', serif;
+      font-size: 1.1em;
+      resize: none;
+      outline: none;
+      color: #333;
+    }
+
+    .board-canvas {
+      border: 2px dashed rgba(143, 0, 225, 0.5);
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .element-controls {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      display: flex;
+      gap: 5px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .board-element:hover .element-controls {
+      opacity: 1;
+    }
+
+    .control-btn {
+      background: #8F00E1;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .control-btn:hover {
+      background: #68119A;
+    }
+
+    .drawing-tools {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(143, 0, 225, 0.3);
+      z-index: 999;
+    }
+
+    .drawing-tools.active {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.1);
+    }
+
+    .color-swatch.active {
+      border: 3px solid #8F00E1;
+      transform: scale(1.15);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <h2>🎨 Vision Board Maker</h2>
+  <button class="btn" onclick="addText()">📝 Add Text</button>
+  <button class="btn" onclick="addDrawing()">🎨 Add Drawing</button>
+  <button class="btn" onclick="document.getElementById('imageUpload').click()">📷 Add Image</button>
+  <button class="btn" onclick="saveBoard()">💾 Save Board</button>
+  <button class="btn-secondary btn" onclick="clearBoard()">🗑️ Clear All</button>
+  <input type="file" id="imageUpload" accept="image/*" style="display: none;" multiple onchange="addImages(event)">
+</div>
+
+<!-- Vision Board Canvas -->
+<div class="canvas-container">
+  <div id="visionBoard"></div>
+</div>
+
+<!-- Drawing Tools -->
+<div id="drawingTools" class="drawing-tools">
+  <span style="font-weight: bold; color: #68119A;">Colors:</span>
+  <div style="display: flex; gap: 5px;">
+    <div class="color-swatch active" style="background: #000000;" onclick="setColor('#000000', this)"></div>
+    <div class="color-swatch" style="background: #8F00E1;" onclick="setColor('#8F00E1', this)"></div>
+    <div class="color-swatch" style="background: #B26BDB;" onclick="setColor('#B26BDB', this)"></div>
+    <div class="color-swatch" style="background: #FFD700;" onclick="setColor('#FFD700', this)"></div>
+    <div class="color-swatch" style="background: #FF69B4;" onclick="setColor('#FF69B4', this)"></div>
+    <div class="color-swatch" style="background: #00CED1;" onclick="setColor('#00CED1', this)"></div>
+    <div class="color-swatch" style="background: #32CD32;" onclick="setColor('#32CD32', this)"></div>
+    <div class="color-swatch" style="background: #FF6347;" onclick="setColor('#FF6347', this)"></div>
+  </div>
+  <span style="font-weight: bold; color: #68119A;">Size:</span>
+  <input type="range" id="brushSize" min="1" max="15" value="3" oninput="updateBrushSize(this.value)">
+  <span id="brushSizeDisplay">3px</span>
+  <button class="btn-secondary btn" onclick="finishDrawing()">✓ Done</button>
+</div>
+
+<script>
+let elementCounter = 0;
+let maxZIndex = 1;
+let draggedElement = null;
+let offsetX = 0;
+let offsetY = 0;
+
+// Drawing variables
+let currentCanvas = null;
+let isDrawing = false;
+let drawColor = '#000000';
+let brushSize = 3;
+
+// Add text element
+function addText() {
+  const board = document.getElementById('visionBoard');
+  const wrapper = document.createElement('div');
+  wrapper.className = 'board-element';
+  wrapper.id = 'element-' + (++elementCounter);
+  wrapper.style.left = (100 + Math.random() * 200) + 'px';
+  wrapper.style.top = (100 + Math.random() * 200) + 'px';
+  wrapper.style.zIndex = ++maxZIndex;
+  
+  const textBox = document.createElement('div');
+  textBox.className = 'board-text';
+  
+  const textarea = document.createElement('textarea');
+  textarea.placeholder = 'Write your vision...';
+  textarea.style.width = '250px';
+  
+  const controls = document.createElement('div');
+  controls.className = 'element-controls';
+  controls.innerHTML = `
+    <button class="control-btn" onclick="deleteElement('${wrapper.id}')">✕</button>
+  `;
+  
+  textBox.appendChild(textarea);
+  wrapper.appendChild(textBox);
+  wrapper.appendChild(controls);
+  board.appendChild(wrapper);
+  
+  makeDraggable(wrapper);
+  textarea.focus();
+}
+
+// Add drawing canvas
+function addDrawing() {
+  const board = document.getElementById('visionBoard');
+  const wrapper = document.createElement('div');
+  wrapper.className = 'board-element';
+  wrapper.id = 'element-' + (++elementCounter);
+  wrapper.style.left = (150 + Math.random() * 200) + 'px';
+  wrapper.style.top = (150 + Math.random() * 200) + 'px';
+  wrapper.style.zIndex = ++maxZIndex;
+  
+  const canvas = document.createElement('canvas');
+  canvas.className = 'board-canvas';
+  canvas.width = 400;
+  canvas.height = 300;
+  
+  const controls = document.createElement('div');
+  controls.className = 'element-controls';
+  controls.innerHTML = `
+    <button class="control-btn" onclick="deleteElement('${wrapper.id}')">✕</button>
+  `;
+  
+  wrapper.appendChild(canvas);
+  wrapper.appendChild(controls);
+  board.appendChild(wrapper);
+  
+  makeDraggable(wrapper);
+  initCanvas(canvas);
+  
+  // Show drawing tools
+  document.getElementById('drawingTools').classList.add('active');
+  currentCanvas = canvas;
+}
+
+// Initialize canvas for drawing
+function initCanvas(canvas) {
+  const ctx = canvas.getContext('2d', { alpha: true });
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  
+  canvas.addEventListener('mousedown', function(e) {
+    if (e.target !== canvas) return;
+    isDrawing = true;
+    currentCanvas = canvas;
+    const rect = canvas.getBoundingClientRect();
+    ctx.beginPath();
+    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    e.stopPropagation();
+  });
+  
+  canvas.addEventListener('mousemove', function(e) {
+    if (!isDrawing || currentCanvas !== canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+    ctx.strokeStyle = drawColor;
+    ctx.lineWidth = brushSize;
+    ctx.stroke();
+    e.stopPropagation();
+  });
+  
+  canvas.addEventListener('mouseup', function() {
+    isDrawing = false;
+  });
+}
+
+// Add images
+function addImages(event) {
+  const files = event.target.files;
+  if (!files.length) return;
+  
+  const board = document.getElementById('visionBoard');
+  
+  Array.from(files).forEach((file, index) => {
+    if (!file.type.startsWith('image/')) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'board-element';
+      wrapper.id = 'element-' + (++elementCounter);
+      wrapper.style.left = (50 + index * 50 + Math.random() * 100) + 'px';
+      wrapper.style.top = (100 + index * 40 + Math.random() * 100) + 'px';
+      wrapper.style.zIndex = ++maxZIndex;
+      
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.className = 'board-image';
+      
+      const controls = document.createElement('div');
+      controls.className = 'element-controls';
+      controls.innerHTML = `
+        <button class="control-btn" onclick="deleteElement('${wrapper.id}')">✕</button>
+      `;
+      
+      wrapper.appendChild(img);
+      wrapper.appendChild(controls);
+      board.appendChild(wrapper);
+      
+      makeDraggable(wrapper);
+    };
+    reader.readAsDataURL(file);
+  });
+  
+  event.target.value = '';
+}
+
+// Make element draggable
+function makeDraggable(element) {
+  element.addEventListener('mousedown', function(e) {
+    if (e.target.tagName === 'TEXTAREA' || 
+        e.target.tagName === 'CANVAS' || 
+        e.target.classList.contains('control-btn') ||
+        e.target.tagName === 'BUTTON') {
+      return;
+    }
+    
+    draggedElement = element;
+    element.classList.add('selected');
+    element.style.zIndex = ++maxZIndex;
+    
+    const rect = element.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    
+    e.preventDefault();
+  });
+}
+
+document.addEventListener('mousemove', function(e) {
+  if (draggedElement) {
+    const board = document.getElementById('visionBoard');
+    const boardRect = board.getBoundingClientRect();
+    
+    let newLeft = e.clientX - boardRect.left - offsetX;
+    let newTop = e.clientY - boardRect.top - offsetY;
+    
+    draggedElement.style.left = newLeft + 'px';
+    draggedElement.style.top = newTop + 'px';
+  }
+});
+
+document.addEventListener('mouseup', function() {
+  if (draggedElement) {
+    draggedElement.classList.remove('selected');
+    draggedElement = null;
+  }
+  if (!isDrawing) return;
+  isDrawing = false;
+});
+
+// Delete element
+function deleteElement(id) {
+  const element = document.getElementById(id);
+  if (element && confirm('Delete this element?')) {
+    element.remove();
+  }
+}
+
+// Drawing tools
+function setColor(color, element) {
+  drawColor = color;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+  element.classList.add('active');
+}
+
+function updateBrushSize(size) {
+  brushSize = parseInt(size);
+  document.getElementById('brushSizeDisplay').textContent = size + 'px';
+}
+
+function finishDrawing() {
+  document.getElementById('drawingTools').classList.remove('active');
+  currentCanvas = null;
+}
+
+// Save board
+function saveBoard() {
+  const board = document.getElementById('visionBoard');
+  
+  // Use html2canvas or similar library would be ideal
+  // For now, we'll save the data structure
+  const elements = [];
+  board.querySelectorAll('.board-element').forEach(element => {
+    const data = {
+      left: element.style.left,
+      top: element.style.top,
+      zIndex: element.style.zIndex
+    };
+    
+    const img = element.querySelector('img');
+    const textarea = element.querySelector('textarea');
+    const canvas = element.querySelector('canvas');
+    
+    if (img) {
+      data.type = 'image';
+      data.src = img.src;
+    } else if (textarea) {
+      data.type = 'text';
+      data.content = textarea.value;
+    } else if (canvas) {
+      data.type = 'drawing';
+      data.content = canvas.toDataURL();
+    }
+    
+    elements.push(data);
+  });
+  
+  // Save to localStorage
+  localStorage.setItem('visionBoard', JSON.stringify(elements));
+  alert('Vision board saved! It will load automatically next time.');
+}
+
+// Load board
+function loadBoard() {
+  const saved = localStorage.getItem('visionBoard');
+  if (!saved) return;
+  
+  const elements = JSON.parse(saved);
+  const board = document.getElementById('visionBoard');
+  
+  elements.forEach(data => {
+    if (data.type === 'text') {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'board-element';
+      wrapper.id = 'element-' + (++elementCounter);
+      wrapper.style.left = data.left;
+      wrapper.style.top = data.top;
+      wrapper.style.zIndex = data.zIndex || ++maxZIndex;
+      
+      const textBox = document.createElement('div');
+      textBox.className = 'board-text';
+      
+      const textarea = document.createElement('textarea');
+      textarea.value = data.content;
+      textarea.style.width = '250px';
+      
+      const controls = document.createElement('div');
+      controls.className = 'element-controls';
+      controls.innerHTML = `
+        <button class="control-btn" onclick="deleteElement('${wrapper.id}')">✕</button>
+      `;
+      
+      textBox.appendChild(textarea);
+      wrapper.appendChild(textBox);
+      wrapper.appendChild(controls);
+      board.appendChild(wrapper);
+      
+      makeDraggable(wrapper);
+      
+    } else if (data.type === 'image') {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'board-element';
+      wrapper.id = 'element-' + (++elementCounter);
+      wrapper.style.left = data.left;
+      wrapper.style.top = data.top;
+      wrapper.style.zIndex = data.zIndex || ++maxZIndex;
+      
+      const img = document.createElement('img');
+      img.src = data.src;
+      img.className = 'board-image';
+      
+      const controls = document.createElement('div');
+      controls.className = 'element-controls';
+      controls.innerHTML = `
+        <button class="control-btn" onclick="deleteElement('${wrapper.id}')">✕</button>
+      `;
+      
+      wrapper.appendChild(img);
+      wrapper.appendChild(controls);
+      board.appendChild(wrapper);
+      
+      makeDraggable(wrapper);
+      
+    } else if (data.type === 'drawing') {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'board-element';
+      wrapper.id = 'element-' + (++elementCounter);
+      wrapper.style.left = data.left;
+      wrapper.style.top = data.top;
+      wrapper.style.zIndex = data.zIndex || ++maxZIndex;
+      
+      const canvas = document.createElement('canvas');
+      canvas.className = 'board-canvas';
+      canvas.width = 400;
+      canvas.height = 300;
+      
+      const ctx = canvas.getContext('2d', { alpha: true });
+      const img = new Image();
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = data.content;
+      
+      const controls = document.createElement('div');
+      controls.className = 'element-controls';
+      controls.innerHTML = `
+        <button class="control-btn" onclick="deleteElement('${wrapper.id}')">✕</button>
+      `;
+      
+      wrapper.appendChild(canvas);
+      wrapper.appendChild(controls);
+      board.appendChild(wrapper);
+      
+      makeDraggable(wrapper);
+      initCanvas(canvas);
+    }
+  });
+}
+
+// Clear board
+function clearBoard() {
+  if (confirm('Clear entire vision board?')) {
+    document.getElementById('visionBoard').innerHTML = '';
+    localStorage.removeItem('visionBoard');
+  }
+}
+
+// Load saved board on page load
+window.onload = function() {
+  loadBoard();
+};
+</script>
+
+</body>
+</html>
+

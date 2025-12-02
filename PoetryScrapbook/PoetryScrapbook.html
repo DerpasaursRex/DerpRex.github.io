@@ -1121,9 +1121,11 @@
           <p><a href="https://www.poetryfoundation.org/" target="_blank" style="color: #68119A;">Poetry Foundation</a></p>
           <p><a href="https://www.writersdigest.com/poetry" target="_blank" style="color: #68119A;">Writer's Digest</a></p>
           <p><a href="https://prowritingaid.com/write-poetry" target="_blank" style="color: #68119A;">ProWritingAid</a></p>
-          <div style="margin-top: 15px; padding: 10px; background: rgba(178, 107, 219, 0.1); border: 2px solid rgba(143, 0, 225, 0.3); border-radius: 8px; cursor: pointer; transition: all 0.3s ease;" onclick="openVisionBoard()" onmouseover="this.style.background='rgba(178, 107, 219, 0.2)'" onmouseout="this.style.background='rgba(178, 107, 219, 0.1)'">
-            <div style="font-weight: bold; color: #68119A; margin-bottom: 5px;">🎨 Vision Board Maker</div>
-            <div style="font-size: 0.8em; color: #666;">Create visual inspiration boards</div>
+          <div style="margin-top: 15px;">
+            <a href="VisionBoard.html" target="_blank" style="display: block; padding: 10px; background: rgba(178, 107, 219, 0.1); border: 2px solid rgba(143, 0, 225, 0.3); border-radius: 8px; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(178, 107, 219, 0.2)'" onmouseout="this.style.background='rgba(178, 107, 219, 0.1)'">
+              <div style="font-weight: bold; color: #68119A; margin-bottom: 5px;">🎨 Vision Board Maker</div>
+              <div style="font-size: 0.8em; color: #666;">Create visual inspiration boards</div>
+            </a>
           </div>
         </div>
       </div>
@@ -1270,14 +1272,6 @@
       <span style="position: absolute; bottom: -8px; left: -8px; font-size: 16px; color: #B26BDB;">✦</span>
       <span style="position: absolute; bottom: -8px; right: -8px; font-size: 16px; color: #FFD700;">★</span>
     </div>
-  </div>
-</div>
-
-<!-- Vision Board Modal -->
-<div id="visionBoardModal" class="vision-board-modal">
-  <div class="vision-board-container">
-    <button class="vision-board-close" onclick="closeVisionBoard()">✕ Close</button>
-    <iframe id="visionBoardIframe" class="vision-board-iframe" src="" title="Vision Board Maker"></iframe>
   </div>
 </div>
 
@@ -3095,8 +3089,8 @@ function openVisionBoard() {
   const modal = document.getElementById('visionBoardModal');
   const iframe = document.getElementById('visionBoardIframe');
   
-  // Use a popular free vision board maker
-  iframe.src = 'https://www.canva.com/create/mood-boards/';
+  // Use our custom vision board maker
+  iframe.src = 'VisionBoard.html';
   
   modal.style.display = 'block';
   document.body.style.overflow = 'hidden';
