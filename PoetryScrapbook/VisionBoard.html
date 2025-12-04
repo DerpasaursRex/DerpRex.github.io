@@ -8,11 +8,43 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  background: #f5f7f6;
+  background: linear-gradient(135deg, #f4e8d0 0%, #ede3cf 25%, #f2e9d5 50%, #ebe1ca 75%, #f0e6d2 100%);
+  background-size: 400% 400%;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  color: #2d3436;
+  color: #5d4e37;
   overflow: hidden;
   height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(0deg, rgba(139,119,101,0.03) 0px, transparent 1px, transparent 2px, rgba(139,119,101,0.03) 3px),
+    repeating-linear-gradient(90deg, rgba(139,119,101,0.03) 0px, transparent 1px, transparent 2px, rgba(139,119,101,0.03) 3px),
+    radial-gradient(circle at 20% 30%, rgba(139,119,101,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(160,130,95,0.05) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(139,119,101,0.04) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+body::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" /></filter><rect width="200" height="200" filter="url(%23noise)" opacity="0.08"/></svg>');
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: multiply;
 }
 
 /* Minimal Toolbar */
@@ -20,25 +52,53 @@ body {
   position: fixed;
   top: 20px;
   left: 20px;
-  background: white;
-  padding: 8px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(240, 249, 244, 0.98));
+  backdrop-filter: blur(10px);
+  padding: 10px;
   display: flex;
   gap: 6px;
-  border-radius: 12px;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  box-shadow: 
+    0 4px 20px rgba(139, 119, 101, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 0 0 1px rgba(43, 221, 39, 0.1);
+  border: 2px solid rgba(43, 221, 39, 0.2);
   z-index: 3000;
   transition: all 0.3s ease;
+  position: relative;
+}
+
+.toolbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(43, 221, 39, 0.02) 10px,
+    rgba(43, 221, 39, 0.02) 20px
+  );
+  border-radius: 12px;
+  pointer-events: none;
 }
 
 .toolbar:hover {
-  box-shadow: 0 4px 30px rgba(43, 221, 39, 0.15);
+  box-shadow: 
+    0 6px 30px rgba(43, 221, 39, 0.25),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 0 0 2px rgba(43, 221, 39, 0.3);
+  transform: translateY(-2px);
 }
 
 .tool-btn {
   min-width: 70px;
   height: 38px;
-  background: transparent;
-  border: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(248,252,249,0.8));
+  border: 1px solid rgba(43, 221, 39, 0.15);
   border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
@@ -49,59 +109,128 @@ body {
   justify-content: center;
   padding: 0 12px;
   color: #2d3436;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(139, 119, 101, 0.08);
+}
+
+.tool-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(43, 221, 39, 0.05), transparent 70%);
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 
 .tool-btn:hover {
-  background: #f0f9f4;
+  background: linear-gradient(135deg, #f0f9f4, #e8f8ec);
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(43, 221, 39, 0.2);
+  border-color: rgba(43, 221, 39, 0.3);
+}
+
+.tool-btn:hover::after {
+  opacity: 1;
 }
 
 .tool-btn.active {
   background: linear-gradient(135deg, #2bdd27, #5dff5a);
-  box-shadow: 0 4px 12px rgba(43, 221, 39, 0.3);
+  box-shadow: 
+    0 4px 12px rgba(43, 221, 39, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.5) inset;
   color: white;
+  border-color: #2bdd27;
+  font-weight: 600;
 }
 
-/* Color & Size Controls */
+.tool-btn.active::after {
+  opacity: 0;
+}
+
+/* Color & Size Controls - BOTTOM LEFT CORNER */
 .controls {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  background: white;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  position: fixed !important;
+  bottom: 30px !important;
+  left: 30px !important;
+  top: auto !important;
+  right: auto !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(240, 249, 244, 0.98));
+  backdrop-filter: blur(10px);
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 
+    0 4px 20px rgba(139, 119, 101, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 0 0 1px rgba(43, 221, 39, 0.1);
+  border: 2px solid rgba(43, 221, 39, 0.2);
   z-index: 3000;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  width: 200px;
+  gap: 14px;
+  width: 220px;
+}
+
+.controls::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(180deg, rgba(43, 221, 39, 0.08), transparent);
+  border-radius: 12px 12px 0 0;
+  pointer-events: none;
 }
 
 .control-label {
   font-size: 11px;
-  font-weight: 600;
-  color: #636e72;
+  font-weight: 700;
+  color: #2bdd27;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   margin-bottom: 6px;
+  text-shadow: 0 1px 2px rgba(43, 221, 39, 0.1);
 }
 
 .color-picker-btn {
   width: 100%;
-  height: 50px;
-  border: 2px solid #e1e8e5;
-  border-radius: 8px;
+  height: 70px;
+  border: 3px solid rgba(43, 221, 39, 0.3);
+  border-radius: 10px;
   cursor: pointer;
   background: #000;
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.1) inset;
+}
+
+.color-picker-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(43, 221, 39, 0.15), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 .color-picker-btn:hover {
   border-color: #2bdd27;
-  transform: scale(1.02);
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(43, 221, 39, 0.3);
+}
+
+.color-picker-btn:hover::before {
+  opacity: 1;
 }
 
 .color-picker-btn::after {
@@ -142,9 +271,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 .size-display {
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   color: #2bdd27;
-  font-weight: 600;
+  font-weight: 700;
+  background: linear-gradient(135deg, rgba(43, 221, 39, 0.1), rgba(93, 255, 90, 0.1));
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px dashed rgba(43, 221, 39, 0.3);
+  text-shadow: 0 1px 2px rgba(43, 221, 39, 0.2);
 }
 
 /* Action Buttons */
@@ -158,26 +292,64 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .action-btn {
-  background: white;
-  border: none;
-  padding: 12px 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 252, 249, 0.98));
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(43, 221, 39, 0.15);
+  padding: 12px 24px;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    0 4px 12px rgba(139, 119, 101, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.5) inset;
   transition: all 0.2s ease;
-  color: #2d3436;
+  color: #5d4e37;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(43, 221, 39, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.action-btn:hover::before {
+  left: 100%;
 }
 
 .action-btn:hover {
-  box-shadow: 0 4px 20px rgba(43, 221, 39, 0.15);
+  box-shadow: 
+    0 6px 20px rgba(43, 221, 39, 0.25),
+    0 1px 0 rgba(255, 255, 255, 0.7) inset;
   transform: translateY(-2px);
+  border-color: rgba(43, 221, 39, 0.4);
 }
 
 .action-btn.primary {
-  background: linear-gradient(135deg, #2bdd27, #5dff5a);
+  background: linear-gradient(135deg, #2bdd27, #5dff5a, #2bdd27);
+  background-size: 200% 200%;
   color: white;
+  border-color: #2bdd27;
+  box-shadow: 
+    0 4px 16px rgba(43, 221, 39, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.3) inset;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.action-btn.primary:hover {
+  box-shadow: 0 6px 24px rgba(43, 221, 39, 0.6);
 }
 
 /* Canvas */
@@ -191,12 +363,27 @@ input[type="range"]::-webkit-slider-thumb:hover {
   align-items: center;
   justify-content: center;
   padding: 100px;
+  z-index: 10;
 }
 
 #drawing-canvas {
   background: white;
   border-radius: 4px;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+  box-shadow: 
+    0 4px 6px rgba(139, 119, 101, 0.1),
+    0 8px 20px rgba(139, 119, 101, 0.15),
+    0 12px 40px rgba(139, 119, 101, 0.1),
+    inset 0 1px 0 rgba(255,255,255,0.5);
+  cursor: crosshair;
+  position: relative;
+}
+
+.drawing-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   cursor: crosshair;
 }
 
@@ -417,6 +604,216 @@ input[type="file"] {
   animation: fadeIn 0.3s ease;
 }
 
+/* Layers Panel */
+.layers-panel {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 280px;
+  max-height: 400px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(240, 249, 244, 0.98));
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+  box-shadow: 
+    0 4px 20px rgba(139, 119, 101, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 0 0 1px rgba(43, 221, 39, 0.1);
+  border: 2px solid rgba(43, 221, 39, 0.2);
+  z-index: 3000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.layers-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 15px,
+      rgba(43, 221, 39, 0.02) 15px,
+      rgba(43, 221, 39, 0.02) 30px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.layers-header {
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #2bdd27, #5dff5a, #2bdd27);
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(43, 221, 39, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.layer-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.layer-header-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.layer-header-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.layer-count {
+  background: rgba(255,255,255,0.2);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+.layers-list {
+  overflow-y: auto;
+  max-height: 320px;
+  padding: 4px;
+}
+
+.layer-item {
+  padding: 10px 12px;
+  margin: 2px 0;
+  border-radius: 8px;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.15s ease;
+  font-size: 13px;
+  color: #5d4e37;
+  user-select: none;
+  position: relative;
+}
+
+.layer-item:active {
+  cursor: grabbing;
+}
+
+.layer-item:hover {
+  background: rgba(43, 221, 39, 0.08);
+}
+
+.layer-item.selected {
+  background: rgba(43, 221, 39, 0.15);
+  font-weight: 600;
+}
+
+.layer-item.dragging {
+  opacity: 0.5;
+  background: rgba(43, 221, 39, 0.2);
+}
+
+.layer-item.drag-over {
+  border-top: 3px solid #2bdd27;
+}
+
+.layer-move-handle {
+  font-size: 14px;
+  color: #999;
+  cursor: grab;
+  padding: 0 4px;
+}
+
+.layer-move-handle:active {
+  cursor: grabbing;
+}
+
+.layer-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.layer-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.layer-visibility {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #e1e8e5;
+  background: white;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  color: #2bdd27;
+}
+
+.layer-visibility:hover {
+  background: #f0f9f4;
+  border-color: #2bdd27;
+}
+
+.layer-visibility.hidden {
+  color: #999;
+  background: #f5f5f5;
+}
+
+.layer-delete {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  color: #999;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.layer-delete:hover {
+  color: #ff6b6b;
+  transform: scale(1.1);
+}
+
+.layers-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.layers-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.layers-list::-webkit-scrollbar-thumb {
+  background: rgba(43, 221, 39, 0.2);
+  border-radius: 3px;
+}
+
+.layers-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(43, 221, 39, 0.3);
+}
+
 /* Text Formatting Toolbar */
 .text-format-toolbar {
   position: fixed;
@@ -536,6 +933,19 @@ input[type="file"] {
 <!-- Hidden File Input -->
 <input type="file" id="imageUpload" accept="image/*" onchange="addImageCard(event)">
 
+<!-- Layers Panel -->
+<div class="layers-panel">
+  <div class="layers-header">
+    <span>Layers <span class="layer-count" id="layerCount">1</span></span>
+    <div class="layer-actions">
+      <button class="layer-header-btn" onclick="addNewDrawingLayer()" title="Add New Layer">+ Layer</button>
+      <button class="layer-header-btn" onclick="bringToFront()" title="Bring to Front">↑</button>
+      <button class="layer-header-btn" onclick="sendToBack()" title="Send to Back">↓</button>
+    </div>
+  </div>
+  <div class="layers-list" id="layersList"></div>
+</div>
+
 <!-- Text Formatting Toolbar -->
 <div class="text-format-toolbar" id="textFormatToolbar">
   <div class="format-group">
@@ -592,6 +1002,10 @@ let selectedCard = null;
 let activeTextarea = null;
 let elementId = 0;
 
+let drawingLayers = [];
+let activeLayerIndex = 0;
+let layerIdCounter = 1;
+
 let history = [];
 let historyIndex = -1;
 
@@ -604,10 +1018,23 @@ let selectedImageData = null;
 let lassoPath = [];
 let freeLassoCanvas = null;
 
-// Initialize
+// Initialize - Create base layer (Layer 0)
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+drawingLayers.push({
+  id: 0,
+  name: 'Layer 0',
+  canvas: canvas,
+  ctx: ctx,
+  visible: true,
+  locked: false,
+  type: 'drawing'
+});
+
+attachDrawingEvents();
 saveHistory();
+updateLayersPanel();
 
 // ========== SMOOTH TOOL SWITCHING ==========
 function setTool(tool) {
@@ -617,14 +1044,20 @@ function setTool(tool) {
     btn.classList.toggle('active', btn.dataset.tool === tool);
   });
   
-  if (tool === 'select') canvas.style.cursor = 'default';
-  else if (tool === 'boxLasso' || tool === 'freeLasso') canvas.style.cursor = 'crosshair';
-  else canvas.style.cursor = 'crosshair';
+  // Update cursor for all canvases
+  const allCanvases = [canvas, ...drawingLayers.map(l => l.canvas).filter(c => c !== canvas)];
+  allCanvases.forEach(c => {
+    if (tool === 'select') c.style.cursor = 'default';
+    else if (tool === 'boxLasso' || tool === 'freeLasso') c.style.cursor = 'crosshair';
+    else c.style.cursor = 'crosshair';
+  });
   
   // Deselect when switching tools
   if (tool !== 'select' && selectedCard) {
     deselectCard();
   }
+  
+  console.log('Tool switched to:', tool);
 }
 
 function changeBrushSize(size) {
@@ -637,16 +1070,32 @@ function changeColor(color) {
   document.getElementById('colorDisplay').style.background = color;
 }
 
-// ========== CANVAS DRAWING - SMOOTH ==========
-canvas.addEventListener('mousedown', startDraw);
-canvas.addEventListener('mousemove', draw);
-canvas.addEventListener('mouseup', stopDraw);
-canvas.addEventListener('mouseleave', stopDraw);
+// ========== CANVAS DRAWING - SIMPLIFIED & FIXED ==========
+function getActiveCanvas() {
+  return drawingLayers[activeLayerIndex]?.canvas || canvas;
+}
+
+function getActiveContext() {
+  return drawingLayers[activeLayerIndex]?.ctx || ctx;
+}
+
+// Simplified event system - works on all canvases
+function attachDrawingEvents() {
+  // Base canvas events
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stopDraw);
+  canvas.addEventListener('mouseleave', stopDraw);
+}
 
 function startDraw(e) {
   if (currentTool === 'select') return;
   
-  const rect = canvas.getBoundingClientRect();
+  console.log('Drawing started with tool:', currentTool, 'on layer:', activeLayerIndex);
+  
+  const activeCanvas = getActiveCanvas();
+  const activeCtx = getActiveContext();
+  const rect = activeCanvas.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
   
@@ -669,18 +1118,25 @@ function startDraw(e) {
   }
   
   isDrawing = true;
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.lineWidth = brushSize;
-  ctx.strokeStyle = currentTool === 'eraser' ? 'white' : currentColor;
+  activeCtx.beginPath();
+  activeCtx.moveTo(x, y);
+  activeCtx.lineCap = 'round';
+  activeCtx.lineJoin = 'round';
+  activeCtx.lineWidth = brushSize;
+  activeCtx.strokeStyle = currentTool === 'eraser' ? 'rgba(0,0,0,0)' : currentColor;
+  if (currentTool === 'eraser') {
+    activeCtx.globalCompositeOperation = 'destination-out';
+  } else {
+    activeCtx.globalCompositeOperation = 'source-over';
+  }
 }
 
 function draw(e) {
   if (!isDrawing) return;
   
-  const rect = canvas.getBoundingClientRect();
+  const activeCanvas = getActiveCanvas();
+  const activeCtx = getActiveContext();
+  const rect = activeCanvas.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
   
@@ -690,14 +1146,14 @@ function draw(e) {
       const radius = Math.random() * brushSize * 0.5;
       const px = x + Math.cos(angle) * radius;
       const py = y + Math.sin(angle) * radius;
-      ctx.fillStyle = currentColor;
-      ctx.globalAlpha = 0.3;
-      ctx.fillRect(px, py, 2, 2);
-      ctx.globalAlpha = 1;
+      activeCtx.fillStyle = currentColor;
+      activeCtx.globalAlpha = 0.3;
+      activeCtx.fillRect(px, py, 2, 2);
+      activeCtx.globalAlpha = 1;
     }
   } else {
-    ctx.lineTo(x, y);
-    ctx.stroke();
+    activeCtx.lineTo(x, y);
+    activeCtx.stroke();
   }
 }
 
@@ -743,7 +1199,8 @@ function addTextCard() {
   makeDraggable(card);
   
   document.body.appendChild(card);
-  elements.push({ id: elementId, card, type: 'text' });
+  elements.push({ id: elementId, card, type: 'text', name: 'Text ' + elementId });
+  updateLayersPanel();
   
   setTimeout(() => {
     textarea.focus();
@@ -1401,7 +1858,8 @@ window.duplicateCard = function(id) {
   
   makeDraggable(clone);
   document.body.appendChild(clone);
-  elements.push({ id: elementId, card: clone, type: item.type });
+  elements.push({ id: elementId, card: clone, type: item.type, name: item.name + ' Copy', visible: true });
+  updateLayersPanel();
   
   showTooltip('Card duplicated!');
 };
@@ -1545,7 +2003,313 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'Escape') {
     deselectCard();
   }
+  else if (e.ctrlKey && e.key === ']') { // Ctrl+] - Bring forward
+    bringToFront();
+  }
+  else if (e.ctrlKey && e.key === '[') { // Ctrl+[ - Send backward
+    sendToBack();
+  }
 });
+
+// ========== NEW DRAWING LAYER ==========
+function addNewDrawingLayer() {
+  const newCanvas = document.createElement('canvas');
+  newCanvas.className = 'drawing-layer';
+  newCanvas.width = canvas.width;
+  newCanvas.height = canvas.height;
+  newCanvas.style.position = 'absolute';
+  newCanvas.style.top = '0';
+  newCanvas.style.left = '0';
+  newCanvas.style.zIndex = 50 + layerIdCounter;
+  
+  const newCtx = newCanvas.getContext('2d', { willReadFrequently: true });
+  
+  // Position it in the same container as main canvas
+  canvas.parentElement.insertBefore(newCanvas, canvas.nextSibling);
+  
+  const newLayer = {
+    id: layerIdCounter,
+    name: 'Layer ' + layerIdCounter,
+    canvas: newCanvas,
+    ctx: newCtx,
+    visible: true,
+    locked: false,
+    type: 'drawing'
+  };
+  
+  layerIdCounter++;
+  drawingLayers.push(newLayer);
+  
+  // Attach drawing events to the new layer
+  newCanvas.addEventListener('mousedown', startDraw);
+  newCanvas.addEventListener('mousemove', draw);
+  newCanvas.addEventListener('mouseup', stopDraw);
+  newCanvas.addEventListener('mouseleave', stopDraw);
+  
+  // Make this layer active and bring to top
+  activeLayerIndex = drawingLayers.length - 1;
+  
+  // Ensure new layer is on top
+  newCanvas.style.zIndex = 50 + newLayer.id;
+  
+  updateLayersPanel();
+  showTooltip('Layer ' + newLayer.id + ' added! Drawing is active.');
+}
+
+function setActiveLayer(layerId) {
+  const index = drawingLayers.findIndex(l => l.id === layerId);
+  if (index !== -1) {
+    activeLayerIndex = index;
+    
+    // All layers visible, but only active one draws
+    drawingLayers.forEach((layer, i) => {
+      // Don't change visibility or pointer events - handle in drawing functions
+    });
+    
+    updateLayersPanel();
+    showTooltip(`Switched to ${drawingLayers[activeLayerIndex].name} - Ready to draw!`);
+  }
+}
+
+// ========== LAYERS PANEL ==========
+function updateLayersPanel() {
+  const list = document.getElementById('layersList');
+  const count = document.getElementById('layerCount');
+  
+  const totalLayers = drawingLayers.length + elements.length;
+  count.textContent = totalLayers;
+  
+  list.innerHTML = '';
+  
+  // Show elements first (text/image cards)
+  elements.slice().reverse().forEach((item) => {
+    const layer = document.createElement('div');
+    layer.className = 'layer-item';
+    layer.dataset.id = item.id;
+    layer.dataset.type = 'element';
+    if (item.card === selectedCard) layer.classList.add('selected');
+    
+    const typeName = item.type === 'text' ? 'Text' : 'Image';
+    const visible = item.visible !== false;
+    
+    layer.innerHTML = `
+      <span class="layer-move-handle" title="Card layer">☰</span>
+      <span class="layer-icon" style="font-weight: 600; color: #2bdd27;">${typeName.charAt(0)}</span>
+      <span class="layer-name">${item.name || typeName + ' ' + item.id}</span>
+      <button class="layer-visibility" onclick="toggleLayerVisibility(${item.id})" style="user-select: none;">${visible ? 'O' : 'X'}</button>
+      <button class="layer-delete" onclick="deleteLayerFromPanel(${item.id})">×</button>
+    `;
+    
+    layer.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('layer-visibility') && 
+          !e.target.classList.contains('layer-delete') &&
+          !e.target.classList.contains('layer-move-handle')) {
+        selectCard(item.card);
+        updateLayersPanel();
+      }
+    });
+    
+    list.appendChild(layer);
+  });
+  
+  // Show drawing layers
+  drawingLayers.slice().reverse().forEach((layer, reverseIndex) => {
+    const actualIndex = drawingLayers.length - 1 - reverseIndex;
+    const layerDiv = document.createElement('div');
+    layerDiv.className = 'layer-item';
+    layerDiv.dataset.id = layer.id;
+    layerDiv.dataset.type = 'drawing';
+    
+    if (actualIndex === activeLayerIndex) {
+      layerDiv.classList.add('selected');
+    }
+    
+    const icon = layer.id === 0 ? 'BG' : 'L';
+    
+    layerDiv.innerHTML = `
+      <span class="layer-move-handle" title="Drawing layer">☰</span>
+      <span class="layer-icon" style="font-weight: 600; color: #5d4e37;">${icon}</span>
+      <span class="layer-name">${layer.name}</span>
+      <button class="layer-visibility" onclick="toggleDrawingLayerVisibility(${layer.id})" style="user-select: none;">${layer.visible ? 'O' : 'X'}</button>
+      ${layer.id !== 0 ? '<button class="layer-delete" onclick="deleteDrawingLayer(' + layer.id + ')">×</button>' : '<span style="width:24px"></span>'}
+    `;
+    
+    layerDiv.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('layer-visibility') && 
+          !e.target.classList.contains('layer-delete') &&
+          !e.target.classList.contains('layer-move-handle')) {
+        setActiveLayer(layer.id);
+      }
+    });
+    
+    list.appendChild(layerDiv);
+  });
+  
+}
+
+window.toggleLayerVisibility = function(id) {
+  const item = elements.find(el => el.id === id);
+  if (item) {
+    item.visible = !item.visible;
+    item.card.style.display = item.visible ? 'block' : 'none';
+    updateLayersPanel();
+    showTooltip(item.visible ? 'Layer visible' : 'Layer hidden');
+  }
+};
+
+window.toggleDrawingLayerVisibility = function(id) {
+  const layer = drawingLayers.find(l => l.id === id);
+  if (layer) {
+    layer.visible = !layer.visible;
+    layer.canvas.style.display = layer.visible ? 'block' : 'none';
+    updateLayersPanel();
+    showTooltip(layer.visible ? 'Layer visible' : 'Layer hidden');
+  }
+};
+
+window.deleteDrawingLayer = function(id) {
+  if (id === 0) {
+    showTooltip('Cannot delete Layer 0!');
+    return;
+  }
+  
+  const layer = drawingLayers.find(l => l.id === id);
+  if (layer && confirm('Delete this drawing layer? All drawings on it will be lost.')) {
+    layer.canvas.remove();
+    drawingLayers = drawingLayers.filter(l => l.id !== id);
+    
+    // Switch to Layer 0 if we deleted the active layer
+    if (layer.id === drawingLayers[activeLayerIndex]?.id) {
+      activeLayerIndex = 0;
+    }
+    
+    updateLayersPanel();
+    showTooltip('Drawing layer deleted');
+  }
+};
+
+window.deleteLayerFromPanel = function(id) {
+  const item = elements.find(el => el.id === id);
+  if (item) {
+    const cardType = item.type === 'text' ? 'text card' : 'image card';
+    if (confirm(`Delete this ${cardType}?`)) {
+      item.card.remove();
+      elements = elements.filter(el => el.id !== id);
+      updateLayersPanel();
+      deselectCard();
+      showTooltip('Layer deleted');
+    }
+  }
+};
+
+// ========== LAYER REORDERING ==========
+let draggedLayer = null;
+
+function handleLayerDragStart(e) {
+  draggedLayer = e.target;
+  e.target.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleLayerDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  
+  const afterElement = getDragAfterElement(e.currentTarget.parentElement, e.clientY);
+  if (afterElement == null) {
+    e.currentTarget.parentElement.appendChild(draggedLayer);
+  } else {
+    e.currentTarget.parentElement.insertBefore(draggedLayer, afterElement);
+  }
+}
+
+function handleLayerDrop(e) {
+  e.preventDefault();
+  updateLayerOrder();
+}
+
+function handleLayerDragEnd(e) {
+  e.target.classList.remove('dragging');
+  draggedLayer = null;
+}
+
+function getDragAfterElement(container, y) {
+  const draggableElements = [...container.querySelectorAll('.layer-item:not(.dragging)')];
+  
+  return draggableElements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function updateLayerOrder() {
+  const layerItems = document.querySelectorAll('.layer-item');
+  const newOrder = [];
+  
+  // Reverse because layers are displayed top-to-bottom but z-index is bottom-to-top
+  Array.from(layerItems).reverse().forEach((layerItem, index) => {
+    const id = parseInt(layerItem.dataset.id);
+    const item = elements.find(el => el.id === id);
+    if (item) {
+      item.card.style.zIndex = 100 + index;
+      newOrder.push(item);
+    }
+  });
+  
+  elements = newOrder;
+  showTooltip('Layer order updated!');
+}
+
+// ========== LAYER Z-INDEX CONTROLS ==========
+function bringToFront() {
+  if (!selectedCard) {
+    showTooltip('Select a card first!');
+    return;
+  }
+  
+  const item = elements.find(el => el.card === selectedCard);
+  if (!item) return;
+  
+  // Move to end of array (top layer)
+  elements = elements.filter(el => el.id !== item.id);
+  elements.push(item);
+  
+  // Update z-indexes
+  elements.forEach((el, index) => {
+    el.card.style.zIndex = 100 + index;
+  });
+  
+  updateLayersPanel();
+  showTooltip('Layer moved to front!');
+}
+
+function sendToBack() {
+  if (!selectedCard) {
+    showTooltip('Select a card first!');
+    return;
+  }
+  
+  const item = elements.find(el => el.card === selectedCard);
+  if (!item) return;
+  
+  // Move to beginning of array (bottom layer)
+  elements = elements.filter(el => el.id !== item.id);
+  elements.unshift(item);
+  
+  // Update z-indexes
+  elements.forEach((el, index) => {
+    el.card.style.zIndex = 100 + index;
+  });
+  
+  updateLayersPanel();
+  showTooltip('Layer moved to back!');
+}
 
 // Welcome message
 showTooltip('Select tool active - Add text or images to get started!');
@@ -1555,3 +2319,4 @@ console.log('✅ Vision Board - Clean Green Edition Loaded at ' + new Date().toL
 
 </body>
 </html>
+
